@@ -1,0 +1,898 @@
+/* =========================================
+   ERA HERO
+   ========================================= */
+.era-hero {
+    margin-top: 80px;
+    height: 70vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 5%;
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-overlay-dark {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(90deg, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0.6) 50%, rgba(5,5,5,0.2) 100%);
+    z-index: 1;
+}
+
+.era-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 650px;
+}
+
+.era-timeline {
+    margin-top: 20px;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+}
+
+.hero-stats {
+    position: absolute;
+    bottom: 40px;
+    left: 5%;
+    z-index: 2;
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.stat-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-number {
+    font-family: var(--font-display);
+    font-size: 36px;
+    color: var(--text-primary);
+}
+
+.stat-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background-color: var(--border-color);
+}
+
+/* =========================================
+   CATEGORY STRIPS (TABS)
+   ========================================= */
+.era-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 30px 5%;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab-btn {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid transparent;
+    padding: 12px 22px;
+    border-radius: 0;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* CRITICAL HOVER / ACTIVE BEHAVIOR */
+.tab-btn:hover, .tab-btn.active {
+    background-color: #FFFFFF;
+    color: #111111;
+    border-color: #FFFFFF;
+}
+
+.tab-content {
+    display: none;
+    padding: 80px 5%;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   OVERVIEW GRID & FEATURE CARDS
+   ========================================= */
+.overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.overview-text h2 { margin-bottom: 24px; }
+.overview-text p { margin-bottom: 32px; font-size: 16px; }
+
+.btn-outline {
+    display: inline-block;
+    padding: 14px 28px;
+    border: 1px solid var(--text-primary);
+    border-radius:0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+    background-color: var(--text-primary);
+    color: var(--bg-main);
+}
+
+.overview-cards {
+    display: flex;
+    gap: 20px;
+}
+
+.feature-card-vertical {
+    flex: 1;
+    height: 400px;
+    border-radius: var(--radius-card);
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.4s ease, filter 0.4s ease;
+    cursor: pointer;
+}
+
+.card-overlay {
+    position: absolute;
+    bottom: 0; left: 0; width: 100%; height: 70%;
+    background: linear-gradient(0deg, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0) 100%);
+}
+
+.card-content {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    right: 24px;
+    z-index: 2;
+}
+
+.card-content h3 { font-size: 20px; margin-bottom: 8px; }
+.card-content p { font-size: 13px; color: var(--text-secondary); }
+
+.card-arrow {
+    position: absolute;
+    bottom: 0; right: 0;
+    font-size: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateX(-10px);
+}
+
+.feature-card-vertical:hover {
+    transform: translateY(-10px);
+}
+
+.feature-card-vertical:hover .card-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* =========================================
+   MAP SECTION & TOP CITIES
+   ========================================= */
+.era-map-section {
+    padding: 0 5% 80px 5%;
+}
+
+.map-header {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr;
+    gap: 40px;
+    margin-bottom: 24px;
+}
+
+.map-layout {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr;
+    gap: 40px;
+}
+
+.map-container-wrapper {
+    position: relative;
+    height: 600px;
+    border-radius: var(--radius-container);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+#era-map {
+    width: 100%; height: 100%;
+    background-color: #E5E5E5;
+}
+
+.leaflet-tile-container {
+    filter: grayscale(100%) contrast(1.1) brightness(0.85);
+}
+
+.map-filters {
+    position: absolute;
+    top: 20px; left: 20px;
+    z-index: 1000;
+    background: rgba(17,17,17,0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.filter-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    text-align: left;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.filter-btn:hover, .filter-btn.active {
+    color: #D4AF37; /* Gold Islamic Theme */
+}
+
+/* Top Cities Sidebar */
+.cities-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.city-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+    border: 1px solid transparent;
+}
+
+.city-item:hover {
+    background: var(--surface-elevated);
+    border-color: var(--border-color);
+}
+
+.city-item img {
+    width: 60px; height: 60px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.city-info h4 { font-size: 16px; }
+.city-info p { font-size: 12px; color: var(--text-secondary); }
+.city-arrow { margin-left: auto; color: var(--text-secondary); font-size: 24px; }
+
+/* =========================================
+   NEW MONUMENT DRAWER (WIDE LAYOUT)
+   ========================================= */
+.drawer-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+}
+
+.monument-drawer {
+    position: fixed;
+    top: 10px; right: -100%;
+    height: calc(100vh - 20px);
+    width: 75vw;
+    max-width: 1200px;
+    background-color: #FAFAFA;
+    color: #111111;
+    z-index: 2000;
+    border-radius: 20px 0 0 20px;
+    box-shadow: -20px 0 60px rgba(0,0,0,0.45);
+    transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.monument-drawer.open { right: 0; }
+
+.close-drawer-btn {
+    position: absolute; top: 20px; right: 24px;
+    background: transparent; border: none; font-size: 28px; 
+    cursor: pointer; color: #111; z-index: 10;
+}
+
+.drawer-scroll-container {
+    padding: 40px 50px;
+    overflow-y: auto;
+    height: 100%;
+}
+
+/* Header Split */
+.drawer-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.drawer-title { font-family: var(--font-display); font-size: 42px; margin-bottom: 4px; }
+.drawer-location { font-size: 14px; color: #666; margin-bottom: 16px; }
+
+.drawer-rating-row {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+}
+.stars { color: #D4AF37; letter-spacing: 2px; }
+.rating-text { font-size: 13px; color: #666; }
+
+.drawer-tags {
+    display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;
+}
+.tag {
+    font-size: 12px; padding: 6px 12px;
+    background: #EEEEEE; border-radius: var(--radius-pill); color: #333;
+}
+
+.drawer-desc { font-size: 15px; color: #444; line-height: 1.6; margin-bottom: 30px; max-width: 90%; }
+
+.drawer-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-action {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px; border-radius: 8px;
+    border: 1px solid #CCC; background: transparent; color: #111;
+    font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+}
+.btn-action:hover { border-color: #111; }
+.btn-review { background: #111; color: #FFF; border-color: #111; }
+.btn-review:hover { background: #333; }
+
+/* Header Gallery */
+.main-image-wrapper {
+    width: 100%; height: 300px;
+    border-radius: 16px; overflow: hidden; margin-bottom: 12px;
+}
+.drawer-main-img { width: 100%; height: 100%; object-fit: cover; }
+.drawer-thumbnails {
+    display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;
+}
+.drawer-thumbnails img {
+    width: 60px; height: 60px; border-radius: 8px; object-fit: cover; cursor: pointer;
+    opacity: 0.6; transition: opacity 0.2s;
+}
+.drawer-thumbnails img:hover { opacity: 1; }
+
+/* Tabs */
+.drawer-nav {
+    display: flex; gap: 32px; border-bottom: 1px solid #E5E5E5; margin-bottom: 40px;
+}
+.drawer-nav-btn {
+    background: transparent; border: none; padding: 12px 0;
+    font-size: 14px; color: #666; cursor: pointer;
+    border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s;
+}
+.drawer-nav-btn.active, .drawer-nav-btn:hover { color: #111; border-bottom-color: #D4AF37; }
+
+/* Content Grid */
+.drawer-content-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; margin-bottom: 50px;
+}
+.content-title { font-family: var(--font-display); font-size: 20px; margin-bottom: 16px; }
+.content-text { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 24px; }
+
+.quick-facts { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.quick-facts li { font-size: 13px; color: #444; display: flex; align-items: center; gap: 8px;}
+.fact-icon { color: #888; }
+
+.drawer-mini-map {
+    width: 100%; height: 100%; min-height: 250px;
+    background: url('/assets/eras/map-bg.jpg') center/cover;
+    border-radius: 12px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+}
+.mini-map-marker {
+    display: flex; flex-direction: column; align-items: center; gap: 4px; color: #111;
+    background: rgba(255,255,255,0.8); padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 600;
+}
+
+.info-group { margin-bottom: 16px; }
+.info-group h4 { font-size: 13px; color: #111; margin-bottom: 4px; }
+.info-group p { font-size: 13px; color: #666; }
+
+/* Bottom Grid */
+.drawer-bottom-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding-top: 40px; border-top: 1px solid #E5E5E5;
+}
+.tour-thumbnail {
+    width: 100%; height: 200px; border-radius: 12px;
+    background: url('/assets/eras/tour-bg.jpg') center/cover;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.play-btn-overlay {
+    width: 60px; height: 60px; border-radius: 50%; background: rgba(0,0,0,0.6);
+    display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);
+}
+
+.distance { margin-left: auto; font-size: 13px; color: #666; }
+
+@media (max-width: 1024px) {
+    .monument-drawer { width: 95vw; }
+    .drawer-header { grid-template-columns: 1fr; }
+    .drawer-content-grid { grid-template-columns: 1fr; }
+    .drawer-bottom-grid { grid-template-columns: 1fr; }
+}
+/* Leaflet Custom Markers */
+.marker-pin {
+    width: 16px; 
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #050505; /* Dark border for contrast */
+}
+/* =========================================
+   CATEGORY CARD ACTIVE STATE (Phase 2)
+   ========================================= */
+.feature-card-vertical.active-category {
+    border-color: transparent;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    filter: brightness(1.05);
+}
+
+/* =========================================
+   DYNAMIC GRID CONTAINER (Phase 2)
+   ========================================= */
+
+.dynamic-grid-container {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    scroll-margin-top: 100px;
+    transition: max-height 0.35s ease, opacity 0.3s ease;
+}
+
+.dynamic-grid-container.visible {
+    opacity: 1;
+}
+
+
+.dynamic-grid-title {
+    margin-bottom: 30px;
+}
+
+.dynamic-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.dynamic-grid.swapping {
+    opacity: 0;
+}
+
+@media (max-width: 1024px) {
+    .dynamic-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .dynamic-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* =========================================
+   DYNAMIC CARD (Phase 4)
+   ========================================= */
+.dynamic-card {
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease;
+}
+
+.dynamic-card:hover {
+    transform: translateY(-6px);
+}
+
+.dynamic-card-image {
+    width: 100%;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+}
+
+.dynamic-card-info {
+    padding: 16px;
+}
+
+.dynamic-card-info h4 {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.dynamic-card-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.dynamic-card-rating {
+    color: #D4AF37;
+}
+/* =========================================
+   LOCATION FILTER STRIP (Mosques only)
+   ========================================= */
+.location-filter-strip {
+    display: none;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.location-filter-strip.active {
+    display: flex;
+}
+
+.location-filter-btn {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 10px 20px;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.location-filter-btn:hover {
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+}
+
+.location-filter-btn.active {
+    background-color: #FFFFFF;
+    color: #111111;
+    border-color: #FFFFFF;
+}
+/* =========================================
+   BUTTON ACTIVE/TOGGLE STATE (Favorite/Wishlist)
+   ========================================= */
+.btn-action.is-active {
+    background: #111;
+    color: #FFF;
+    border-color: #111;
+}
+
+.btn-action.is-active:hover {
+    background: #333;
+}
+/* =========================================
+   DRAWER PANELS (Overview / Reviews switch)
+   ========================================= */
+.drawer-panel {
+    display: none;
+}
+
+.drawer-panel.active {
+    display: block;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+/* =========================================
+   REVIEWS PANEL — REVIEW CARDS
+   ========================================= */
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.review-card {
+    padding: 20px;
+    border: 1px solid #E5E5E5;
+    border-radius: 14px;
+    background: #FFFFFF;
+}
+
+.review-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.review-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #111;
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.review-card-meta h4 {
+    font-size: 14px;
+    margin-bottom: 2px;
+    color: #111;
+}
+
+.review-card-stars {
+    font-size: 13px;
+    color: #D4AF37;
+    letter-spacing: 1px;
+}
+
+.review-card-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.review-card-text {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+}
+
+/* =========================================
+   ERA SECTION SPACING (Timeline/Legacy/Architecture/Places)
+   ========================================= */
+.era-section {
+    scroll-margin-top: 100px;
+    padding: 80px 5%;
+}
+
+.section-header-block {
+    max-width: 700px;
+    margin-bottom: 50px;
+}
+
+.section-header-block .section-title {
+    margin-bottom: 12px;
+}
+
+/* =========================================
+   TIMELINE SECTION
+   ========================================= */
+.timeline-track {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    padding: 40px 20px 0 20px;
+}
+
+.timeline-line {
+    position: absolute;
+    top: 44px;
+    left: 20px;
+    right: 20px;
+    height: 1px;
+    background-color: var(--border-color);
+}
+
+.timeline-point {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    text-align: center;
+}
+
+.timeline-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--bg-main);
+    border: 2px solid var(--text-secondary);
+    margin-bottom: 20px;
+    z-index: 2;
+}
+
+.timeline-point.active .timeline-dot {
+    background-color: #D4AF37;
+    border-color: #D4AF37;
+}
+
+.timeline-label h4 {
+    font-size: 15px;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.timeline-label p {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .timeline-track {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 30px;
+    }
+    .timeline-line { display: none; }
+}
+
+/* =========================================
+   LEGACY SECTION
+   ========================================= */
+.legacy-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.legacy-text {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.legacy-text p {
+    font-size: 16px; /* adjust this value to whatever size you want */
+    line-height: 1.7;
+}
+
+.legacy-image {
+    width: 100%;
+    height: 380px;
+    border-radius: var(--radius-card);
+    background-size: cover;
+    background-position: center;
+}
+
+@media (max-width: 900px) {
+    .legacy-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================
+   ARCHITECTURE SECTION
+   ========================================= */
+.architecture-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.architecture-image {
+    width: 100%;
+    height: 600px;
+    border-radius: var(--radius-card);
+    background-size: cover;
+    background-position: center;
+}
+
+.architecture-content p {
+    max-width: 1500px;
+    text-align: center;
+    font-size: 25px;
+}
+/* =========================================
+   GALLERY PANEL
+   ========================================= */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.gallery-grid img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.gallery-grid img:hover {
+    transform: scale(1.02);
+}
+
+.gallery-empty-message {
+    grid-column: 1 / -1;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    padding: 60px 0;
+}
+
+@media (max-width: 1024px) {
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+/* =========================================
+   GALLERY LIGHTBOX
+   ========================================= */
+.gallery-lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.gallery-lightbox-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.gallery-lightbox-img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 12px;
+    object-fit: contain;
+}
+
+.gallery-lightbox-close {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    background: none;
+    border: none;
+    color: #FFF;
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+}
+/* ================
+   HISTORY PANEL
+  ===============*/
+.drawer-history-text {
+    max-width: 800px;
+}

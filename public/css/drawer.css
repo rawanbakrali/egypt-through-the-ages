@@ -1,0 +1,341 @@
+/* ============================================
+   REVIEW MODAL
+   Interactive Surface Rule: WHITE background (Point 17)
+   ============================================ */
+
+.review-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45); /* Glass Overlay per locked spec */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.review-modal-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.review-modal {
+  background: #FFFFFF; /* Locked: interactive surfaces are white */
+  border-radius: 20px; /* Large container radius */
+  width: 420px;
+  max-width: calc(100vw - 32px);
+  padding: 32px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  transform: translateY(16px) scale(0.98);
+  transition: transform 0.25s ease;
+}
+
+.review-modal-overlay.is-open .review-modal {
+  transform: translateY(0) scale(1);
+}
+
+.review-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.review-modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: #050505;
+}
+
+.review-modal-close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  color: #8A8A8A;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.review-modal-close:hover {
+  color: #050505;
+}
+
+.review-star-rating {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.review-star {
+  background: none;
+  border: none;
+  font-size: 32px;
+  line-height: 1;
+  color: #D4D4D4;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease, transform 0.1s ease;
+}
+
+.review-star:hover {
+  transform: scale(1.08);
+}
+
+.review-star.is-filled {
+  color: #050505;
+}
+
+.review-textarea {
+  width: 100%;
+  background: #F5F5F5;
+  border: 1px solid #E0E0E0;
+  border-radius: 14px; /* Locked input radius */
+  color: #050505;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  padding: 14px 16px;
+  resize: vertical;
+  min-height: 120px;
+  box-sizing: border-box;
+}
+
+.review-textarea::placeholder {
+  color: #8A8A8A;
+}
+
+.review-textarea:focus {
+  outline: none;
+  border-color: #050505;
+}
+
+.review-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.review-btn {
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.review-btn-primary {
+  background: #050505;
+  color: #F5F5F5;
+  border: none;
+}
+
+.review-btn-primary:hover {
+  background: #262626;
+}
+
+.review-btn-primary:disabled {
+  background: #D4D4D4;
+  color: #8A8A8A;
+  cursor: not-allowed;
+}
+
+.review-btn-secondary {
+  background: transparent;
+  color: #050505;
+  border: 1px solid #262626;
+}
+
+.review-btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+/* ============================================
+   REVIEW MODAL — IMAGE UPLOAD
+   ============================================ */
+.review-upload-section {
+  margin-top: 16px;
+}
+
+.review-upload-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid #262626;
+  border-radius: 999px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #050505;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.review-upload-label:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.review-image-preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.review-image-preview-item {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #E0E0E0;
+}
+
+.review-image-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.review-image-remove-btn {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  color: #FFF;
+  border: none;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.review-image-remove-btn:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+/* ============================================
+   REVIEW MODAL — TAGS
+   ============================================ */
+.review-tags-section {
+  margin-top: 20px;
+}
+
+.review-tags-label {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #8A8A8A;
+  margin-bottom: 8px;
+}
+
+.review-tags-input-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 12px;
+  background: #F5F5F5;
+  border: 1px solid #E0E0E0;
+  border-radius: 14px;
+}
+
+.review-tags-input-wrapper:focus-within {
+  border-color: #050505;
+}
+
+.review-tag-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.review-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #EEEEEE;
+  color: #333;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.review-tag-remove-btn {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.review-tag-remove-btn:hover {
+  color: #050505;
+}
+
+.review-tag-input {
+  flex: 1;
+  min-width: 120px;
+  border: none;
+  background: transparent;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #050505;
+  padding: 6px 4px;
+}
+
+.review-tag-input::placeholder {
+  color: #8A8A8A;
+}
+
+.review-tag-input:focus {
+  outline: none;
+}
+/* ============================================
+   REVIEW MODAL — ADD TO LIST
+   ============================================ */
+.review-list-section {
+  margin-top: 20px;
+}
+
+.review-list-select {
+  width: 100%;
+  height: 44px;
+  background: #F5F5F5; /* Locked: select elements are white/light surfaces */
+  border: 1px solid #E0E0E0;
+  border-radius: 14px;
+  color: #050505;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  padding: 0 14px;
+  cursor: pointer;
+  box-sizing: border-box;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3e%3cpath d='M1 1l5 5 5-5' stroke='%23050505' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+.review-list-select:focus {
+  outline: none;
+  border-color: #050505;
+}

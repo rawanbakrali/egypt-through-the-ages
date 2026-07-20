@@ -1,0 +1,283 @@
+/* =========================================
+   EGYPT THROUGH THE AGES - GLOBAL STYLES
+   ========================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap');
+
+:root {
+    /* Locked Color Palette */
+    --bg-main: #050505;
+    --bg-secondary: #111111;
+    --surface-elevated: #171717;
+    --surface-interactive: #FFFFFF; /* Rule 17 Inversion */
+    
+    --border-color: #262626;
+    --border-elevated: rgba(255, 255, 255, 0.06);
+    
+    --text-primary: #F5F5F5;
+    --text-secondary: #B7B7B7;
+    --text-muted: #8A8A8A;
+    --text-inverted: #000000; /* For white interactive surfaces */
+    
+    --hover-overlay: rgba(255, 255, 255, 0.08);
+    --glass-overlay: rgba(0, 0, 0, 0.45);
+
+    /* Era Markers */
+    --era-ancient: #F59E0B;
+    --era-greco: #2563EB;
+    --era-coptic: #7C3AED;
+    --era-islamic: #16A34A;
+    --era-modern: #64748B;
+
+    /* Border Radius */
+    --radius-card: 18px;
+    --radius-container: 20px;
+    --radius-pill: 999px;
+    --radius-input: 14px;
+    --radius-drawer: 22px;
+
+    /* Typography */
+    --font-display: 'Playfair Display', serif;
+    --font-ui: 'Inter', sans-serif;
+}
+
+/* =========================================
+   RESETS & BASE
+   ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
+/* =========================================
+   TYPOGRAPHY RULES
+   ========================================= */
+.hero-title {
+    font-family: var(--font-display);
+    font-size: 88px;
+    font-weight: 400;
+    line-height: 1.1;
+}
+
+@media (max-width: 768px) {
+    .hero-title { font-size: 56px; }
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: 42px;
+    font-weight: 500;
+}
+
+.card-title {
+    font-family: var(--font-ui);
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.nav-label, .era-strip-label {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+}
+
+.era-strip-label {
+    font-weight: 700;
+}
+
+.body-text-secondary {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.small-label {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+/* =========================================
+   NAVBAR (FIXED)
+   ========================================= */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background-color: var(--bg-main);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    z-index: 1000;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.logo-lockup {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-main {
+    font-family: var(--font-display);
+    font-size: 24px;
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+}
+
+.logo-sub {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    color: var(--text-secondary);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.nav-label {
+    transition: color 0.3s ease;
+}
+
+.nav-label:hover {
+    color: var(--text-secondary);
+}
+
+.hamburger-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-left: 20px;
+}
+
+.hamburger-line {
+    width: 24px;
+    height: 1px;
+    background-color: var(--text-primary);
+}
+/*=======================================
+   FOOTER
+========================================= */
+.site-footer {
+    border-top: 1px solid var(--border-color);
+    padding: 30px 5%;
+    background-color: var(--bg-main);
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.footer-links {
+    display: flex;
+    gap: 24px;
+}
+
+.footer-links a {
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+}
+/* --- Dynamic Grid Layout --- */
+#cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 20px 0;
+    width: 100%;
+}
+
+/* --- Card Styling --- */
+.grid-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.grid-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.card-hero-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block; /* Removes bottom spacing bugs */
+}
+
+.card-body {
+    padding: 16px;
+}
+
+.card-body h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.card-location {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0 0 8px 0;
+}
+
+.card-rating {
+    display: inline-block;
+    background: #fff3cd;
+    color: #856404;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.85rem;
+}

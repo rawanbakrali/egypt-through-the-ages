@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <!-- Fonts and Global Styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+
+    <!-- Inject Navbar -->
+    <%- include('partials/navbar') %>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <span class="small-label">EXPLORE EGYPT THROUGH THE AGES</span>
+            <h1 class="hero-title">Egypt Through<br>the Ages</h1>
+            <div class="hero-divider"></div>
+            <p class="body-text-secondary hero-subtitle">
+                A monochrome interface where the historical<br>
+                photography becomes the source of color and emotion.
+            </p>
+        </div>
+    </section>
+
+    <!-- PANORAMIC ERA STRIPS -->
+    <%- include('partials/era-strip') %>
+
+    <!-- INTRO SECTION -->
+    <section class="home-intro">
+        <p class="intro-text">
+            Select an era to explore monuments, stories, interactive maps, 3D tours and modern cultural experiences across Egypt.
+        </p>
+        <a href="/explore" class="discover-link">
+            <span class="small-label">DISCOVER OUR HERITAGE</span>
+            <span class="arrow">→</span>
+        </a>
+    </section>
+
+    <!-- MAP SECTION -->
+    <section class="map-section">
+        <div id="map-wrapper">
+            <!-- Floating Legend Card -->
+            <div class="map-legend">
+                <div class="legend-item">
+                    <span class="legend-color ancient"></span>
+                    <span class="legend-text">Ancient Egypt</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color greco"></span>
+                    <span class="legend-text">Greco-Roman</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color coptic"></span>
+                    <span class="legend-text">Coptic</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color islamic"></span>
+                    <span class="legend-text">Islamic</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color modern"></span>
+                    <span class="legend-text">Modern Egypt</span>
+                </div>
+            </div>
+
+            <!-- Leaflet Container -->
+            <div id="map"></div>
+        </div>
+    </section>
+
+    <!-- Leaflet JS CDN -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Map Logic -->
+    <script src="/js/map.js"></script>
+    
+    <!-- Inject Footer -->
+    <%- include('partials/footer') %>
+</body>
+</html>

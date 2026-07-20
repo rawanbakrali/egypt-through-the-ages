@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/era.css">
+    <link rel="stylesheet" href="/css/drawer.css">
+</head>
+<body>
+
+    <!-- Inject Navbar -->
+    <%- include('partials/navbar') %>
+
+    <!-- HERO SECTION -->
+    <section class="era-hero" style="background-image: url('<%= era.heroImage %>');">
+        <div class="hero-overlay-dark"></div>
+        <div class="era-hero-content">
+            <span class="small-label"><%= era.smallLabel %></span>
+            <h1 class="hero-title"><%= era.name %></h1>
+            <p class="body-text-secondary hero-subtitle">
+                <%- era.subtitle %>
+            </p>
+            <p class="era-timeline"><%= era.timelineRange %></p>
+        </div>
+        
+    </section>
+
+    <!-- CATEGORY STRIPS (TABS) -->
+    <nav class="era-tabs">
+        <button class="tab-btn active" data-tab="overview">
+            <span class="tab-icon"></span> OVERVIEW
+        </button>
+        <button class="tab-btn" data-tab="timeline">
+            <span class="tab-icon"></span> TIMELINE
+        </button>
+        <button class="tab-btn" data-tab="legacy">
+            <span class="tab-icon"></span> LEGACY
+        </button>
+        <button class="tab-btn" data-tab="architecture">
+            <span class="tab-icon"></span> ARCHITECTURE
+        </button>
+        <button class="tab-btn" data-tab="places">
+            <span class="tab-icon"></span> PLACES
+        </button>
+    </nav>
+
+    <!-- OVERVIEW SECTION -->
+    <section class="era-section" id="overview">
+        <div class="overview-grid">
+            <!-- Left Column -->
+            <div class="overview-text">
+                <h2 class="section-title"><%- era.overviewText.heading %></h2>
+                <p class="body-text-secondary">
+                    <%= era.overviewText.paragraph %>
+                </p>
+                <a href="#" class="btn-outline"><%= era.overviewText.ctaText %> &rarr;</a>
+            </div>
+
+           <!-- Right Column: Feature Cards -->
+            <div class="overview-cards">
+                <% era.categories.forEach(function(cat) { %>
+                <div class="feature-card-vertical" data-category="<%= cat.key %>" style="background-image: url('<%= cat.image %>');">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <h3><%= cat.label %></h3>
+                        <p><%= cat.blurb %></p>
+                        <span class="card-arrow">&rarr;</span>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+            </div>
+
+        <div id="dynamic-grid-container" class="dynamic-grid-container">
+    <h2 class="section-title dynamic-grid-title" id="dynamicGridTitle"></h2>
+    <div class="location-filter-strip" id="locationFilterStrip"></div>
+    <div class="dynamic-grid" id="dynamicGrid"></div>
+    </div>
+</div>
+    </section>
+
+    <!-- TIMELINE SECTION -->
+    <% if (era.timeline) { %>
+    <section class="era-section timeline-section" id="timeline">
+        <div class="section-header-block">
+            <h2 class="section-title">Timeline</h2>
+            <p class="body-text-secondary"><%= era.timeline.intro %></p>
+        </div>
+
+        <div class="timeline-track">
+            <div class="timeline-line"></div>
+
+            <% era.timeline.points.forEach(function(point) { %>
+            <div class="timeline-point<%= point.active ? ' active' : '' %>">
+                <span class="timeline-dot"></span>
+                <div class="timeline-label">
+                    <h4><%= point.name %></h4>
+                    <p><%= point.date %></p>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+    </section>
+    <% } %>
+
+    <!-- LEGACY SECTION -->
+    <% if (era.legacy) { %>
+    <section class="era-section legacy-section" id="legacy">
+        <div class="section-header-block">
+            <h2 class="section-title">Legacy</h2>
+        </div>
+        <div class="legacy-grid">
+            <div class="legacy-text">
+                <% era.legacy.paragraphs.forEach(function(paragraph) { %>
+                <p class="body-text-secondary">
+                    <%= paragraph %>
+                </p>
+                <% }); %>
+            </div>
+            <div class="legacy-image" style="background-image: url('<%= era.legacy.image %>');"></div>
+        </div>
+    </section>
+    <% } %>
+
+   <!-- ARCHITECTURE SECTION -->
+    <% if (era.architecture) { %>
+    <section class="era-section architecture-section" id="architecture">
+        <div class="section-header-block">
+            <h2 class="section-title">Architecture</h2>
+        </div>
+        <div class="architecture-content">
+            <div class="architecture-image" style="background-image: url('<%= era.architecture.image %>');"></div>
+            <p class="body-text-secondary">
+                <%= era.architecture.paragraph %>
+            </p>
+        </div>
+    </section>
+    <% } %>
+
+    <!-- MAP SECTION -->
+    <!-- MAP SECTION -->
+    <section class="era-map-section era-section" id="places">
+        <div class="map-header">
+            <h2 class="section-title">Explore <%= era.name %></h2>
+            <h2 class="section-title cities-title">Top Cities</h2>
+        </div>
+        
+        <div class="map-layout">
+            <!-- Left: Map & Filters -->
+            <div class="map-container-wrapper">
+                <div class="map-filters">
+                    <button class="filter-btn active">All Sites</button>
+                    <% era.categories.forEach(function(cat) { %>
+                    <button class="filter-btn"><%= cat.label %></button>
+                    <% }); %>
+                </div>
+                <div id="era-map"></div>
+            </div>
+
+            <!-- Right: Top Cities Sidebar -->
+            <div class="cities-sidebar">
+                <% (era.cities || []).forEach(function(city) { %>
+                <div class="city-item" data-city="<%= city.key %>">
+                    <img src="<%= city.image %>" alt="<%= city.name %>">
+                    <div class="city-info">
+                        <h4><%= city.name %></h4>
+                        <p><%= city.blurb %></p>
+                    </div>
+                    <span class="city-arrow">&rsaquo;</span>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+    </section>
+    
+
+    <!-- MONUMENT DRAWER (Unified Wide Layout) -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <aside class="monument-drawer" id="monumentDrawer">
+        <button class="close-drawer-btn" id="closeDrawerBtn">&times;</button>
+        
+        <div class="drawer-scroll-container">
+            <!-- Header Section -->
+            <div class="drawer-header">
+                <!-- Left: Info & Actions -->
+                <div class="drawer-info">
+                    <h2 class="drawer-title" id="drawerTitle"></h2>
+                    <p class="drawer-location" id="drawerLocation"></p>
+                    
+                    <div class="drawer-rating-row">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-text">4.8 (124 reviews)</span>
+                    </div>
+
+                    <div class="drawer-tags">
+                        <span class="tag">Mosque</span>
+                        <span class="tag">Architecture</span>
+                        <span class="tag">Education</span>
+                        <span class="tag">History</span>
+                    </div>
+
+                    <p class="drawer-desc" id="drawerDesc"></p>
+
+                    <div class="drawer-actions">
+                        <button class="btn-action" id="drawerVisitedBtn"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Visited</button>
+                        <button class="btn-action" id="drawerFavoriteBtn"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> Favorite</button>
+                        <button class="btn-action" id="drawerWishlistBtn"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> Wishlist</button>
+                        <button class="btn-action btn-review" id="drawerReviewBtn"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Review</button>
+                    </div>
+                </div>
+
+                <!-- Right: Gallery -->
+                <div class="drawer-gallery-header">
+                    <div class="main-image-wrapper">
+                        <img src="/assets/eras/al-azhar-main.jpg" alt="Al-Azhar Mosque" class="drawer-main-img">
+                    </div>
+                    <div class="drawer-thumbnails">
+                        <img src="/assets/eras/al-azhar-thumb1.jpg" alt="Thumb">
+                        <img src="/assets/eras/al-azhar-thumb2.jpg" alt="Thumb">
+                        <img src="/assets/eras/al-azhar-thumb3.jpg" alt="Thumb">
+                        <img src="/assets/eras/al-azhar-thumb4.jpg" alt="Thumb">
+                        <img src="/assets/eras/al-azhar-thumb5.jpg" alt="Thumb">
+                        <img src="/assets/eras/al-azhar-thumb6.jpg" alt="Thumb">
+                        <img src="/assets/eras/al-azhar-thumb7.jpg" alt="Thumb">
+                        <img src="/assets/eras/al-azhar-thumb8.jpg" alt="Thumb">
+                    </div>
+                </div>
+            </div>
+
+            <!-- In-Drawer Navigation -->
+            <nav class="drawer-nav">
+                <button class="drawer-nav-btn active">Overview</button>
+                <button class="drawer-nav-btn">History</button>
+                <button class="drawer-nav-btn">Gallery</button>
+                <button class="drawer-nav-btn">Reviews</button>
+            </nav>
+
+            <!-- OVERVIEW PANEL -->
+            <div class="drawer-panel active" id="drawerPanelOverview">
+
+            <!-- Overview Content Grid -->
+            <div class="drawer-content-grid">
+                <!-- About -->
+                <div class="content-col">
+                    <h3 class="content-title">About Al-Azhar Mosque</h3>
+                    <p class="content-text">Al-Azhar Mosque is a historic mosque located in the heart of Islamic Cairo. It is one of the oldest existing mosques in the world and has been a major center of Islamic learning.</p>
+                    <ul class="quick-facts">
+                        <li><span class="fact-icon">⏱</span> <strong>Built:</strong> 970 CE</li>
+                        <li><span class="fact-icon">👤</span> <strong>Founder:</strong> Jawhar al-Siqilli</li>
+                        <li><span class="fact-icon">🏛</span> <strong>Architectural Style:</strong> Fatimid</li>
+                        <li><span class="fact-icon">🕌</span> <strong>Function:</strong> Mosque & University</li>
+                    </ul>
+                </div>
+                <!-- Visitor Info -->
+                <div class="content-col">
+                    <h3 class="content-title">Visitor Information</h3>
+                    <div class="info-group">
+                        <h4>Opening Hours</h4>
+                        <p>8:00 AM – 6:00 PM</p>
+                    </div>
+                    <div class="info-group">
+                        <h4>Best Time to Visit</h4>
+                        <p>Morning</p>
+                    </div>
+                    <div class="info-group">
+                        <h4>Dress Code</h4>
+                        <p>Modest clothing required</p>
+                    </div>
+                    <div class="info-group">
+                        <h4>Entry Fee</h4>
+                        <p>Free</p>
+                    </div>
+                </div>
+                <!-- Mini Map -->
+                <div class="content-col">
+                    <div class="drawer-mini-map">
+                        <div class="mini-map-marker">
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span>Al-Azhar Mosque</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Sections -->
+            <div class="drawer-bottom-grid">
+                <div class="bottom-col">
+                    <h3 class="content-title">3D Virtual Tour</h3>
+                    <div class="tour-thumbnail">
+                        <div class="play-btn-overlay">
+                            <svg viewBox="0 0 24 24" width="32" height="32" fill="white"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </div> <!-- /OVERVIEW PANEL -->
+
+            <!-- HISTORY PANEL -->
+            <div class="drawer-panel" id="drawerPanelHistory">
+                <h3 class="content-title">History</h3>
+                <p class="content-text drawer-history-text" id="drawerHistoryText">
+                    Al-Azhar Mosque was founded in 970 CE by the Fatimid dynasty, shortly after they established Cairo as their new capital. It was built to serve both as a place of worship and as a center of Islamic scholarship, and just two years later it began functioning as a teaching institution — eventually growing into Al-Azhar University, one of the oldest continuously operating universities in the world. Over the following centuries, successive rulers — Ayyubid, Mamluk, and Ottoman alike — expanded and restored the mosque, adding new gates, minarets, and study halls, each leaving their own architectural mark. Despite occasional periods of neglect and even attempted destruction, Al-Azhar survived largely intact, and today remains one of the most important religious and educational institutions in the Sunni Muslim world.
+                </p>
+            </div>
+            <!-- /HISTORY PANEL -->
+
+            <!-- GALLERY PANEL -->
+            <div class="drawer-panel" id="drawerPanelGallery">
+                <h3 class="content-title">Gallery</h3>
+                <div class="gallery-grid" id="galleryGrid">
+                    <p class="gallery-empty-message" id="galleryEmptyMessage">
+                        No photos yet — be the first to add one in a review!
+                    </p>
+                </div>
+            </div>
+            <!-- /GALLERY PANEL -->
+
+            <!-- REVIEWS PANEL -->
+            <div class="drawer-panel" id="drawerPanelReviews">
+                <h3 class="content-title">Visitor Reviews</h3>
+
+                <div class="review-list">
+                    <div class="review-card">
+                        <div class="review-card-header">
+                            <div class="review-avatar">SM</div>
+                            <div class="review-card-meta">
+                                <h4>Sara M.</h4>
+                                <span class="review-card-stars">★★★★★</span>
+                            </div>
+                        </div>
+                        <div class="review-card-tags">
+                            <span class="tag">Architecture</span>
+                            <span class="tag">Peaceful</span>
+                        </div>
+                        <p class="review-card-text">
+                            Visiting Al-Azhar was one of the highlights of my trip to Cairo. The scale of the courtyard and the calm atmosphere really stayed with me long after I left.
+                        </p>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-card-header">
+                            <div class="review-avatar">OK</div>
+                            <div class="review-card-meta">
+                                <h4>Omar K.</h4>
+                                <span class="review-card-stars">★★★★☆</span>
+                            </div>
+                        </div>
+                        <div class="review-card-tags">
+                            <span class="tag">Guided Tour</span>
+                        </div>
+                        <p class="review-card-text">
+                            Go early in the morning before the crowds arrive. A guide really helped bring the history of the place to life.
+                        </p>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-card-header">
+                            <div class="review-avatar">LR</div>
+                            <div class="review-card-meta">
+                                <h4>Layla R.</h4>
+                                <span class="review-card-stars">★★★★★</span>
+                            </div>
+                        </div>
+                        <div class="review-card-tags">
+                            <span class="tag">Photography</span>
+                            <span class="tag">History</span>
+                        </div>
+                        <p class="review-card-text">
+                            The details in the stonework are incredible up close. Bring a wide lens if you're into photography — the courtyard is massive.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- /REVIEWS PANEL -->
+        </div>
+    </aside>
+    <%- include('partials/footer') %>
+    <%- include('partials/review-modal') %>
+
+    <!-- GALLERY LIGHTBOX -->
+    <div class="gallery-lightbox-overlay" id="galleryLightboxOverlay">
+        <button class="gallery-lightbox-close" id="galleryLightboxClose" aria-label="Close">&times;</button>
+        <img src="" alt="Full-size review photo" id="galleryLightboxImg" class="gallery-lightbox-img">
+    </div>
+<script>window.ERA_DATA = <%- JSON.stringify(era) %>;</script>   
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/js/era.js"></script>
+    <script src="/js/reviews.js"></script>
+    <script src="/js/favorites.js"></script>
+    <script src="/js/wishlist.js"></script>
+    <script src="/js/visited.js"></script>
+    <script>
+      document.getElementById('drawerReviewBtn').addEventListener('click', () => {
+        window.openReviewModal('al-azhar-mosque');
+      });
+    </script>
+</body>
+</html>

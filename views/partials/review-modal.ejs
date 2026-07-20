@@ -1,0 +1,66 @@
+<!-- partials/review-modal.ejs -->
+<div class="review-modal-overlay" id="reviewModalOverlay">
+  <div class="review-modal" id="reviewModal">
+    <div class="review-modal-header">
+      <h3 class="review-modal-title">Write a Review</h3>
+      <button class="review-modal-close" id="reviewModalClose" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="review-modal-body">
+      <div class="review-star-rating" id="reviewStarRating">
+        <button type="button" class="review-star" data-value="1" aria-label="1 star">&#9733;</button>
+        <button type="button" class="review-star" data-value="2" aria-label="2 stars">&#9733;</button>
+        <button type="button" class="review-star" data-value="3" aria-label="3 stars">&#9733;</button>
+        <button type="button" class="review-star" data-value="4" aria-label="4 stars">&#9733;</button>
+        <button type="button" class="review-star" data-value="5" aria-label="5 stars">&#9733;</button>
+      </div>
+
+      <textarea
+        class="review-textarea"
+        id="reviewTextarea"
+        placeholder="Share your experience..."
+        rows="5"
+      ></textarea>
+
+      <div class="review-upload-section">
+        <label class="review-upload-label" for="reviewImageInput">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+          </svg>
+          Add Photos
+        </label>
+        <input type="file" id="reviewImageInput" accept="image/*" multiple hidden>
+
+        <div class="review-image-preview-grid" id="reviewImagePreviewGrid"></div>
+      </div>
+
+      <div class="review-tags-section">
+        <label class="review-tags-label" for="reviewTagInput">Tags</label>
+        <div class="review-tags-input-wrapper" id="reviewTagsWrapper">
+          <div class="review-tag-chips" id="reviewTagChips"></div>
+          <input
+            type="text"
+            id="reviewTagInput"
+            class="review-tag-input"
+            placeholder="Add a tag and press Enter..."
+          >
+        </div>
+      </div>
+
+      <div class="review-list-section">
+        <label class="review-tags-label" for="reviewListSelect">Add to List</label>
+        <select id="reviewListSelect" class="review-list-select">
+          <option value="">None</option>
+          <option value="want-to-visit">Want to Visit</option>
+          <option value="favorites">Favorites</option>
+          <option value="custom-list">Custom List</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="review-modal-footer">
+      <button class="review-btn review-btn-secondary" id="reviewCancelBtn">Cancel</button>
+      <button class="review-btn review-btn-primary" id="reviewSaveBtn">Save Review</button>
+    </div>
+  </div>
+</div>
