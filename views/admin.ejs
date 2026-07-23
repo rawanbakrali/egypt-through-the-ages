@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- ==========================================
+         SIDEBAR NAVIGATION
+         ========================================== -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <a href="/admin" class="sidebar-logo">EGYPT</a>
+        <div class="sidebar-subtitle">THROUGH THE AGES</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        <a class="nav-item is-active" data-view="overview">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>Dashboard</span>
+        </a>
+
+        <div class="nav-section-label">Content</div>
+        <a class="nav-item" data-view="places">
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Historical Places</span>
+        </a>
+        <a class="nav-item" data-view="events">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Events</span>
+        </a>
+        <a class="nav-item" data-view="bookings">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span>Event Bookings</span>
+        </a>
+
+        <div class="nav-section-label">Manage</div>
+        <a class="nav-item" data-view="users">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Users</span>
+        </a>
+        <a class="nav-item" data-view="media">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span>Media</span>
+        </a>
+        <a class="nav-item" data-view="settings">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="alert('Logged out successfully')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span>Log Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ==========================================
+         MAIN CANVAS
+         ========================================== -->
+    <main class="admin-main">
+      <!-- HEADER BAR -->
+      <header class="admin-header">
+        <div class="header-left">
+          <h1 class="header-title" id="currentViewTitle">Dashboard</h1>
+          <p class="header-subtitle" id="currentViewSubtitle">Welcome back, Admin</p>
+        </div>
+
+        <div class="header-right">
+          <div class="header-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="globalAdminSearch" placeholder="Search dashboard...">
+          </div>
+
+          <button class="icon-btn" id="toggleNotificationsDrawer" title="Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="badge-dot"></span>
+          </button>
+
+          <div class="user-dropdown">
+            <div class="user-avatar">A</div>
+            <span class="user-name">Admin</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT BODY -->
+      <div class="admin-content">
+
+        <!-- ==========================================
+             VIEW 1: OVERVIEW DASHBOARD (Reference Pic)
+             ========================================== -->
+        <section class="view-section is-active" id="view-overview">
+          <div class="section-overview-intro">
+            <h2>Overview</h2>
+            <p>Manage historical places, events, and bookings.</p>
+          </div>
+
+          <!-- TOP 2-COLUMN GRID -->
+          <div class="dashboard-grid">
+            
+            <!-- HISTORICAL PLACES CARD -->
+            <div class="admin-card">
+              <div class="card-header">
+                <h3 class="card-title">Historical Places</h3>
+                <button class="btn btn-primary btn-sm btn-open-add-place">
+                  <span>Add New Place</span>
+                </button>
+              </div>
+
+              <div class="table-responsive">
+                <table class="admin-table" id="tablePlacesOverview">
+                  <thead>
+                    <tr>
+                      <th>PLACE</th>
+                      <th>CATEGORY</th>
+                      <th>STATUS</th>
+                      <th>UPDATED</th>
+                      <th>ACTIONS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% places.slice(0, 3).forEach(place => { %>
+                      <tr data-id="<%= place.id %>">
+                        <td>
+                          <div class="cell-media">
+                            <img src="<%= place.image %>" alt="<%= place.name %>" class="cell-thumb" />
+                            <div class="cell-info">
+                              <span class="cell-title"><%= place.name %></span>
+                            </div>
+                          </div>
+                        </td>
+                        <td><%= place.category %></td>
+                        <td>
+                          <span class="status-badge <%= place.status === 'published' ? 'badge-published' : 'badge-draft' %>" onclick="togglePlaceStatus('<%= place.id %>')">
+                            <%= place.status === 'published' ? 'Published' : 'Draft' %>
+                          </span>
+                        </td>
+                        <td><%= place.updatedAt %></td>
+                        <td>
+                          <div class="action-group">
+                            <button class="action-btn" title="Edit Place" onclick="openEditPlaceModal('<%= place.id %>')">
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </button>
+                            <button class="action-btn delete" title="Delete Place" onclick="confirmDelete('place', '<%= place.id %>', '<%= place.name %>')">
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="card-footer">
+                <a class="view-all-link" onclick="switchAdminView('places')">
+                  <span>View all places</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+              </div>
+            </div>
+
+            <!-- EVENTS CARD -->
+            <div class="admin-card">
+              <div class="card-header">
+                <div class="card-title-wrap">
+                  <h3 class="card-title">Events</h3>
+                  <div class="card-tabs">
+                    <button class="tab-btn is-active" onclick="filterOverviewEvents('all', this)">All Events</button>
+                    <button class="tab-btn" onclick="filterOverviewEvents('submission', this)">Submissions</button>
+                    <button class="tab-btn" onclick="filterOverviewEvents('featured', this)">Featured</button>
+                  </div>
+                </div>
+                <button class="btn btn-primary btn-sm btn-open-add-event">
+                  <span>Add Official Event</span>
+                </button>
+              </div>
+
+              <div class="table-responsive">
+                <table class="admin-table" id="tableEventsOverview">
+                  <thead>
+                    <tr>
+                      <th>EVENT</th>
+                      <th>TYPE</th>
+                      <th>STATUS</th>
+                      <th>DATE</th>
+                      <th>ACTIONS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% events.slice(0, 3).forEach(event => { %>
+                      <tr data-id="<%= event.slug %>" data-type="<%= event.type %>" data-featured="<%= event.featured %>">
+                        <td>
+                          <div class="cell-media">
+                            <img src="<%= event.image %>" alt="<%= event.title %>" class="cell-thumb" />
+                            <div class="cell-info">
+                              <span class="cell-title"><%= event.title %></span>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <span class="status-badge <%= event.type === 'official' ? 'badge-official' : 'badge-submission' %>">
+                            <%= event.type === 'official' ? 'Official' : 'Submission' %>
+                          </span>
+                        </td>
+                        <td>
+                          <span class="status-badge <%= event.status === 'approved' ? 'badge-published' : 'badge-pending' %>">
+                            <%= event.status === 'approved' ? 'Published' : 'Pending' %>
+                          </span>
+                        </td>
+                        <td><%= event.date %></td>
+                        <td>
+                          <div class="action-group">
+                            <button class="action-btn" title="Edit Event" onclick="openEditEventModal('<%= event.slug %>')">
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </button>
+                            <button class="action-btn" title="View Event Page" onclick="window.open('/events', '_blank')">
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                            <button class="action-btn delete" title="Delete Event" onclick="confirmDelete('event', '<%= event.slug %>', '<%= event.title %>')">
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="card-footer">
+                <a class="view-all-link" onclick="switchAdminView('events')">
+                  <span>View all events</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- FULL-WIDTH EVENT BOOKINGS CARD -->
+          <div class="dashboard-full-width">
+            <div class="admin-card">
+              <div class="card-header">
+                <div class="card-title-wrap">
+                  <h3 class="card-title">Event Bookings</h3>
+                  <div class="card-tabs">
+                    <button class="tab-btn is-active" onclick="filterOverviewBookings('all', this)">All Bookings</button>
+                    <button class="tab-btn" onclick="filterOverviewBookings('open', this)">Open</button>
+                    <button class="tab-btn" onclick="filterOverviewBookings('reserved', this)">Reserved</button>
+                    <button class="tab-btn" onclick="filterOverviewBookings('full', this)">Full</button>
+                  </div>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="switchAdminView('bookings')">
+                  <span>View All Bookings</span>
+                </button>
+              </div>
+
+              <div class="table-responsive">
+                <table class="admin-table" id="tableBookingsOverview">
+                  <thead>
+                    <tr>
+                      <th>BOOKING ID</th>
+                      <th>EVENT</th>
+                      <th>BOOKED BY</th>
+                      <th>DATE</th>
+                      <th>STATUS</th>
+                      <th>TICKETS</th>
+                      <th>ACTIONS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% bookings.slice(0, 3).forEach(b => { %>
+                      <tr data-id="<%= b.id %>" data-status="<%= b.status %>">
+                        <td><strong><%= b.id %></strong></td>
+                        <td>
+                          <div class="cell-media">
+                            <img src="<%= b.eventImage %>" alt="<%= b.eventTitle %>" class="cell-thumb" />
+                            <div class="cell-info">
+                              <span class="cell-title"><%= b.eventTitle %></span>
+                            </div>
+                          </div>
+                        </td>
+                        <td><%= b.bookedBy %></td>
+                        <td><%= b.date %></td>
+                        <td>
+                          <span class="status-badge badge-<%= b.status %>" onclick="openOverrideBookingModal('<%= b.id %>', '<%= b.status %>')" title="Click to override status">
+                            <%= b.status.charAt(0).toUpperCase() + b.status.slice(1) %>
+                          </span>
+                        </td>
+                        <td><%= b.tickets %></td>
+                        <td>
+                          <div class="action-group">
+                            <button class="action-btn" title="Manage Booking Status" onclick="openOverrideBookingModal('<%= b.id %>', '<%= b.status %>')">
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="card-footer">
+                <a class="view-all-link" onclick="switchAdminView('bookings')">
+                  <span>View all bookings</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==========================================
+             VIEW 2: HISTORICAL PLACES FULL VIEW
+             ========================================== -->
+        <section class="view-section" id="view-places">
+          <div class="admin-card">
+            <div class="card-header">
+              <h3 class="card-title">All Historical Places Management</h3>
+              <button class="btn btn-primary btn-sm btn-open-add-place">Add New Place</button>
+            </div>
+            <div class="table-responsive">
+              <table class="admin-table" id="tablePlacesFull">
+                <thead>
+                  <tr>
+                    <th>PLACE</th>
+                    <th>CATEGORY / ERA</th>
+                    <th>LOCATION</th>
+                    <th>STATUS</th>
+                    <th>UPDATED</th>
+                    <th>ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% places.forEach(place => { %>
+                    <tr data-id="<%= place.id %>">
+                      <td>
+                        <div class="cell-media">
+                          <img src="<%= place.image %>" alt="<%= place.name %>" class="cell-thumb" />
+                          <div class="cell-info">
+                            <span class="cell-title"><%= place.name %></span>
+                          </div>
+                        </div>
+                      </td>
+                      <td><%= place.category %></td>
+                      <td><%= place.location %></td>
+                      <td>
+                        <span class="status-badge <%= place.status === 'published' ? 'badge-published' : 'badge-draft' %>" onclick="togglePlaceStatus('<%= place.id %>')">
+                          <%= place.status === 'published' ? 'Published' : 'Draft' %>
+                        </span>
+                      </td>
+                      <td><%= place.updatedAt %></td>
+                      <td>
+                        <div class="action-group">
+                          <button class="action-btn" title="Edit Place" onclick="openEditPlaceModal('<%= place.id %>')">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                          </button>
+                          <button class="action-btn delete" title="Delete Place" onclick="confirmDelete('place', '<%= place.id %>', '<%= place.name %>')">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 3: EVENTS MANAGEMENT FULL VIEW
+             ========================================== -->
+        <section class="view-section" id="view-events">
+          <div class="admin-card">
+            <div class="card-header">
+              <div class="card-title-wrap">
+                <h3 class="card-title">Events Management & Review Queue</h3>
+                <div class="card-tabs">
+                  <button class="tab-btn is-active" onclick="switchEventSubTab('all', this)">All Events</button>
+                  <button class="tab-btn" onclick="switchEventSubTab('official', this)">Official Events</button>
+                  <button class="tab-btn" onclick="switchEventSubTab('submission', this)">Submissions Queue</button>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sm btn-open-add-event">Add Official Event</button>
+            </div>
+            <div class="table-responsive">
+              <table class="admin-table" id="tableEventsFull">
+                <thead>
+                  <tr>
+                    <th>EVENT TITLE</th>
+                    <th>TYPE</th>
+                    <th>CATEGORY</th>
+                    <th>LOCATION</th>
+                    <th>DATE</th>
+                    <th>STATUS</th>
+                    <th>ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% events.forEach(event => { %>
+                    <tr data-id="<%= event.slug %>" data-type="<%= event.type %>">
+                      <td>
+                        <div class="cell-media">
+                          <img src="<%= event.image %>" alt="<%= event.title %>" class="cell-thumb" />
+                          <div class="cell-info">
+                            <span class="cell-title"><%= event.title %></span>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="status-badge <%= event.type === 'official' ? 'badge-official' : 'badge-submission' %>">
+                          <%= event.type === 'official' ? 'Official' : 'Submission' %>
+                        </span>
+                      </td>
+                      <td><%= event.category %></td>
+                      <td><%= event.location %></td>
+                      <td><%= event.date %></td>
+                      <td>
+                        <span class="status-badge <%= event.status === 'approved' ? 'badge-published' : 'badge-pending' %>">
+                          <%= event.status === 'approved' ? 'Published' : 'Pending' %>
+                        </span>
+                      </td>
+                      <td>
+                        <div class="action-group">
+                          <% if (event.type !== 'official' && event.status === 'pending') { %>
+                            <button class="btn btn-secondary btn-sm" onclick="openReviewSubmissionModal('<%= event.slug %>')">Review</button>
+                          <% } else { %>
+                            <button class="action-btn" title="Edit Event" onclick="openEditEventModal('<%= event.slug %>')">
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </button>
+                            <button class="action-btn delete" title="Delete Event" onclick="confirmDelete('event', '<%= event.slug %>', '<%= event.title %>')">
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                          <% } %>
+                        </div>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 4: EVENT BOOKINGS FULL VIEW
+             ========================================== -->
+        <section class="view-section" id="view-bookings">
+          <div class="admin-card">
+            <div class="card-header">
+              <h3 class="card-title">All Event Bookings & Status Overrides</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="admin-table" id="tableBookingsFull">
+                <thead>
+                  <tr>
+                    <th>BOOKING ID</th>
+                    <th>EVENT</th>
+                    <th>BOOKED BY</th>
+                    <th>EMAIL</th>
+                    <th>DATE</th>
+                    <th>TICKETS</th>
+                    <th>TOTAL</th>
+                    <th>BOOKING STATUS</th>
+                    <th>ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% bookings.forEach(b => { %>
+                    <tr data-id="<%= b.id %>">
+                      <td><strong><%= b.id %></strong></td>
+                      <td>
+                        <div class="cell-media">
+                          <img src="<%= b.eventImage %>" alt="<%= b.eventTitle %>" class="cell-thumb" />
+                          <div class="cell-info">
+                            <span class="cell-title"><%= b.eventTitle %></span>
+                          </div>
+                        </div>
+                      </td>
+                      <td><%= b.bookedBy %></td>
+                      <td><%= b.email %></td>
+                      <td><%= b.date %></td>
+                      <td><%= b.tickets %></td>
+                      <td><%= b.totalPrice %></td>
+                      <td>
+                        <span class="status-badge badge-<%= b.status %>" onclick="openOverrideBookingModal('<%= b.id %>', '<%= b.status %>')">
+                          <%= b.status.toUpperCase() %>
+                        </span>
+                      </td>
+                      <td>
+                        <button class="btn btn-secondary btn-sm" onclick="openOverrideBookingModal('<%= b.id %>', '<%= b.status %>')">Override Status</button>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- OTHER MANAGE VIEWS -->
+        <section class="view-section" id="view-users">
+          <div class="admin-card" style="padding: 2rem;">
+            <h2>User Management</h2>
+            <p style="color: var(--text-muted); margin-top: 0.5rem;">Manage platform admin accounts, editor permissions, and community event submitters.</p>
+          </div>
+        </section>
+
+        <section class="view-section" id="view-media">
+          <div class="admin-card" style="padding: 2rem;">
+            <h2>Media Gallery</h2>
+            <p style="color: var(--text-muted); margin-top: 0.5rem;">Upload and manage historical images, event assets, and banner photos.</p>
+          </div>
+        </section>
+
+        <section class="view-section" id="view-settings">
+          <div class="admin-card" style="padding: 2rem;">
+            <h2>Platform Settings</h2>
+            <p style="color: var(--text-muted); margin-top: 0.5rem;">Configure global settings, era themes, and email notifications.</p>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="admin-footer">
+        <div>© 2025 Egypt Through The Ages. All rights reserved.</div>
+        <div>Version 1.0.0</div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- ==========================================
+       WHITE MODALS ("modals go white")
+       ========================================== -->
+
+  <!-- 1. ADD / EDIT HISTORICAL PLACE MODAL (WHITE) -->
+  <div class="modal-backdrop" id="modalPlace">
+    <div class="white-modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalPlaceTitle">Add New Historical Place</h3>
+        <button class="modal-close-btn" onclick="closeModal('modalPlace')">&times;</button>
+      </div>
+      <form id="formPlace" onsubmit="handlePlaceFormSubmit(event)">
+        <div class="modal-body">
+          <input type="hidden" id="placeFormId" value="">
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label class="form-label">Place Name</label>
+              <input type="text" id="placeFormName" class="form-input" placeholder="e.g. Citadel of Saladin" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select id="placeFormCategory" class="form-select">
+                <option value="Ancient Egypt">Ancient Egypt</option>
+                <option value="Greco-Roman">Greco-Roman</option>
+                <option value="Coptic Egypt">Coptic Egypt</option>
+                <option value="Islamic Egypt">Islamic Egypt</option>
+                <option value="Modern Egypt">Modern Egypt</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Status</label>
+              <select id="placeFormStatus" class="form-select">
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
+              </select>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Location</label>
+              <input type="text" id="placeFormLocation" class="form-input" placeholder="e.g. Cairo, Egypt" required>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Image Thumbnail URL</label>
+              <input type="url" id="placeFormImage" class="form-input" placeholder="https://images.unsplash.com/..." required>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Description</label>
+              <textarea id="placeFormDescription" class="form-textarea" placeholder="Brief historical overview..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modalPlace')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Place</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. ADD / EDIT OFFICIAL EVENT MODAL (WHITE) -->
+  <div class="modal-backdrop" id="modalEvent">
+    <div class="white-modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalEventTitle">Add Official Event</h3>
+        <button class="modal-close-btn" onclick="closeModal('modalEvent')">&times;</button>
+      </div>
+      <form id="formEvent" onsubmit="handleEventFormSubmit(event)">
+        <div class="modal-body">
+          <input type="hidden" id="eventFormSlug" value="">
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label class="form-label">Event Title</label>
+              <input type="text" id="eventFormTitle" class="form-input" placeholder="e.g. Cairo International Film Festival" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Type</label>
+              <select id="eventFormType" class="form-select">
+                <option value="official">Official</option>
+                <option value="business">Business</option>
+                <option value="community">Community</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <input type="text" id="eventFormCategory" class="form-input" placeholder="e.g. Sound & Light" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Date</label>
+              <input type="text" id="eventFormDate" class="form-input" placeholder="e.g. Nov 12 - Nov 21, 2025" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Booking Status</label>
+              <select id="eventFormBookingStatus" class="form-select">
+                <option value="open">Open</option>
+                <option value="reserved">Reserved</option>
+                <option value="full">Full</option>
+              </select>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Location</label>
+              <input type="text" id="eventFormLocation" class="form-input" placeholder="e.g. Cairo Opera House" required>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Image Thumbnail URL</label>
+              <input type="url" id="eventFormImage" class="form-input" placeholder="https://images.unsplash.com/..." required>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Description</label>
+              <textarea id="eventFormDescription" class="form-textarea" placeholder="Event details and details..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modalEvent')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. OVERRIDE BOOKING STATUS MODAL (WHITE) -->
+  <div class="modal-backdrop" id="modalBooking">
+    <div class="white-modal" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Override Booking Status</h3>
+        <button class="modal-close-btn" onclick="closeModal('modalBooking')">&times;</button>
+      </div>
+      <form id="formBookingOverride" onsubmit="handleBookingOverrideSubmit(event)">
+        <div class="modal-body">
+          <input type="hidden" id="overrideBookingId" value="">
+          <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+            Override booking state for <strong id="overrideBookingIdLabel" style="color: var(--text-main);">#BK1258</strong>.
+          </p>
+          <div class="form-group">
+            <label class="form-label">Select Status Badge</label>
+            <select id="overrideBookingSelect" class="form-select">
+              <option value="open">Open (Green Badge)</option>
+              <option value="reserved">Reserved (Blue Badge)</option>
+              <option value="full">Full (Red Badge)</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modalBooking')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Apply Status</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. REVIEW SUBMISSION QUEUE MODAL (WHITE) -->
+  <div class="modal-backdrop" id="modalSubmission">
+    <div class="white-modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Review Submission</h3>
+        <button class="modal-close-btn" onclick="closeModal('modalSubmission')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="submissionReviewContent">
+          <!-- Dynamic contents inserted via JS -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" onclick="handleRejectSubmission()">Reject</button>
+        <button type="button" class="btn btn-secondary" onclick="handleEditSubmission()">Edit Submission</button>
+        <button type="button" class="btn btn-primary" onclick="handleApproveSubmission()">Approve & Publish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. DELETE CONFIRMATION MODAL (WHITE) -->
+  <div class="modal-backdrop" id="modalDelete">
+    <div class="white-modal" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirm Deletion</h3>
+        <button class="modal-close-btn" onclick="closeModal('modalDelete')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.9rem; color: var(--text-main);">
+          Are you sure you want to delete <strong id="deleteTargetName">Item</strong>? This action cannot be undone.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modalDelete')">Cancel</button>
+        <button type="button" class="btn btn-danger" onclick="executeDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFICATIONS DRAWER -->
+  <div class="slide-drawer" id="drawerNotifications">
+    <div class="drawer-header">
+      <h3 style="font-family: var(--font-serif); font-size: 1.15rem;">Notifications</h3>
+      <button class="modal-close-btn" onclick="toggleDrawer('drawerNotifications')">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <div class="notification-item">
+        <div class="notification-title">New Event Submitted</div>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">"Al-Muizz Street Festival" awaits admin review.</p>
+        <div class="notification-time">10 mins ago</div>
+      </div>
+      <div class="notification-item">
+        <div class="notification-title">Booking Full Alert</div>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">"Sound & Light Show — Pyramids of Giza" is now full.</p>
+        <div class="notification-time">1 hour ago</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- JAVASCRIPT -->
+  <script src="/js/admin.js"></script>
+</body>
+</html>

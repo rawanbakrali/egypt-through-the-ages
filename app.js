@@ -1,6 +1,9 @@
 const express = require('express');
 const path = require('path');
 const eras = require('./data/eras');
+const events = require('./data/events');
+const places = require('./data/places');
+const bookings = require('./data/bookings');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +19,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => {
     res.render('home', {
         title: 'Egypt Through the Ages | Explore Historical Egypt'
+    });
+});
+
+app.get('/events', (req, res) => {
+    res.render('events', {
+        title: 'Events — Egypt Through the Ages',
+        events: events
+    });
+});
+
+app.get('/admin', (req, res) => {
+    res.render('admin', {
+        title: 'Admin Management UI — Egypt Through the Ages',
+        places: places,
+        events: events,
+        bookings: bookings
     });
 });
 
