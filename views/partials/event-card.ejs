@@ -1,0 +1,33 @@
+<!--
+  partials/event-card.ejs
+  Expects a local variable `event` (see data/events.js for shape).
+  Reused on: /events grid, featured row, and (later) a place page's
+  "Related Events" section.
+-->
+<article class="event-card" data-type="<%= event.type %>" data-category="<%= event.category %>">
+  <a href="/event/<%= event.slug %>" class="event-card__media">
+    <img src="<%= event.image %>" alt="<%= event.title %>" loading="lazy">
+    <span class="event-card__badge event-card__badge--<%= event.type %>">
+      <%= event.type === 'official' ? 'Official' : event.type === 'business' ? 'Business' : 'Community' %>
+    </span>
+  </a>
+
+  <div class="event-card__body">
+    <span class="event-card__category"><%= event.category %></span>
+    <h3 class="event-card__title">
+      <a href="/event/<%= event.slug %>"><%= event.title %></a>
+    </h3>
+
+    <div class="event-card__meta">
+      <span class="event-card__date">
+        <%= new Date(event.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+        · <%= event.time %>
+      </span>
+      <span class="event-card__location"><%= event.location %></span>
+    </div>
+
+    <a href="/event/<%= event.slug %>" class="event-card__cta">
+      <%= event.booking === 'reserved' ? 'Reserve Seat' : 'View Event' %>
+    </a>
+  </div>
+</article>

@@ -1,0 +1,76 @@
+<!--
+  partials/event-submission-modal.ejs
+  UI only — no persistence (Section 19). White background per Section 17.
+-->
+<div class="modal-overlay" id="submitEventOverlay" hidden>
+  <div class="modal modal--white" role="dialog" aria-modal="true" aria-labelledby="submitEventTitle">
+    <button type="button" class="modal-close" id="submitEventClose" aria-label="Close">&times;</button>
+
+    <h2 id="submitEventTitle" class="modal-title">Submit an Event</h2>
+    <p class="modal-subtitle">Business and community events are reviewed by an admin before they go live.</p>
+
+    <div class="submission-type-toggle" role="tablist">
+      <button type="button" class="type-toggle-btn is-active" data-submission-type="business" role="tab">Business Event</button>
+      <button type="button" class="type-toggle-btn" data-submission-type="community" role="tab">Community Event</button>
+    </div>
+
+    <form id="submitEventForm" class="submission-form">
+      <label class="form-field">
+        <span>Event title</span>
+        <input type="text" name="title" required placeholder="e.g. Nile View Rooftop Tasting Night">
+      </label>
+
+      <label class="form-field">
+        <span>Description</span>
+        <textarea name="description" rows="4" required placeholder="What happens at this event?"></textarea>
+      </label>
+
+      <div class="form-row">
+        <label class="form-field">
+          <span>Date</span>
+          <input type="date" name="date" required>
+        </label>
+        <label class="form-field">
+          <span>Time</span>
+          <input type="time" name="time" required>
+        </label>
+      </div>
+
+      <label class="form-field">
+        <span>Location</span>
+        <input type="text" name="location" required placeholder="Venue and area">
+      </label>
+
+      <label class="form-field">
+        <span>Category</span>
+        <select name="category" required>
+          <option value="">Select a category</option>
+          <option>Bazaar / Turathna</option>
+          <option>Book Club</option>
+          <option>History Talk</option>
+          <option>Workshop</option>
+          <option>Other</option>
+        </select>
+      </label>
+
+      <label class="form-field" data-business-only>
+        <span>Official booking link (optional)</span>
+        <input type="url" name="ticketUrl" placeholder="https://">
+      </label>
+
+      <label class="form-field">
+        <span>Images</span>
+        <input type="file" name="images" accept="image/*" multiple>
+      </label>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn--secondary" id="submitEventCancel">Cancel</button>
+        <button type="submit" class="btn btn--primary">Submit for review</button>
+      </div>
+
+      <p class="form-success" id="submitEventSuccess" hidden>
+        Thanks — your event has been sent for admin review. It won't appear publicly until approved.
+      </p>
+    </form>
+  </div>
+</div>
