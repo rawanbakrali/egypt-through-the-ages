@@ -1,0 +1,94 @@
+<!--
+  views/events.ejs — route: GET /events
+  Expects: `events` (array, all approved events from data/events.js)
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events — Egypt Through the Ages</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/events.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+
+  <%- include('partials/navbar') %>
+
+  <header class="events-hero">
+    <div class="events-hero__inner">
+      <span class="eyebrow">Live &amp; Upcoming</span>
+      <h1 class="events-hero__title">Events Across<br>Every Era of Egypt</h1>
+      <p class="events-hero__subtitle">
+        Official performances, business happenings and community gatherings
+        connected to Egypt's historical sites — all in one place.
+      </p>
+    </div>
+  </header>
+
+  <section class="events-filters">
+    <div class="filter-group" id="typeFilters">
+      <button class="filter-pill is-active" data-filter="all">All</button>
+      <button class="filter-pill" data-filter="official">Official</button>
+      <button class="filter-pill" data-filter="business">Business</button>
+      <button class="filter-pill" data-filter="community">Community</button>
+    </div>
+    <button class="btn btn--secondary" id="openSubmitEvent">Submit an Event</button>
+  </section>
+
+  <section class="events-map-section">
+    <h2 class="section-title">Map of Events</h2>
+    <div class="events-map-wrap">
+      <div class="events-map-legend">
+        <span><i style="background:#F5F5F5"></i> Official</span>
+        <span><i style="background:#2563EB"></i> Business</span>
+        <span><i style="background:#16A34A"></i> Community</span>
+      </div>
+      <div class="events-map" id="eventsMap"></div>
+    </div>
+  </section>
+
+  <script id="eventsMapData" type="application/json">
+    <%- JSON.stringify(events.map(e => ({
+      slug: e.slug, title: e.title, type: e.type,
+      lat: e.coordinates.lat, lng: e.coordinates.lng
+    }))) %>
+  </script>
+
+  <% const featured = events.filter(e => e.featured); %>
+  <% if (featured.length) { %>
+  <section class="events-featured">
+    <h2 class="section-title">Featured</h2>
+    <div class="events-featured__row">
+      <% featured.forEach(event => { %>
+        <%- include('partials/event-card', { event }) %>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+
+  <section class="events-grid-section">
+    <h2 class="section-title">All Events</h2>
+    <div class="events-grid" id="eventsGrid">
+      <% events.forEach(event => { %>
+        <%- include('partials/event-card', { event }) %>
+      <% }) %>
+    </div>
+
+    <p class="events-empty" id="eventsEmpty" hidden>
+      No events match this filter yet — check back soon, or
+      <a href="#" id="eventsEmptySubmitLink">submit one of your own</a>.
+    </p>
+  </section>
+
+  <%- include('partials/event-submission-modal') %>
+
+  <%- include('partials/footer') %>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/js/events.js"></script>
+</body>
+</html>

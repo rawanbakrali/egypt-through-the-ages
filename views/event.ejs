@@ -1,0 +1,96 @@
+<!--
+  views/event.ejs — route: GET /event/:slug
+  Expects: `event` (single event object), `relatedPlace` (place object or null)
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= event.title %> — Egypt Through the Ages</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/events.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+
+  <%- include('partials/navbar') %>
+
+  <header class="event-banner" style="background-image: linear-gradient(90deg, rgba(5,5,5,0.85), rgba(5,5,5,0.35)), url('<%= event.image %>')">
+    <div class="event-banner__inner">
+      <a href="/events" class="event-back">&larr; Back to Events</a>
+      <span class="event-card__badge event-card__badge--<%= event.type %>">
+        <%= event.type === 'official' ? 'Official' : event.type === 'business' ? 'Business' : 'Community' %>
+      </span>
+      <h1 class="event-banner__title"><%= event.title %></h1>
+      <div class="event-banner__meta">
+        <span><%= new Date(event.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) %> · <%= event.time %></span>
+        <span><%= event.location %></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="event-detail">
+    <div class="event-detail__main">
+      <section class="event-section">
+        <h2 class="section-title">About this event</h2>
+        <p class="event-description"><%= event.description %></p>
+      </section>
+
+      <% if (relatedPlace) { %>
+      <section class="event-section">
+        <h2 class="section-title">Related Place</h2>
+        <a href="/place/<%= relatedPlace.slug %>" class="related-place-card">
+          <img src="<%= relatedPlace.image %>" alt="<%= relatedPlace.name %>">
+          <div>
+            <h3><%= relatedPlace.name %></h3>
+            <span>View place page &rarr;</span>
+          </div>
+        </a>
+      </section>
+      <% } %>
+
+      <section class="event-section">
+        <h2 class="section-title">Location</h2>
+        <div
+          class="event-map"
+          id="eventMap"
+          data-lat="<%= event.coordinates.lat %>"
+          data-lng="<%= event.coordinates.lng %>"
+          data-title="<%= event.title %>"
+          data-type="<%= event.type %>"
+        ></div>
+      </section>
+    </div>
+
+    <aside class="event-detail__sidebar">
+      <div class="booking-card">
+        <% const eventDate = new Date(event.date); %>
+        <% const isPast = eventDate < new Date('2026-07-23'); %>
+
+        <% if (event.booking === 'reserved') { %>
+          <a href="<%= event.ticketUrl %>" target="_blank" rel="noopener" class="btn btn--primary btn--full">
+            Reserve Seat
+          </a>
+          <p class="booking-note">You'll be taken to the organizer's official booking site.</p>
+
+        <% } else if (!isPast) { %>
+          <button class="btn btn--secondary btn--full" data-action="interested">I'm Interested</button>
+          <button class="btn btn--primary btn--full" data-action="attend">I'll Attend</button>
+
+        <% } else { %>
+          <button class="btn btn--primary btn--full" data-action="mark-attended">Mark as Attended</button>
+          <button class="btn btn--secondary btn--full" data-action="leave-review" hidden>Leave a Review</button>
+        <% } %>
+      </div>
+    </aside>
+  </main>
+
+  <%- include('partials/footer') %>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/js/events.js"></script>
+</body>
+</html>
