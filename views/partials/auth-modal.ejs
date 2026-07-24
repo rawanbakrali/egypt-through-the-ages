@@ -1,0 +1,70 @@
+<!-- partials/auth-modal.ejs -->
+<div class="auth-modal-overlay" id="authModalOverlay">
+  <div class="auth-modal" id="authModal">
+    <button class="auth-modal-close" id="authModalClose" aria-label="Close">&times;</button>
+
+    <div class="auth-modal-message" id="authModalMessage" style="display: none;"></div>
+
+    <!-- LOGIN VIEW -->
+    <div class="auth-view active" id="authViewLogin">
+      <h3 class="auth-modal-title">Sign In</h3>
+      <form id="loginForm">
+        <div class="auth-field">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" name="email" required>
+        </div>
+        <div class="auth-field">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" name="password" required>
+        </div>
+        <button type="submit" class="review-btn review-btn-primary auth-submit-btn">Sign In</button>
+      </form>
+      <div class="auth-switch-links">
+        <a href="#" data-switch-to="forgot">Forgot password?</a>
+        <a href="#" data-switch-to="register">Don't have an account? Register</a>
+      </div>
+    </div>
+
+    <!-- REGISTER VIEW -->
+    <div class="auth-view" id="authViewRegister">
+      <h3 class="auth-modal-title">Create Account</h3>
+      <form id="registerForm">
+        <div class="auth-field">
+          <label for="registerUsername">Username</label>
+          <input type="text" id="registerUsername" name="username" required>
+        </div>
+        <div class="auth-field">
+          <label for="registerEmail">Email</label>
+          <input type="email" id="registerEmail" name="email" required>
+        </div>
+        <div class="auth-field">
+          <label for="registerPassword">Password</label>
+          <input type="password" id="registerPassword" name="password" required minlength="8">
+        </div>
+        <div class="auth-field">
+          <label for="registerConfirmPassword">Confirm Password</label>
+          <input type="password" id="registerConfirmPassword" name="confirmPassword" required minlength="8">
+        </div>
+        <button type="submit" class="review-btn review-btn-primary auth-submit-btn">Create Account</button>
+      </form>
+      <div class="auth-switch-links">
+        <a href="#" data-switch-to="login">Already have an account? Sign In</a>
+      </div>
+    </div>
+
+    <!-- FORGOT PASSWORD VIEW (UI only, no real email sent) -->
+    <div class="auth-view" id="authViewForgot">
+      <h3 class="auth-modal-title">Reset Password</h3>
+      <form id="forgotForm">
+        <div class="auth-field">
+          <label for="forgotEmail">Email</label>
+          <input type="email" id="forgotEmail" name="email" required>
+        </div>
+        <button type="submit" class="review-btn review-btn-primary auth-submit-btn">Send Reset Link</button>
+      </form>
+      <div class="auth-switch-links">
+        <a href="#" data-switch-to="login">Back to Sign In</a>
+      </div>
+    </div>
+  </div>
+</div>

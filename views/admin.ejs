@@ -536,11 +536,9 @@
 
       </div>
 
-      <!-- FOOTER -->
-      <footer class="admin-footer">
-        <div>© 2025 Egypt Through The Ages. All rights reserved.</div>
-        <div>Version 1.0.0</div>
-      </footer>
+        <%- include('partials/footer') %>
+        <%- include('partials/auth-modal') %>
+
     </main>
   </div>
 
@@ -757,5 +755,8 @@
 
   <!-- JAVASCRIPT -->
   <script src="/js/admin.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/auth-guard.js"></script>
+  <script src="/js/toast.js"></script>
 </body>
 </html>

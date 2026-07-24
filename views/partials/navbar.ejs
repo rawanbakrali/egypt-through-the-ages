@@ -8,11 +8,91 @@
     <div class="nav-right">
         <a href="/explore" class="nav-label">EXPLORE</a>
         <a href="/events" class="nav-label">EVENTS</a>
-        <a href="/signin" class="nav-label">SIGN IN</a>
+        <% if (isLoggedIn) { %>
+            <a href="/profile" class="nav-label">PROFILE</a>
+        <% } else { %>
+            <a href="#" class="nav-label" id="navSignInBtn">SIGN IN</a>
+        <% } %>
         <a href="/about" class="nav-label">ABOUT</a>
-        <button class="hamburger-btn" aria-label="Menu">
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
             <div class="hamburger-line"></div>
             <div class="hamburger-line"></div>
         </button>
     </div>
 </nav>
+
+<!-- SIDE NAV PANEL -->
+<div class="side-nav-overlay" id="sideNavOverlay"></div>
+<aside class="side-nav-panel" id="sideNavPanel">
+    <button class="side-nav-close" id="sideNavClose" aria-label="Close menu">&times;</button>
+    <nav class="side-nav-links">
+        <a href="/explore" class="side-nav-link">Explore</a>
+        <a href="/events" class="side-nav-link">Events</a>
+        <a href="/about" class="side-nav-link">About</a>
+        <% if (isLoggedIn) { %>
+            <a href="/profile" class="side-nav-link">Profile</a>
+            <a href="#" class="side-nav-link" id="sideNavLogoutBtn">Log Out</a>
+        <% } else { %>
+            <a href="#" class="side-nav-link" id="sideNavSignInBtn">Sign In</a>
+        <% } %>
+    </nav>
+</aside>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const signInBtn = document.getElementById('navSignInBtn');
+    if (signInBtn) {
+      signInBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.openAuthModal('login');
+      });
+    }
+
+    // Side nav panel open/close
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const sideNavOverlay = document.getElementById('sideNavOverlay');
+    const sideNavPanel = document.getElementById('sideNavPanel');
+    const sideNavClose = document.getElementById('sideNavClose');
+
+    function openSideNav() {
+      sideNavOverlay.classList.add('is-open');
+      sideNavPanel.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeSideNav() {
+      sideNavOverlay.classList.remove('is-open');
+      sideNavPanel.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    if (hamburgerBtn) hamburgerBtn.addEventListener('click', openSideNav);
+    if (sideNavClose) sideNavClose.addEventListener('click', closeSideNav);
+    if (sideNavOverlay) sideNavOverlay.addEventListener('click', closeSideNav);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeSideNav();
+    });
+
+    // Side nav Sign In button
+    const sideNavSignInBtn = document.getElementById('sideNavSignInBtn');
+    if (sideNavSignInBtn) {
+      sideNavSignInBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeSideNav();
+        window.openAuthModal('login');
+      });
+    }
+
+    // Side nav Log Out button
+    const sideNavLogoutBtn = document.getElementById('sideNavLogoutBtn');
+    if (sideNavLogoutBtn) {
+      sideNavLogoutBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        await fetch('/logout', { method: 'POST' });
+        window.location.reload();
+      });
+    }
+  });
+</script>
+<script>
+  window.IS_LOGGED_IN = <%= isLoggedIn %>;
+  window.CURRENT_USER_ROLE = '<%= currentUser ? currentUser.role : "" %>';
+</script>

@@ -18,7 +18,7 @@ module.exports = [
     coordinates: { lat: 30.0423613, lng: 31.2236682 },
     description:
       "The Cairo Opera House presents a full staging of Verdi's Aida, performed by the Cairo Opera Company Orchestra and Choir on the main hall stage.",
-    image: "/images/events/opera-aida.jpg",
+    image: "/assets/events/opera-aida.jpg",
     booking: "reserved",       // reserved | open
     ticketUrl: "https://www.cairoopera.org/",
     featured: true,
@@ -37,7 +37,7 @@ module.exports = [
     coordinates: { lat: 29.9792368, lng: 31.1342008 },
     description:
       "An evening narration of Ancient Egyptian history projected across the Great Pyramids and Sphinx, told through light, sound and music.",
-    image: "/images/events/sound-light-giza.jpg",
+    image: "/assets/events/sound-light-giza.jpg",
     booking: "reserved",
     ticketUrl: "https://www.soundandlight.com.eg/",
     featured: true,
@@ -56,7 +56,7 @@ module.exports = [
     coordinates: { lat: 30.0135508, lng: 31.3849682 },
     description:
       "One of the largest book fairs in the Arab world, hosting publishers, authors and cultural panels across ten days.",
-    image: "/images/events/book-fair.jpg",
+    image: "/assets/events/book-fair.jpg",
     booking: "open",
     ticketUrl: null,
     featured: false,
@@ -75,7 +75,7 @@ module.exports = [
     coordinates: { lat: 25.7188346, lng: 32.6572703 },
     description:
       "A guided walk through the hypostyle hall and sacred lake, narrated against a backdrop of illuminated columns.",
-    image: "/images/events/sound-light-karnak.jpg",
+    image: "/assets/events/sound-light-karnak.jpg",
     booking: "reserved",
     ticketUrl: "https://www.soundandlight.com.eg/",
     featured: false,
@@ -94,7 +94,7 @@ module.exports = [
     coordinates: { lat: 30.0477386, lng: 31.2622538 },
     description:
       "Local merchants extend their stalls into the evening with handmade crafts, brassware and live oud music through the old souq lanes.",
-    image: "/images/events/khan-el-khalili.jpg",
+    image: "/assets/events/khan-el-khalili.jpg",
     booking: "open",
     ticketUrl: null,
     featured: true,
@@ -113,7 +113,7 @@ module.exports = [
     coordinates: { lat: 30.0571, lng: 31.2243 },
     description:
       "A local restaurant's seasonal tasting menu evening overlooking the Nile, submitted directly by the business owner.",
-    image: "/images/events/nile-rooftop.jpg",
+    image: "/assets/events/nile-rooftop.jpg",
     booking: "reserved",
     ticketUrl: "https://example-restaurant.com/reserve",
     featured: false,
@@ -132,7 +132,7 @@ module.exports = [
     coordinates: { lat: 31.2089032, lng: 29.9091587 },
     description:
       "A monthly reading circle this session discussing the destruction and legacy of the Great Library of Alexandria.",
-    image: "/images/events/book-club.jpg",
+    image: "/assets/events/book-club.jpg",
     booking: "open",
     ticketUrl: null,
     featured: false,
@@ -151,7 +151,7 @@ module.exports = [
     coordinates: { lat: 30.0052389, lng: 31.2301689 },
     description:
       "A community-led walking talk through Old Cairo's churches, hosted by a local heritage enthusiast group.",
-    image: "/images/events/history-talk.jpg",
+    image: "/assets/events/history-talk.jpg",
     booking: "open",
     ticketUrl: null,
     featured: false,
@@ -170,7 +170,7 @@ module.exports = [
     coordinates: { lat: 30.0483167, lng: 31.2336674 },
     description:
       "A hands-on workshop teaching the basics of reading cartouches and common hieroglyphic symbols. Already took place — shown here as an example of a past/attendable event.",
-    image: "/images/events/hieroglyph-workshop.jpg",
+    image: "/assets/events/hieroglyph-workshop.jpg",
     booking: "open",
     ticketUrl: null,
     featured: false,

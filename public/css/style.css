@@ -186,6 +186,71 @@ ul {
     height: 1px;
     background-color: var(--text-primary);
 }
+/* =========================================
+   SIDE NAV PANEL 
+   ========================================= */
+.side-nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 3500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.side-nav-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.side-nav-panel {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 300px;
+    height: 100%;
+    background: #FFFFFF;
+    z-index: 3600;
+    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.35);
+    padding: 32px 28px;
+    transition: right 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.side-nav-panel.is-open {
+    right: 0;
+}
+
+.side-nav-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #050505;
+    cursor: pointer;
+    margin-bottom: 32px;
+}
+
+.side-nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.side-nav-link {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #050505;
+    text-decoration: none;
+    padding: 14px 0;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.side-nav-link:hover {
+    opacity: 0.6;
+}
 /*=======================================
    FOOTER
 ========================================= */
@@ -280,4 +345,34 @@ ul {
     border-radius: 4px;
     font-weight: bold;
     font-size: 0.85rem;
+}
+/* =========================================
+   TOAST NOTIFICATION (global, non-blocking)
+   ========================================= */
+.toast-notification {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #111111;
+    color: #F5F5F5;
+    border: 1px solid #262626;
+    padding: 14px 24px;
+    border-radius: 999px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    z-index: 4000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    max-width: 90vw;
+    text-align: center;
+}
+
+.toast-notification.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
 }
