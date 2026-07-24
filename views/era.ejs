@@ -56,7 +56,6 @@
                 <p class="body-text-secondary">
                     <%= era.overviewText.paragraph %>
                 </p>
-                <a href="#" class="btn-outline"><%= era.overviewText.ctaText %> &rarr;</a>
             </div>
 
            <!-- Right Column: Feature Cards -->
@@ -190,7 +189,7 @@
                     <h2 class="drawer-title" id="drawerTitle"></h2>
                     <p class="drawer-location" id="drawerLocation"></p>
                     
-                    <div class="drawer-rating-row">
+                    <div class="drawer-rating-row" id="drawerRatingRow">
                         <span class="stars">★★★★★</span>
                         <span class="rating-text">4.8 (124 reviews)</span>
                     </div>
@@ -204,7 +203,7 @@
 
                     <p class="drawer-desc" id="drawerDesc"></p>
 
-                    <div class="drawer-actions">
+                    <div class="drawer-actions" id="drawerActionsRow">
                         <button class="btn-action require-auth" data-auth-label="mark this place as visited" id="drawerVisitedBtn"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Visited</button>
                         <button class="btn-action require-auth" data-auth-label="add this to your favorites" id="drawerFavoriteBtn"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> Favorite</button>
                         <button class="btn-action require-auth" data-auth-label="add this to your wishlist" id="drawerWishlistBtn"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> Wishlist</button>
@@ -276,11 +275,10 @@
                 </div>
                 <!-- Mini Map -->
                 <div class="content-col">
-                    <div class="drawer-mini-map">
-                        <div class="mini-map-marker">
-                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                            <span>Al-Azhar Mosque</span>
-                        </div>
+                    <h3 class="content-title">Location</h3>
+                    <div class="drawer-mini-map-wrapper">
+                        <iframe id="drawerMiniMapFrame" class="drawer-mini-map-frame" src="" loading="lazy"></iframe>
+                        <a href="#" id="drawerMiniMapLink" class="mini-map-open-link" target="_blank" rel="noopener">Open in Google Maps &nearr;</a>
                     </div>
                 </div>
             </div>
@@ -323,56 +321,10 @@
             <div class="drawer-panel" id="drawerPanelReviews">
                 <h3 class="content-title">Visitor Reviews</h3>
 
-                <div class="review-list">
-                    <div class="review-card">
-                        <div class="review-card-header">
-                            <div class="review-avatar">SM</div>
-                            <div class="review-card-meta">
-                                <h4>Sara M.</h4>
-                                <span class="review-card-stars">★★★★★</span>
-                            </div>
-                        </div>
-                        <div class="review-card-tags">
-                            <span class="tag">Architecture</span>
-                            <span class="tag">Peaceful</span>
-                        </div>
-                        <p class="review-card-text">
-                            Visiting Al-Azhar was one of the highlights of my trip to Cairo. The scale of the courtyard and the calm atmosphere really stayed with me long after I left.
-                        </p>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-card-header">
-                            <div class="review-avatar">OK</div>
-                            <div class="review-card-meta">
-                                <h4>Omar K.</h4>
-                                <span class="review-card-stars">★★★★☆</span>
-                            </div>
-                        </div>
-                        <div class="review-card-tags">
-                            <span class="tag">Guided Tour</span>
-                        </div>
-                        <p class="review-card-text">
-                            Go early in the morning before the crowds arrive. A guide really helped bring the history of the place to life.
-                        </p>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-card-header">
-                            <div class="review-avatar">LR</div>
-                            <div class="review-card-meta">
-                                <h4>Layla R.</h4>
-                                <span class="review-card-stars">★★★★★</span>
-                            </div>
-                        </div>
-                        <div class="review-card-tags">
-                            <span class="tag">Photography</span>
-                            <span class="tag">History</span>
-                        </div>
-                        <p class="review-card-text">
-                            The details in the stonework are incredible up close. Bring a wide lens if you're into photography — the courtyard is massive.
-                        </p>
-                    </div>
+                <div class="review-list" id="reviewList">
+                    <p class="review-empty-message" id="reviewEmptyMessage">
+                        No reviews yet — be the first to share your experience!
+                    </p>
                 </div>
             </div>
             <!-- /REVIEWS PANEL -->
@@ -398,8 +350,10 @@
     <script src="/js/wishlist.js"></script>
     <script src="/js/visited.js"></script>
     <script>
-      document.getElementById('drawerReviewBtn').addEventListener('click', () => {
-        window.openReviewModal('al-azhar-mosque');
+       document.getElementById('drawerReviewBtn').addEventListener('click', () => {
+        if (window.currentDrawerItem) {
+          window.openReviewModal(window.currentDrawerItem.name);
+        }
       });
     </script>
 </body>

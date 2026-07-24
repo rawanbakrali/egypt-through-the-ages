@@ -34,6 +34,16 @@ app.use((req, res, next) => {
     res.locals.currentUser = req.session.user || null;
     next();
 });
+// Middleware: blocks unauthenticated POST requests to protected endpoints.
+// Login/Register/Logout themselves must stay open (a logged-out person
+// needs to be able to hit them), everything else that writes data should
+// require a session.
+function requireAuth(req, res, next) {
+    if (!req.session.user) {
+        return res.status(401).json({ success: false, message: 'You must be signed in to do that.' });
+    }
+    next();
+}
 
 // Routes
 app.get('/', (req, res) => {

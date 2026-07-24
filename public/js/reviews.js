@@ -21,52 +21,78 @@
 
   const galleryGrid = document.getElementById('galleryGrid');
   const galleryEmptyMessage = document.getElementById('galleryEmptyMessage');
-  let galleryImages = []; // dataUrls from all submitted reviews, in-session only
-  const reviewList = document.querySelector('.review-list');
 
-  function renderNewReviewCard(reviewData) {
+  // Gallery and Reviews are now tracked PER PLACE, keyed by place name, in-session only.
+  const galleryByPlace = {}; // { "Al-Azhar Mosque": [ dataUrl, dataUrl, ... ] }
+  const reviewsByPlace = {}; // { "Al-Azhar Mosque": [ {rating, review, tags}, ... ] }
+
+  function renderReviewsForPlace(placeName) {
+    const reviewList = document.getElementById('reviewList');
+    const reviewEmptyMessage = document.getElementById('reviewEmptyMessage');
     if (!reviewList) return;
 
-    const starsFilled = '★'.repeat(reviewData.rating) + '☆'.repeat(5 - reviewData.rating);
+    reviewList.querySelectorAll('.review-card').forEach(card => card.remove());
 
-    const card = document.createElement('div');
-    card.className = 'review-card';
-    card.innerHTML = `
-      <div class="review-card-header">
-        <div class="review-avatar">YOU</div>
-        <div class="review-card-meta">
-          <h4>You</h4>
-          <span class="review-card-stars">${starsFilled}</span>
+    const reviews = reviewsByPlace[placeName] || [];
+    if (reviews.length === 0) {
+      if (reviewEmptyMessage) reviewEmptyMessage.style.display = 'block';
+      return;
+    }
+    if (reviewEmptyMessage) reviewEmptyMessage.style.display = 'none';
+
+    reviews.forEach((reviewData) => {
+      const starsFilled = '★'.repeat(reviewData.rating) + '☆'.repeat(5 - reviewData.rating);
+      const card = document.createElement('div');
+      card.className = 'review-card';
+      card.innerHTML = `
+        <div class="review-card-header">
+          <div class="review-avatar">YOU</div>
+          <div class="review-card-meta">
+            <h4>You</h4>
+            <span class="review-card-stars">${starsFilled}</span>
+          </div>
         </div>
-      </div>
-      <div class="review-card-tags">
-        ${reviewData.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-      </div>
-      <p class="review-card-text">
-        ${reviewData.review || '(No written review provided.)'}
-      </p>
-    `;
-
-    // Insert new reviews at the top, above existing/example reviews
-    reviewList.insertBefore(card, reviewList.firstChild);
+        <div class="review-card-tags">
+          ${reviewData.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+        </div>
+        <p class="review-card-text">
+          ${reviewData.review || '(No written review provided.)'}
+        </p>
+      `;
+      reviewList.appendChild(card);
+    });
   }
 
-  function addImagesToGallery(dataUrls) {
+  function getRatingSummary(placeName) {
+    const reviews = reviewsByPlace[placeName] || [];
+    if (reviews.length === 0) return null;
+    const average = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+    return { average, count: reviews.length };
+  }
+
+  window.renderReviewsForPlace = renderReviewsForPlace;
+  window.getRatingSummary = getRatingSummary;
+
+  function addImagesToGallery(placeName, dataUrls) {
     if (!galleryGrid || dataUrls.length === 0) return;
-    galleryImages.push(...dataUrls);
-    renderGallery();
+    if (!galleryByPlace[placeName]) galleryByPlace[placeName] = [];
+    galleryByPlace[placeName].push(...dataUrls);
+    renderGalleryForPlace(placeName);
   }
 
-  function renderGallery() {
+  function renderGalleryForPlace(placeName) {
     if (!galleryGrid) return;
-    if (galleryImages.length === 0) {
+
+    galleryGrid.querySelectorAll('img').forEach(img => img.remove());
+
+    const images = galleryByPlace[placeName] || [];
+    if (images.length === 0) {
       if (galleryEmptyMessage) galleryEmptyMessage.style.display = 'block';
       return;
     }
     if (galleryEmptyMessage) galleryEmptyMessage.style.display = 'none';
 
-    galleryGrid.querySelectorAll('img').forEach(img => img.remove());
-    galleryImages.forEach(dataUrl => {
+    images.forEach(dataUrl => {
       const img = document.createElement('img');
       img.src = dataUrl;
       img.alt = 'User-submitted review photo';
@@ -74,6 +100,8 @@
       galleryGrid.appendChild(img);
     });
   }
+
+  window.renderGalleryForPlace = renderGalleryForPlace;
 
   const lightboxOverlay = document.getElementById('galleryLightboxOverlay');
   const lightboxImg = document.getElementById('galleryLightboxImg');
@@ -248,11 +276,20 @@
     // Frontend-only phase: no backend/API yet, per roadmap Point 16.
     console.log('Review saved (local only):', reviewData);
 
-    // Feed this review's photos into the in-session Gallery tab
-    addImagesToGallery(uploadedImages.map((img) => img.dataUrl));
+    // Feed this review's photos into this place's in-session Gallery tab
+    addImagesToGallery(placeKey, uploadedImages.map((img) => img.dataUrl));
 
-    // Feed this review itself into the in-session Reviews tab
-    renderNewReviewCard(reviewData);
+    // Store this review under the place it belongs to, then refresh
+    // that place's Reviews tab and its live rating.
+    const placeKey = activePlaceSlug || 'Unknown place';
+    if (!reviewsByPlace[placeKey]) reviewsByPlace[placeKey] = [];
+    reviewsByPlace[placeKey].push({
+      rating: reviewData.rating,
+      review: reviewData.review,
+      tags: reviewData.tags
+    });
+    renderReviewsForPlace(placeKey);
+    if (window.refreshDrawerRating) window.refreshDrawerRating();
 
     closeReviewModal();
   });

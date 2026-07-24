@@ -295,6 +295,7 @@ module.exports = {
       "art-culture": [
         {
           name: "Islamic Calligraphy",
+          interactive: false,
           location: "Cairo",
           fullLocation: "Cairo, Egypt",
           rating: "4.7",
@@ -317,30 +318,32 @@ module.exports = {
           }
         },
         {
-          name: "Khan El Khalili Crafts",
-          location: "Cairo",
-          fullLocation: "Cairo, Egypt",
-          rating: "4.6",
-          reviewCount: "410",
-          image: "/assets/eras/khan-thumb.jpg",
-          thumbnails: ["/assets/eras/khan-thumb1.jpg"],
-          desc: "A historic bazaar showcasing traditional metalwork, woodwork, and textiles rooted in Islamic-era craftsmanship.",
-          tags: ["Bazaar", "Crafts"],
-          quickFacts: {
-            built: "1382 CE",
-            founder: "Emir Djaharks el-Khalili",
-            style: "Mamluk Market",
-            function: "Marketplace"
+            name: "Ramadan",
+            interactive: false,
+            location: "Cairo",
+            fullLocation: "Cairo, Egypt",
+            rating: "4.9",
+            reviewCount: "0",
+            image: "/assets/eras/ramadan-main.jpg",
+            thumbnails: ["/assets/eras/ramadan-thumb1.jpg"],
+            desc: "The Islamic holy month of fasting, prayer, and reflection, observed each year according to the lunar calendar and marked across Egypt by lantern-lit streets, communal iftars, and nightly prayers.",
+            tags: ["Religious Observance", "Tradition"],
+            quickFacts: {
+              built: "Observed since 610 CE",
+              founder: "N/A — religious observance",
+              style: "Islamic Lunar Calendar",
+              function: "Month of Fasting & Reflection"
+            },
+            visitorInfo: {
+              hours: "Varies — observed throughout the month",
+              bestTime: "Evening, after Iftar",
+              dressCode: "Modest clothing recommended",
+              entryFee: "N/A"
+            }
           },
-          visitorInfo: {
-            hours: "9:00 AM – 11:00 PM",
-            bestTime: "Evening",
-            dressCode: "Casual",
-            entryFee: "Free to enter"
-          }
-        },
         {
           name: "Sufi Music & Traditions",
+          interactive: false,
           location: "Cairo",
           fullLocation: "Cairo, Egypt",
           rating: "4.5",

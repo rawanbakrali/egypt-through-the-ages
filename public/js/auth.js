@@ -31,6 +31,11 @@
   function openAuthModal(viewName, message) {
     switchView(viewName || 'login');
     if (message) showMessage(message, 'info');
+
+    // Capture the current page so login can send the person back here
+    const redirectField = document.getElementById('loginRedirectTo');
+    if (redirectField) redirectField.value = window.location.pathname;
+
     overlay.classList.add('is-open');
     document.body.style.overflow = 'hidden';
   }
@@ -61,21 +66,22 @@
     clearMessage();
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
+    const redirectTo = document.getElementById('loginRedirectTo').value;
 
     const res = await fetch('/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+      body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}&redirectTo=${encodeURIComponent(redirectTo)}`
     });
     const data = await res.json();
 
     if (data.success) {
-      window.location.reload();
+      window.location.href = data.redirectTo || '/';
     } else {
       showMessage(data.message || 'Login failed.', 'error');
     }
   });
-
+  
   // REGISTER
   document.getElementById('registerForm').addEventListener('submit', async (e) => {
     e.preventDefault();

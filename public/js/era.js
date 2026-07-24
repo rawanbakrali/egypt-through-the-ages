@@ -260,7 +260,37 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    function updateDrawerRating(item) {
+        const ratingRow = document.getElementById('drawerRatingRow');
+        const starsEl = document.querySelector('.stars');
+        const ratingTextEl = document.querySelector('.rating-text');
+        if (!ratingRow) return;
+
+        const isInteractive = item.interactive !== false;
+        if (!isInteractive) {
+            ratingRow.style.display = 'none';
+            return;
+        }
+        ratingRow.style.display = 'flex';
+
+        const summary = window.getRatingSummary ? window.getRatingSummary(item.name) : null;
+        if (summary) {
+            const rounded = Math.round(summary.average);
+            if (starsEl) starsEl.innerText = '★★★★★'.slice(0, rounded) + '☆☆☆☆☆'.slice(0, 5 - rounded);
+            if (ratingTextEl) ratingTextEl.innerText = `${summary.average.toFixed(1)} (${summary.count} review${summary.count === 1 ? '' : 's'})`;
+        } else {
+            if (starsEl) starsEl.innerText = '☆☆☆☆☆';
+            if (ratingTextEl) ratingTextEl.innerText = 'No ratings yet';
+        }
+    }
+    window.updateDrawerRating = updateDrawerRating;
+    window.refreshDrawerRating = function () {
+        if (window.currentDrawerItem) updateDrawerRating(window.currentDrawerItem);
+    };
+
     function populateDrawer(item) {
+        window.currentDrawerItem = item; // tracks which place is currently open, for the Review button + rating refresh
+
         document.getElementById('drawerTitle').innerText = item.name;
         document.getElementById('drawerLocation').innerText = item.fullLocation;
         document.getElementById('drawerDesc').innerText = item.desc;
@@ -268,10 +298,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const mainImageEl = document.querySelector('.drawer-main-img');
         if (mainImageEl && item.image) mainImageEl.src = item.image;
 
-        const starsEl = document.querySelector('.stars');
-        const ratingTextEl = document.querySelector('.rating-text');
-        if (starsEl) starsEl.innerText = '★★★★★'.slice(0, Math.round(item.rating));
-        if (ratingTextEl) ratingTextEl.innerText = `${item.rating} (${item.reviewCount} reviews)`;
+        updateDrawerRating(item);
+        if (window.renderReviewsForPlace) window.renderReviewsForPlace(item.name);
+        if (window.renderGalleryForPlace) window.renderGalleryForPlace(item.name);
 
         const tagsContainer = document.querySelector('.drawer-tags');
         if (tagsContainer) {
@@ -310,9 +339,19 @@ document.addEventListener("DOMContentLoaded", () => {
             infoGroups[2].innerText = item.visitorInfo.dressCode;
             infoGroups[3].innerText = item.visitorInfo.entryFee;
         }
+        const actionsRow = document.getElementById('drawerActionsRow');
+        if (actionsRow) {
+            const isInteractive = item.interactive !== false; // default true unless explicitly set false
+            actionsRow.style.display = isInteractive ? 'flex' : 'none';
+        }
 
-        const miniMapLabel = document.querySelector('.mini-map-marker span');
-        if (miniMapLabel) miniMapLabel.innerText = item.name;
+       const miniMapFrame = document.getElementById('drawerMiniMapFrame');
+        const miniMapLink = document.getElementById('drawerMiniMapLink');
+        if (miniMapFrame && miniMapLink) {
+            const query = encodeURIComponent(`${item.name}, ${item.fullLocation}`);
+            miniMapFrame.src = `https://maps.google.com/maps?q=${query}&output=embed`;
+            miniMapLink.href = `https://www.google.com/maps/search/?api=1&query=${query}`;
+        }
     }
 
     function injectCategory(category) {
