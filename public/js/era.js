@@ -125,6 +125,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById('drawerOverlay');
     const closeBtn = document.getElementById('closeDrawerBtn');
 
+    // Click a thumbnail to swap it into the main image
+    const thumbsContainerEl = document.querySelector('.drawer-thumbnails');
+    if (thumbsContainerEl) {
+        thumbsContainerEl.addEventListener('click', (e) => {
+            const clickedThumb = e.target.closest('img');
+            if (!clickedThumb) return;
+            const mainImageEl = document.querySelector('.drawer-main-img');
+            if (mainImageEl) mainImageEl.src = clickedThumb.src;
+        });
+    }
+
     function openDrawer() {
         if (!drawer || !overlay) return;
         overlay.style.opacity = '1';
@@ -246,7 +257,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     <h4>${item.name}</h4>
                     <div class="dynamic-card-meta">
                         <span>${item.location}</span>
-                        <span class="dynamic-card-rating">★ ${item.rating}</span>
                     </div>
                 </div>
             `;
@@ -344,8 +354,33 @@ document.addEventListener("DOMContentLoaded", () => {
             const isInteractive = item.interactive !== false; // default true unless explicitly set false
             actionsRow.style.display = isInteractive ? 'flex' : 'none';
         }
+        
+        const tourThumbnailWrapper = document.getElementById('tourThumbnailWrapper');
+        const tourPlayOverlay = document.getElementById('tourPlayOverlay');
+        const tour3DFrame = document.getElementById('tour3DFrame');
+        const tourComingSoon = document.getElementById('tourComingSoon');
 
-       const miniMapFrame = document.getElementById('drawerMiniMapFrame');
+        if (tourThumbnailWrapper && tour3DFrame) {
+            // Reset to initial state each time a new place is opened
+            tour3DFrame.style.display = 'none';
+            tour3DFrame.src = '';
+
+            if (item.embed3D) {
+                tourPlayOverlay.style.display = 'flex';
+                if (tourComingSoon) tourComingSoon.style.display = 'none';
+
+                tourPlayOverlay.onclick = () => {
+                    tour3DFrame.src = item.embed3D;
+                    tour3DFrame.style.display = 'block';
+                    tourPlayOverlay.style.display = 'none';
+                };
+            } else {
+                tourPlayOverlay.style.display = 'none';
+                if (tourComingSoon) tourComingSoon.style.display = 'flex';
+            }
+        }
+
+        const miniMapFrame = document.getElementById('drawerMiniMapFrame');
         const miniMapLink = document.getElementById('drawerMiniMapLink');
         if (miniMapFrame && miniMapLink) {
             const query = encodeURIComponent(`${item.name}, ${item.fullLocation}`);

@@ -331,7 +331,7 @@
 .discover-events-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    align-items: center;
+    align-items: flex-start;
     gap: 60px;
     padding: 60px 5%;
     border-bottom: 1px solid var(--border-color);

@@ -114,9 +114,7 @@
         <div class="legacy-grid">
             <div class="legacy-text">
                 <% era.legacy.paragraphs.forEach(function(paragraph) { %>
-                <p class="body-text-secondary">
-                    <%= paragraph %>
-                </p>
+                <p class="body-text-secondary"><%= paragraph %></p>
                 <% }); %>
             </div>
             <div class="legacy-image" style="background-image: url('<%= era.legacy.image %>');"></div>
@@ -139,7 +137,6 @@
     </section>
     <% } %>
 
-    <!-- MAP SECTION -->
     <!-- MAP SECTION -->
     <section class="era-map-section era-section" id="places">
         <div class="map-header">
@@ -287,10 +284,13 @@
             <div class="drawer-bottom-grid">
                 <div class="bottom-col">
                     <h3 class="content-title">3D Virtual Tour</h3>
-                    <div class="tour-thumbnail">
-                        <div class="play-btn-overlay">
+                    <div class="tour-thumbnail" id="tourThumbnailWrapper">
+                        <div class="play-btn-overlay" id="tourPlayOverlay">
                             <svg viewBox="0 0 24 24" width="32" height="32" fill="white"><path d="M8 5v14l11-7z"/></svg>
                         </div>
+                        <iframe id="tour3DFrame" class="tour-3d-frame" src="" title="3D Tour"
+                            style="display:none;" allow="autoplay; fullscreen; xr-spatial-tracking" allowfullscreen></iframe>
+                        <p class="tour-coming-soon" id="tourComingSoon" style="display:none;">3D tour coming soon</p>
                     </div>
                 </div>
             </div>
