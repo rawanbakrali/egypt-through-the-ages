@@ -73,18 +73,6 @@ app.get('/event/:slug', (req, res) => {
     if (!event) {
         return res.status(404).send('Event not found');
     }
-
-    // Look up the related place using event.placeSlug (if it exists)
-    let relatedPlace = null;
-    if (event.placeSlug) {
-        relatedPlace = places.find(p => p.slug === event.placeSlug) || null;
-    }
-
-    res.render('event', {
-        title: `${event.title} | Egypt Through the Ages`,
-        event: event,
-        relatedPlace: relatedPlace // <--- Pass relatedPlace here!
-    });
 });
 
 // ==========================================

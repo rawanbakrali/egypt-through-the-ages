@@ -1,6 +1,5 @@
 <!--
   views/event.ejs — route: GET /event/:slug
-  Expects: `event` (single event object), `relatedPlace` (place object or null)
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -40,19 +39,6 @@
         <h2 class="section-title">About this event</h2>
         <p class="event-description"><%= event.description %></p>
       </section>
-
-      <% if (relatedPlace) { %>
-      <section class="event-section">
-        <h2 class="section-title">Related Place</h2>
-        <a href="/place/<%= relatedPlace.slug %>" class="related-place-card">
-          <img src="<%= relatedPlace.image %>" alt="<%= relatedPlace.name %>">
-          <div>
-            <h3><%= relatedPlace.name %></h3>
-            <span>View place page &rarr;</span>
-          </div>
-        </a>
-      </section>
-      <% } %>
 
       <section class="event-section">
         <h2 class="section-title">Location</h2>

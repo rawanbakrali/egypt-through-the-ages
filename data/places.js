@@ -1,5 +1,5 @@
 // data/places.js
-// Mock historical places data for the Admin Dashboard UI (Frontend-only).
+// Mock historical places data for the Admin Dashboard .
 
 module.exports = [
   {

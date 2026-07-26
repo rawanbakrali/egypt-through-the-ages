@@ -1,8 +1,5 @@
 <!--
   partials/event-card.ejs
-  Expects a local variable `event` (see data/events.js for shape).
-  Reused on: /events grid, featured row, and (later) a place page's
-  "Related Events" section.
 -->
 <article class="event-card" data-type="<%= event.type %>" data-category="<%= event.category %>">
   <a href="/event/<%= event.slug %>" class="event-card__media">

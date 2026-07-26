@@ -259,19 +259,6 @@ body {
 .event-section { margin-bottom: 40px; }
 .event-description { font-size: 15px; line-height: 1.7; color: var(--text-secondary); max-width: 640px; }
 
-.related-place-card {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-color);
-  border-radius: 18px;
-  padding: 12px;
-  text-decoration: none;
-  color: var(--text-primary);
-  max-width: 420px;
-}
-.related-place-card img { width: 72px; height: 72px; object-fit: cover; border-radius: 12px; }
 
 /* ---------- Maps (Section 13) ---------- */
 .events-map-section { padding: 48px 64px 0; }

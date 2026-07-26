@@ -1,9 +1,5 @@
 // data/events.js
-// Mock event data for the current UI-only phase (Section 19).
-// Shape mirrors the planned Event schema (Section 11) plus a few
-// UI-only fields (type, category, status, featured, image) that will
-// map cleanly onto real fields once the backend/admin workflow exists.
-
+// Mock event data.
 module.exports = [
   {
     slug: "cairo-opera-aida",
