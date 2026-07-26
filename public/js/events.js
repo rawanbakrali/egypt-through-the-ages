@@ -56,7 +56,7 @@ function initEventsOverviewMap() {
 
   const markers = [];
   events.forEach(event => {
-    const marker = L.marker([event.lat, event.lng], {
+    const marker = L.marker([event.coordinates.lat, event.coordinates.lng], {
       icon: markerIcon(EVENT_TYPE_COLOR[event.type] || '#8A8A8A')
     })
       .addTo(map)
@@ -158,12 +158,43 @@ function initSubmissionModal() {
     });
   });
 
-  form?.addEventListener('submit', (e) => {
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    // No persistence yet — this only simulates the submission flow
-    // that will later hit an admin review queue (Sections 19–20).
-    form.hidden = true;
-    successMsg.hidden = false;
+
+    const activeToggle = overlay.querySelector('.type-toggle-btn.is-active');
+    const submissionType = activeToggle ? activeToggle.dataset.submissionType : 'business';
+    const formData = new FormData(form);
+
+    const payload = {
+      submissionType,
+      title: formData.get('title'),
+      description: formData.get('description'),
+      date: formData.get('date'),
+      time: formData.get('time'),
+      location: formData.get('location'),
+      category: formData.get('category'),
+      ticketUrl: formData.get('ticketUrl') || null
+      // Note: image uploads aren't wired to a real backend yet — any
+      // files selected here are not actually sent or stored.
+    };
+
+    try {
+      const res = await fetch('/events/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        form.hidden = true;
+        successMsg.hidden = false;
+      } else {
+        alert(data.message || 'Something went wrong submitting your event.');
+      }
+    } catch (err) {
+      alert('Network error — could not submit your event.');
+    }
   });
 }
 

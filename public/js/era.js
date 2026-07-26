@@ -138,6 +138,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function openDrawer() {
         if (!drawer || !overlay) return;
+        
+        // Force reset the drawer navigation tabs back to 'Overview' by default
+        drawerTabs.forEach(t => t.classList.remove('active'));
+        allDrawerPanels.forEach(p => p && p.classList.remove('active'));
+
+        // Find and activate the Overview tab and panel explicitly
+        const defaultTab = Array.from(drawerTabs).find(t => t.innerText.trim() === 'Overview');
+        if (defaultTab) defaultTab.classList.add('active');
+        if (drawerPanelOverview) drawerPanelOverview.classList.add('active');
+        // ---------------------------------
+
         overlay.style.opacity = '1';
         overlay.style.pointerEvents = 'auto';
         drawer.classList.add('open');

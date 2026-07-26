@@ -133,24 +133,29 @@ function toggleDrawer(drawerId) {
 // HISTORICAL PLACES FORM & STATUS TOGGLE
 // ==========================================
 
-function togglePlaceStatus(placeId) {
-  const rows = document.querySelectorAll(`tr[data-id="${placeId}"]`);
-  rows.forEach(row => {
-    const badge = row.querySelector('.status-badge');
-    if (badge) {
-      if (badge.classList.contains('badge-published')) {
-        badge.classList.remove('badge-published');
-        badge.classList.add('badge-draft');
-        badge.textContent = 'Draft';
-        showToast('Place status updated to Draft');
-      } else {
-        badge.classList.remove('badge-draft');
-        badge.classList.add('badge-published');
-        badge.textContent = 'Published';
-        showToast('Place published successfully');
-      }
+async function togglePlaceStatus(placeId) {
+  try {
+    const res = await fetch(`/admin/places/${placeId}/status`, { method: 'PATCH' });
+    const data = await res.json();
+
+    if (!data.success) {
+      showToast(data.message || 'Failed to update status.');
+      return;
     }
-  });
+
+    document.querySelectorAll(`tr[data-id="${placeId}"]`).forEach(row => {
+      const badge = row.querySelector('.status-badge');
+      if (badge) {
+        const isPublished = data.status === 'published';
+        badge.classList.toggle('badge-published', isPublished);
+        badge.classList.toggle('badge-draft', !isPublished);
+        badge.textContent = isPublished ? 'Published' : 'Draft';
+      }
+    });
+    showToast(`Place status updated to ${data.status === 'published' ? 'Published' : 'Draft'}`);
+  } catch (err) {
+    showToast('Network error — could not update status.');
+  }
 }
 
 function openEditPlaceModal(placeId) {
@@ -175,70 +180,41 @@ function openEditPlaceModal(placeId) {
   openModal('modalPlace');
 }
 
-function handlePlaceFormSubmit(e) {
+async function handlePlaceFormSubmit(e) {
   e.preventDefault();
   const id = document.getElementById('placeFormId').value;
   const name = document.getElementById('placeFormName').value;
   const category = document.getElementById('placeFormCategory').value;
   const status = document.getElementById('placeFormStatus').value;
-  const img = document.getElementById('placeFormImage').value;
+  const location = document.getElementById('placeFormLocation').value;
+  const image = document.getElementById('placeFormImage').value;
+  const description = document.getElementById('placeFormDescription').value;
 
-  if (id) {
-    // Update existing row
-    document.querySelectorAll(`tr[data-id="${id}"]`).forEach(row => {
-      const titleEl = row.querySelector('.cell-title');
-      if (titleEl) titleEl.textContent = name;
-      if (row.cells[1]) row.cells[1].textContent = category;
-      const imgEl = row.querySelector('.cell-thumb');
-      if (imgEl && img) imgEl.src = img;
-      
-      const badge = row.querySelector('.status-badge');
-      if (badge) {
-        badge.className = `status-badge ${status === 'published' ? 'badge-published' : 'badge-draft'}`;
-        badge.textContent = status === 'published' ? 'Published' : 'Draft';
-      }
+  const payload = { name, category, status, location, image, description };
+
+  try {
+    const url = id ? `/admin/places/${id}` : '/admin/places';
+    const method = id ? 'PUT' : 'POST';
+
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
-    showToast(`Updated "${name}" successfully`);
-  } else {
-    // Create new place row dynamically
-    const newId = 'plc-' + Date.now();
-    const tbody = document.querySelector('#tablePlacesOverview tbody');
-    if (tbody) {
-      const tr = document.createElement('tr');
-      tr.setAttribute('data-id', newId);
-      tr.innerHTML = `
-        <td>
-          <div class="cell-media">
-            <img src="${img}" alt="${name}" class="cell-thumb" />
-            <div class="cell-info">
-              <span class="cell-title">${name}</span>
-            </div>
-          </div>
-        </td>
-        <td>${category}</td>
-        <td>
-          <span class="status-badge ${status === 'published' ? 'badge-published' : 'badge-draft'}" onclick="togglePlaceStatus('${newId}')">
-            ${status === 'published' ? 'Published' : 'Draft'}
-          </span>
-        </td>
-        <td>Just now</td>
-        <td>
-          <div class="action-group">
-            <button class="action-btn" title="Edit Place" onclick="openEditPlaceModal('${newId}')">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            </button>
-            <button class="action-btn delete" title="Delete Place" onclick="confirmDelete('place', '${newId}', '${name}')">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-            </button>
-          </div>
-        </td>
-      `;
-      tbody.prepend(tr);
-    }
-    showToast(`Added "${name}" to historical places`);
-  }
+    const data = await res.json();
 
-  closeModal('modalPlace');
+    if (!data.success) {
+      showToast(data.message || 'Failed to save place.');
+      return;
+    }
+
+    closeModal('modalPlace');
+    // Reload so the table reflects the real, current server-side data —
+    // avoids any risk of the page's HTML drifting from actual saved state.
+    window.location.reload();
+  } catch (err) {
+    showToast('Network error — could not save place.');
+  }
 }
 
 // ==========================================
@@ -265,21 +241,40 @@ function openEditEventModal(eventSlug) {
   openModal('modalEvent');
 }
 
-function handleEventFormSubmit(e) {
+async function handleEventFormSubmit(e) {
   e.preventDefault();
   const slug = document.getElementById('eventFormSlug').value;
   const title = document.getElementById('eventFormTitle').value;
+  const category = document.getElementById('eventFormCategory').value;
+  const date = document.getElementById('eventFormDate').value;
+  const bookingStatus = document.getElementById('eventFormBookingStatus').value;
+  const location = document.getElementById('eventFormLocation').value;
+  const image = document.getElementById('eventFormImage').value;
+  const description = document.getElementById('eventFormDescription').value;
 
-  if (slug) {
-    document.querySelectorAll(`tr[data-id="${slug}"]`).forEach(row => {
-      const titleEl = row.querySelector('.cell-title');
-      if (titleEl) titleEl.textContent = title;
+  const payload = { title, category, date, bookingStatus, location, image, description };
+
+  try {
+    const url = slug ? `/admin/events/${slug}` : '/admin/events';
+    const method = slug ? 'PUT' : 'POST';
+
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
-    showToast(`Updated event "${title}"`);
-  } else {
-    showToast(`Created official event "${title}"`);
+    const data = await res.json();
+
+    if (!data.success) {
+      showToast(data.message || 'Failed to save event.');
+      return;
+    }
+
+    closeModal('modalEvent');
+    window.location.reload();
+  } catch (err) {
+    showToast('Network error — could not save event.');
   }
-  closeModal('modalEvent');
 }
 
 function filterOverviewEvents(filter, btnEl) {
@@ -307,23 +302,24 @@ function filterOverviewEvents(filter, btnEl) {
 function openReviewSubmissionModal(slug) {
   activeSubmissionSlug = slug;
   const content = document.getElementById('submissionReviewContent');
-  if (content) {
+  const event = (window.ADMIN_EVENTS || []).find(e => e.slug === slug);
+
+  if (content && event) {
     content.innerHTML = `
       <div style="display: flex; flex-direction: column; gap: 1rem;">
         <div>
-          <span class="status-badge badge-submission">Community Submission</span>
-          <h4 style="font-family: var(--font-serif); font-size: 1.2rem; margin-top: 0.5rem;">Al-Muizz Street Festival</h4>
+          <span class="status-badge badge-submission">${event.type === 'community' ? 'Community Submission' : 'Business Submission'}</span>
+          <h4 style="font-family: var(--font-serif); font-size: 1.2rem; margin-top: 0.5rem;">${event.title}</h4>
         </div>
-        <p style="font-size: 0.85rem; color: var(--text-muted);">
-          Submitted by: <strong>Sarah Ahmed</strong> (sarah.a@example.com)
-        </p>
         <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; border: 1px solid #e5e7eb; font-size: 0.85rem;">
           <strong>Description:</strong><br>
-          An annual cultural festival showcasing folk music, heritage crafts, and guided walking tours along historic Al-Muizz street in Islamic Cairo.
+          ${event.description}
         </div>
         <div style="font-size: 0.85rem;">
-          <strong>Date:</strong> Jun 5 - Jun 7, 2025<br>
-          <strong>Location:</strong> Al-Muizz Street, Cairo
+          <strong>Date:</strong> ${event.date} ${event.time || ''}<br>
+          <strong>Location:</strong> ${event.location}<br>
+          <strong>Category:</strong> ${event.category}
+          ${event.ticketUrl ? `<br><strong>Booking Link:</strong> <a href="${event.ticketUrl}" target="_blank">${event.ticketUrl}</a>` : ''}
         </div>
       </div>
     `;
@@ -331,22 +327,39 @@ function openReviewSubmissionModal(slug) {
   openModal('modalSubmission');
 }
 
-function handleApproveSubmission() {
+async function handleApproveSubmission() {
   if (activeSubmissionSlug) {
-    document.querySelectorAll(`tr[data-id="${activeSubmissionSlug}"]`).forEach(row => {
-      const badge = row.querySelector('.status-badge');
-      if (badge) {
-        badge.className = 'status-badge badge-published';
-        badge.textContent = 'Published';
+    try {
+      const res = await fetch(`/admin/events/${activeSubmissionSlug}/approve`, { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        closeModal('modalSubmission');
+        window.location.reload();
+        return;
       }
-    });
-    showToast('Submission approved and published on live site!');
+      showToast(data.message || 'Failed to approve submission.');
+    } catch (err) {
+      showToast('Network error — could not approve submission.');
+    }
   }
   closeModal('modalSubmission');
 }
 
-function handleRejectSubmission() {
-  showToast('Submission rejected');
+async function handleRejectSubmission() {
+  if (activeSubmissionSlug) {
+    try {
+      const res = await fetch(`/admin/events/${activeSubmissionSlug}/reject`, { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        closeModal('modalSubmission');
+        window.location.reload();
+        return;
+      }
+      showToast(data.message || 'Failed to reject submission.');
+    } catch (err) {
+      showToast('Network error — could not reject submission.');
+    }
+  }
   closeModal('modalSubmission');
 }
 
@@ -410,12 +423,50 @@ function confirmDelete(type, id, name) {
   openModal('modalDelete');
 }
 
-function executeDelete() {
-  if (activeDeletePayload) {
-    const { id, name } = activeDeletePayload;
-    document.querySelectorAll(`tr[data-id="${id}"]`).forEach(row => row.remove());
-    showToast(`Deleted "${name}"`);
+async function executeDelete() {
+  if (!activeDeletePayload) return;
+  const { type, id, name } = activeDeletePayload;
+
+  if (type === 'place') {
+    try {
+      const res = await fetch(`/admin/places/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+
+      if (!data.success) {
+        showToast(data.message || 'Failed to delete place.');
+        closeModal('modalDelete');
+        return;
+      }
+
+      closeModal('modalDelete');
+      window.location.reload();
+      return;
+    } catch (err) {
+      showToast('Network error — could not delete place.');
+      closeModal('modalDelete');
+      return;
+    }
   }
+
+  if (type === 'event') {
+    try {
+      const res = await fetch(`/admin/events/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!data.success) {
+        showToast(data.message || 'Failed to delete event.');
+        closeModal('modalDelete');
+        return;
+      }
+      closeModal('modalDelete');
+      window.location.reload();
+      return;
+    } catch (err) {
+      showToast('Network error — could not delete event.');
+      closeModal('modalDelete');
+      return;
+    }
+  }
+
   closeModal('modalDelete');
 }
 
