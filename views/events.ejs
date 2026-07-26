@@ -12,7 +12,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/events.css">
-  <link rel="stylesheet" href="/css/drawer.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
 <body>
@@ -30,6 +29,7 @@
     </div>
   </header>
 
+  <!-- 2. Events (filters + all events grid) -->
   <section class="events-filters">
     <div class="filter-group" id="typeFilters">
       <button class="filter-pill is-active" data-filter="all">All</button>
@@ -40,6 +40,34 @@
     <button class="btn btn--secondary" id="openSubmitEvent">Submit an Event</button>
   </section>
 
+  <section class="events-grid-section">
+    <h2 class="section-title">All Events</h2>
+    <div class="events-grid" id="eventsGrid">
+      <% events.forEach(event => { %>
+        <%- include('partials/event-card', { event }) %>
+      <% }) %>
+    </div>
+
+    <p class="events-empty" id="eventsEmpty" hidden>
+      No events match this filter yet — check back soon, or
+      <a href="#" id="eventsEmptySubmitLink">submit one of your own</a>.
+    </p>
+  </section>
+
+  <!-- 3. Featured events -->
+  <% const featured = events.filter(e => e.featured); %>
+  <% if (featured.length) { %>
+  <section class="events-featured">
+    <h2 class="section-title">Featured</h2>
+    <div class="events-featured__row">
+      <% featured.forEach(event => { %>
+        <%- include('partials/event-card', { event }) %>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+
+  <!-- 4. Map -->
   <section class="events-map-section">
     <h2 class="section-title">Map of Events</h2>
     <div class="events-map-wrap">
@@ -59,40 +87,11 @@
     }))) %>
   </script>
 
-  <% const featured = events.filter(e => e.featured); %>
-  <% if (featured.length) { %>
-  <section class="events-featured">
-    <h2 class="section-title">Featured</h2>
-    <div class="events-featured__row">
-      <% featured.forEach(event => { %>
-        <%- include('partials/event-card', { event }) %>
-      <% }) %>
-    </div>
-  </section>
-  <% } %>
-
-  <section class="events-grid-section">
-    <h2 class="section-title">All Events</h2>
-    <div class="events-grid" id="eventsGrid">
-      <% events.forEach(event => { %>
-        <%- include('partials/event-card', { event }) %>
-      <% }) %>
-    </div>
-
-    <p class="events-empty" id="eventsEmpty" hidden>
-      No events match this filter yet — check back soon, or
-      <a href="#" id="eventsEmptySubmitLink">submit one of your own</a>.
-    </p>
-  </section>
-
   <%- include('partials/event-submission-modal') %>
-  <%- include('partials/auth-modal') %>
+
   <%- include('partials/footer') %>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="/js/events.js"></script>
-  <script src="/js/auth.js"></script>
-  <script src="/js/auth-guard.js"></script>
-  <script src="/js/toast.js"></script>
 </body>
 </html>
