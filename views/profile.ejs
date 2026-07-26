@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= profile.name %> - Profile | Egypt Through the Ages</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+
+<%
+// ---- small helper functions used to build the place cards below ----
+// (in a bigger project these would live in a separate helpers file)
+
+function statusIcon(status) {
+  if (status === "favorite") return '<svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.7-7.5-10.2A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 7.5 3.4C19.5 15.8 12 20.5 12 20.5z" fill="currentColor"/></svg>';
+  if (status === "wishlist") return '<svg viewBox="0 0 24 24"><path d="M6 3.5h12v17l-6-3.6-6 3.6v-17z" fill="currentColor"/></svg>';
+  if (status === "currently-visiting") return '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>';
+  if (status === "visited") return '<svg viewBox="0 0 24 24"><path d="M4 12.5l5 5 11-11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
+  return "";
+}
+
+function starsHtml(rating) {
+  if (rating === 0) {
+    return '<span class="no-rating">Not yet rated</span>';
+  }
+  var filled = "";
+  var empty = "";
+  for (var i = 0; i < rating; i++) filled += "★";
+  for (var i = rating; i < 5; i++) empty += "★";
+  var html = '<span class="stars-filled">' + filled + '</span>';
+  if (empty) html += '<span class="stars-empty">' + empty + '</span>';
+  return html;
+}
+
+function formatDate(dateString) {
+  var d = new Date(dateString);
+  var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+}
+
+function placeCardHtml(place) {
+  var dateWord = place.status === "visited" ? "Visited" : "Added";
+  var html = '<article class="place-card" data-status="' + place.status + '" data-rating="' + place.rating + '" data-name="' + place.name + '" data-location="' + place.location + '" data-date="' + place.date + '">';
+  html += '<div class="place-card__media">';
+  html += '<img src="' + place.image + '" alt="' + place.name + >';
+  html += '<span class="place-card__badge">' + statusIcon(place.status) + '</span>';
+  html += '</div>';
+  html += '<div class="place-card__body">';
+  html += '<div><p class="place-card__name">' + place.name + '</p><p class="place-card__location">' + place.location + '</p></div>';
+  html += '<div><div class="place-card__rating">' + starsHtml(place.rating) + '</div><p class="place-card__date">' + dateWord + ' ' + formatDate(place.date) + '</p></div>';
+  html += '</div></article>';
+  return html;
+}
+
+// counts for the stats bar
+var visitedCount = 0;
+var favoriteCount = 0;
+var wishlistCount = 0;
+places.forEach(function (p) {
+  if (p.status === "visited" || p.status === "currently-visiting") visitedCount++;
+  if (p.status === "favorite") favoriteCount++;
+  if (p.status === "wishlist") wishlistCount++;
+});
+
+// build the activity feed for the Overview tab
+var feedItems = [];
+places.forEach(function (p) {
+  var text = "";
+  if (p.status === "favorite") text = "Added <b>" + p.name + "</b> to Favorites";
+  else if (p.status === "wishlist") text = "Added <b>" + p.name + "</b> to Wishlist";
+  else if (p.status === "currently-visiting") text = "Marked <b>" + p.name + "</b> as currently visiting";
+  else if (p.status === "visited") text = "Marked <b>" + p.name + "</b> as visited";
+  feedItems.push({ date: p.date, icon: statusIcon(p.status), text: text });
+});
+feedItems.sort(function (a, b) { return b.date.localeCompare(a.date); });
+for (var ri = reviews.length - 1; ri >= 0; ri--) {
+  var r = reviews[ri];
+  feedItems.unshift({
+    date: r.time,
+    icon: '<svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.2 6.7.7-5 4.6 1.4 6.7L12 17.3 5.9 20.7 7.3 14 2.4 9.4l6.7-.7z" fill="currentColor"/></svg>',
+    text: "Wrote a review for <b>" + r.placeName + "</b>"
+  });
+}
+%>
+
+<!-- top nav bar -->
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="#" class="wordmark">
+      <span class="wordmark__main">EGYPT</span>
+      <span class="wordmark__sub">Through the Ages</span>
+    </a>
+    <nav class="site-nav">
+      <a href="#">Explore</a>
+      <a href="#">Events</a>
+      <a href="#">Favorites</a>
+      <a href="#">About</a>
+    </nav>
+    <div class="site-header__actions">
+      <button class="icon-btn avatar-pill" id="headerAvatarBtn">
+        <span id="headerAvatarInitial"><%= profile.name.charAt(0).toUpperCase() %></span>
+      </button>
+      <button class="icon-btn">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="profile">
+
+  <!-- profile banner + user info -->
+  <section class="profile-header">
+    <div class="profile-header__banner">
+      <svg class="banner-columns" viewBox="0 0 1400 260" preserveAspectRatio="xMidYMax slice">
+        <defs>
+          <linearGradient id="bannerFade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0b0b0c" stop-opacity="0"/>
+            <stop offset="100%" stop-color="#0b0b0c" stop-opacity="1"/>
+          </linearGradient>
+        </defs>
+        <g fill="#d8b878" opacity="0.14">
+          <rect x="80" y="0" width="34" height="260"/>
+          <rect x="210" y="0" width="34" height="260"/>
+          <rect x="340" y="0" width="34" height="260"/>
+          <rect x="470" y="0" width="34" height="260"/>
+          <rect x="900" y="0" width="34" height="260"/>
+          <rect x="1030" y="0" width="34" height="260"/>
+          <rect x="1160" y="0" width="34" height="260"/>
+          <rect x="1290" y="0" width="34" height="260"/>
+        </g>
+        <g fill="#d8b878" opacity="0.09">
+          <circle cx="700" cy="40" r="120"/>
+        </g>
+        <rect x="0" y="0" width="1400" height="260" fill="url(#bannerFade)"/>
+      </svg>
+    </div>
+
+    <div class="profile-header__content">
+      <div class="profile-avatar" id="avatar">
+        <img src="<%= profile.avatar %>" alt="Profile picture" id="avatarImg" onerror="this.style.display='none'">
+        <span id="avatarInitial"><%= profile.name.charAt(0).toUpperCase() %></span>
+      </div>
+
+      <div class="profile-info">
+        <h1 id="profileName"><%= profile.name %></h1>
+        <p class="profile-handle" id="profileHandle">@<%= profile.handle %></p>
+        <p class="profile-bio" id="profileBio"><%= profile.bio %></p>
+        <div class="profile-meta">
+          <span class="meta-item">
+            <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+            <span id="profileLocation"><%= profile.location %></span>
+          </span>
+          <span class="meta-dot">•</span>
+          <span class="meta-item">
+            <svg viewBox="0 0 24 24" width="14" height="14"><rect x="3.5" y="5" width="17" height="16" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.5"/></svg>
+            Joined <span id="profileJoined"><%= profile.joined %></span>
+          </span>
+        </div>
+      </div>
+
+      <button class="btn btn--ghost profile-edit-btn" id="editProfileBtn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path d="M14.7 4.3l5 5L8.5 20.5 3 21.5l1-5.5L14.7 4.3z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg>
+        Edit Profile
+      </button>
+    </div>
+  </section>
+
+  <!-- stats cards -->
+  <section class="stats-bar" id="statsBar">
+    <div class="stat-card">
+      <span class="stat-value" id="statVisited"><%= visitedCount %></span>
+      <span class="stat-label">Places Visited</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value" id="statReviews"><%= reviews.length %></span>
+      <span class="stat-label">Reviews Written</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value" id="statFavorites"><%= favoriteCount %></span>
+      <span class="stat-label">Favorites</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value" id="statWishlist"><%= wishlistCount %></span>
+      <span class="stat-label">Wishlist</span>
+    </div>
+  </section>
+
+  <!-- tab buttons -->
+  <nav class="tabs" id="profileTabs">
+    <button class="tab is-active" data-tab="overview">Overview</button>
+    <button class="tab" data-tab="visited">Visited</button>
+    <button class="tab" data-tab="reviews">Reviews</button>
+    <button class="tab" data-tab="lists">Lists</button>
+  </nav>
+
+  <!-- tab content -->
+  <section class="tab-panels">
+
+    <!-- overview tab -->
+    <div class="tab-panel is-active" id="panel-overview">
+      <div class="panel-heading">
+        <h2>Recent Activity</h2>
+        <span class="panel-sub">This session</span>
+      </div>
+      <ul class="activity-feed" id="activityFeed">
+        <% feedItems.forEach(function (item) {
+          var dateLabel = item.date;
+          if (dateLabel.indexOf("-") === 4) dateLabel = formatDate(item.date);
+        %>
+        <li>
+          <span class="activity-icon"><%- item.icon %></span>
+          <span class="activity-text"><%- item.text %></span>
+          <span class="activity-time"><%= dateLabel %></span>
+        </li>
+        <% }) %>
+      </ul>
+    </div>
+
+    <!-- visited tab -->
+    <div class="tab-panel" id="panel-visited">
+      <div class="panel-heading">
+        <h2>Visited Places</h2>
+      </div>
+      <div class="place-grid" id="visitedGrid">
+        <% places.filter(function (p) {
+          return p.status === "visited" || p.status === "currently-visiting";
+        }).forEach(function (p) { %>
+          <%- placeCardHtml(p) %>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- reviews tab -->
+    <div class="tab-panel" id="panel-reviews">
+      <div class="panel-heading">
+        <h2>My Reviews</h2>
+      </div>
+      <ul class="review-feed" id="reviewFeed">
+        <% reviews.forEach(function (r) { %>
+        <li class="review-card">
+          <div class="review-card__top">
+            <div>
+              <div class="review-card__place"><%= r.placeName %></div>
+              <div class="review-card__location"><%= r.category %></div>
+            </div>
+            <div class="review-card__rating"><%- starsHtml(r.rating) %></div>
+          </div>
+          <p class="review-card__text"><%= r.text %></p>
+          <p class="review-card__time">Reviewed <%= r.time %></p>
+        </li>
+        <% }) %>
+      </ul>
+    </div>
+
+    <!-- lists tab -->
+    <div class="tab-panel" id="panel-lists">
+      <div class="panel-heading">
+        <h2>My Lists</h2>
+      </div>
+
+      <div class="lists-toolbar">
+        <div class="filter-pills" id="filterPills">
+          <button class="pill is-active" data-filter="all">All</button>
+          <button class="pill" data-filter="favorite">
+            <svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 20.5s-7.5-4.7-7.5-10.2A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 7.5 3.4C19.5 15.8 12 20.5 12 20.5z" fill="currentColor"/></svg>
+            Favorites
+          </button>
+          <button class="pill" data-filter="wishlist">
+            <svg viewBox="0 0 24 24" width="12" height="12"><path d="M6 3.5h12v17l-6-3.6-6 3.6v-17z" fill="currentColor"/></svg>
+            Want to Visit
+          </button>
+          <button class="pill" data-filter="currently-visiting">
+            <svg viewBox="0 0 24 24" width="12" height="12"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+            Currently Visiting
+          </button>
+          <button class="pill" data-filter="visited">
+            <svg viewBox="0 0 24 24" width="12" height="12"><path d="M4 12.5l5 5 11-11" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Visited
+          </button>
+        </div>
+
+        <div class="lists-toolbar__right">
+          <label class="sort-select">
+            Sort by:
+            <select id="sortSelect">
+              <option value="recent">Recently Added</option>
+              <option value="name">Name (A-Z)</option>
+              <option value="rating">Rating</option>
+              <option value="location">Location</option>
+            </select>
+          </label>
+          <div class="view-switch" id="viewSwitch">
+            <button class="view-btn is-active" data-view="grid">
+              <svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="3" width="8" height="8" rx="1.5" fill="currentColor"/><rect x="13" y="3" width="8" height="8" rx="1.5" fill="currentColor"/><rect x="3" y="13" width="8" height="8" rx="1.5" fill="currentColor"/><rect x="13" y="13" width="8" height="8" rx="1.5" fill="currentColor"/></svg>
+            </button>
+            <button class="view-btn" data-view="list">
+              <svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="4.5" width="18" height="3" rx="1" fill="currentColor"/><rect x="3" y="10.5" width="18" height="3" rx="1" fill="currentColor"/><rect x="3" y="16.5" width="18" height="3" rx="1" fill="currentColor"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="place-grid" id="listsGrid">
+        <% places.forEach(function (p) { %>
+          <%- placeCardHtml(p) %>
+        <% }) %>
+      </div>
+      <p class="empty-state" id="listsEmpty" hidden>Nothing here yet - save a place to start this list.</p>
+    </div>
+
+  </section>
+</main>
+
+<!-- edit profile popup -->
+<div class="modal-backdrop" id="modalBackdrop" hidden>
+  <div class="modal">
+    <div class="modal__header">
+      <h2>Edit Profile</h2>
+      <button class="icon-btn" id="modalClose">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <form id="editProfileForm" class="modal__body" action="/profile/update" method="POST">
+      <label class="field">
+        <span>Name</span>
+        <input type="text" name="name" id="inputName" value="<%= profile.name %>" required maxlength="60">
+      </label>
+      <label class="field">
+        <span>Handle</span>
+        <div class="field-with-prefix">
+          <span class="prefix">@</span>
+          <input type="text" name="handle" id="inputHandle" value="<%= profile.handle %>" required maxlength="30">
+        </div>
+      </label>
+      <label class="field">
+        <span>Bio</span>
+        <textarea name="bio" id="inputBio" rows="3" maxlength="160"><%= profile.bio %></textarea>
+      </label>
+      <label class="field">
+        <span>Location</span>
+        <input type="text" name="location" id="inputLocation" value="<%= profile.location %>" maxlength="60">
+      </label>
+      <div class="modal__footer">
+        <button type="button" class="btn btn--ghost" id="modalCancel">Cancel</button>
+        <button type="submit" class="btn btn--solid">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- small popup message after saving -->
+<div class="toast" id="toast" hidden></div>
+
+<script src="/js/profile.js"></script>
+</body>
+</html>
