@@ -1,9 +1,6 @@
 // data/users.js
 //
-// TEMPORARY mock user store — plain in-memory array, plaintext passwords.
-// This is NOT secure and is only a stand-in until real MongoDB + password
-// hashing (bcrypt) work happens, per roadmap Section 10/11/12.
-// Resets to just these 2 seeded accounts every time the server restarts.
+// TEMPORARY mock user store 
 
 const users = [
   {

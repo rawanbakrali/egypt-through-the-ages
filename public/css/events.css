@@ -69,8 +69,8 @@ body {
   align-items: center;
   padding: 0 64px;
   background:
-    linear-gradient(100deg, rgba(5,5,5,0.92) 15%, rgba(5,5,5,0.55) 60%, rgba(5,5,5,0.75) 100%),
-    url('/images/events/events-hero.jpg') center 65%/cover;
+    linear-gradient(100deg, rgba(5,5,5,0.4) 15%, rgba(5,5,5,0.2) 60%, rgba(5,5,5,0.3) 100%),
+    url('/assets/hero/events-hero1.jpg') center 65%/cover;
   border-bottom: 1px solid var(--border-color);
 }
 .events-hero__inner { max-width: 640px; }
@@ -132,7 +132,19 @@ body {
   overflow-x: auto;
   padding-bottom: 8px;
 }
-.events-featured__row .event-card { min-width: 320px; }
+
+/* 1. Locks all featured cards to the exact same fixed width */
+.events-featured__row .event-card { 
+  width: 320px; 
+  flex: 0 0 320px; 
+}
+
+/* 2. Forces all card images to have identical heights */
+.event-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
 
 .events-grid {
   display: grid;
@@ -146,7 +158,6 @@ body {
   text-align: center;
   padding: 40px 0;
 }
-.events-empty a { color: var(--text-primary); }
 
 /* ---------- Event Card ---------- */
 .event-card {
