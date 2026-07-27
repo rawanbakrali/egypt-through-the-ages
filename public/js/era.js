@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 2. MAP INITIALIZATION
     // ==========================================
-    // Crucial: This must exactly match the ID in your HTML (<div id="era-map"></div>)
     const map = L.map('era-map', {
         center: window.ERA_DATA.mapCenter,
         zoom: window.ERA_DATA.mapZoom,
@@ -180,10 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
             tab.classList.add('active');
 
             const tabName = tab.innerText.trim();
-
-            // Only Overview, Reviews, and Gallery have real panels built so far.
-            // Other tabs (History, Architecture, 3D Tour, Nearby)
-            // just visually activate for now, matching current partial build.
             const panelMap = {
                 'Overview': drawerPanelOverview,
                 'Reviews': drawerPanelReviews,

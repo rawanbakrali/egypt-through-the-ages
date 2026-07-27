@@ -44,7 +44,7 @@ function placeCardHtml(place) {
   var dateWord = place.status === "visited" ? "Visited" : "Added";
   var html = '<article class="place-card" data-status="' + place.status + '" data-rating="' + place.rating + '" data-name="' + place.name + '" data-location="' + place.location + '" data-date="' + place.date + '">';
   html += '<div class="place-card__media">';
-  html += '<img src="' + place.image + '" alt="' + place.name + >';
+  html += '<img src="' + place.image + '" alt="' + place.name + '">';
   html += '<span class="place-card__badge">' + statusIcon(place.status) + '</span>';
   html += '</div>';
   html += '<div class="place-card__body">';

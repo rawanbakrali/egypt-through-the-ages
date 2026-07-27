@@ -3,7 +3,6 @@ const path = require('path');
 const session = require('express-session');
 const eras = require('./data/eras');
 const events = require('./data/events');
-const places = require('./data/places');
 const bookings = require('./data/bookings');
 const users = require('./data/users');
 
@@ -45,6 +44,56 @@ function requireAuth(req, res, next) {
     }
     next();
 }
+
+// ==========================================
+// HELPERS — flatten data/eras.js into a manageable admin list
+// ==========================================
+function flattenPlaces() {
+    const flat = [];
+    Object.keys(eras).forEach(eraSlug => {
+        const era = eras[eraSlug];
+        if (!era.categoryData) return;
+        Object.keys(era.categoryData).forEach(categoryKey => {
+            const categoryInfo = (era.categories || []).find(c => c.key === categoryKey) || {};
+            era.categoryData[categoryKey].forEach(place => {
+                if (place.status === undefined) place.status = 'published'; // default for pre-existing places
+                flat.push({
+                    compositeId: `${eraSlug}|||${categoryKey}|||${place.name}`,
+                    eraSlug,
+                    eraName: era.name,
+                    categoryKey,
+                    categoryLabel: categoryInfo.label || categoryKey,
+                    name: place.name,
+                    location: place.fullLocation || place.location,
+                    image: place.image,
+                    description: place.desc,
+                    status: place.status,
+                    updatedAt: place.updatedAt || '—'
+                });
+            });
+        });
+    });
+    return flat;
+}
+
+function buildEraCategoryMap() {
+    const map = {};
+    Object.keys(eras).forEach(eraSlug => {
+        const era = eras[eraSlug];
+        map[eraSlug] = {
+            name: era.name,
+            categories: (era.categories || []).map(c => ({ key: c.key, label: c.label }))
+        };
+    });
+    return map;
+}
+
+function findPlace(eraSlug, categoryKey, name) {
+    const era = eras[eraSlug];
+    if (!era || !era.categoryData || !era.categoryData[categoryKey]) return null;
+    return era.categoryData[categoryKey].find(p => p.name === name) || null;
+}
+
 function requireAdmin(req, res, next) {
     if (!req.session.user || req.session.user.role !== 'admin') {
         return res.status(403).json({ success: false, message: 'Admin access required.' });
@@ -73,67 +122,88 @@ app.get('/event/:slug', (req, res) => {
     if (!event) {
         return res.status(404).send('Event not found');
     }
+
+    res.render('event', {
+        title: `${event.title} | Egypt Through the Ages`,
+        event: event
+    });
 });
 
 // ==========================================
-// ADMIN — REAL PLACES CRUD (in-memory, resets on server restart)
+// ADMIN —operating on data/eras.js
+// (in-memory, resets on server restart)
 // ==========================================
 
-app.post('/admin/places', requireAdmin, (req, res) => {
-    const { name, category, status, location, image, description } = req.body;
+app.post('/admin/eras/:eraSlug/:categoryKey/places', requireAdmin, (req, res) => {
+    const { eraSlug, categoryKey } = req.params;
+    const { name, location, image, description, status } = req.body;
 
+    const era = eras[eraSlug];
+    if (!era || !era.categoryData || !era.categoryData[categoryKey]) {
+        return res.status(404).json({ success: false, message: 'Era or category not found.' });
+    }
     if (!name || !location || !image) {
         return res.status(400).json({ success: false, message: 'Name, location, and image are required.' });
     }
+    if (era.categoryData[categoryKey].find(p => p.name === name)) {
+        return res.status(400).json({ success: false, message: 'A place with this name already exists in this category.' });
+    }
 
     const newPlace = {
-        id: 'plc-' + Date.now(),
-        slug: name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
         name,
-        category: category || 'Ancient Egypt',
         location,
-        status: status || 'draft',
-        updatedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        fullLocation: location,
         image,
-        description: description || ''
+        desc: description || '',
+        history: description || '',
+        tags: [],
+        interactive: true,
+        reviewCount: "0",
+        thumbnails: [],
+        quickFacts: { built: '', founder: '', style: '', function: '' },
+        visitorInfo: { hours: '', bestTime: '', dressCode: '', entryFee: '' },
+        status: status || 'published',
+        updatedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     };
 
-    places.push(newPlace); // in-memory only — resets on server restart
+    era.categoryData[categoryKey].push(newPlace); // in-memory only — resets on server restart
     res.json({ success: true, place: newPlace });
 });
 
-app.put('/admin/places/:id', requireAdmin, (req, res) => {
-    const place = places.find(p => p.id === req.params.id);
-    if (!place) {
-        return res.status(404).json({ success: false, message: 'Place not found.' });
-    }
+app.put('/admin/eras/:eraSlug/:categoryKey/places/:name', requireAdmin, (req, res) => {
+    const { eraSlug, categoryKey, name } = req.params;
+    const place = findPlace(eraSlug, categoryKey, name);
+    if (!place) return res.status(404).json({ success: false, message: 'Place not found.' });
 
-    const { name, category, status, location, image, description } = req.body;
-    if (name) place.name = name;
-    if (category) place.category = category;
-    if (status) place.status = status;
-    if (location) place.location = location;
+    const { name: newName, location, image, description, status } = req.body;
+    if (newName) place.name = newName;
+    if (location) { place.location = location; place.fullLocation = location; }
     if (image) place.image = image;
-    if (description !== undefined) place.description = description;
+    if (description !== undefined) { place.desc = description; }
+    if (status) place.status = status;
     place.updatedAt = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
     res.json({ success: true, place });
 });
 
-app.delete('/admin/places/:id', requireAdmin, (req, res) => {
-    const index = places.findIndex(p => p.id === req.params.id);
-    if (index === -1) {
-        return res.status(404).json({ success: false, message: 'Place not found.' });
+app.delete('/admin/eras/:eraSlug/:categoryKey/places/:name', requireAdmin, (req, res) => {
+    const { eraSlug, categoryKey, name } = req.params;
+    const era = eras[eraSlug];
+    if (!era || !era.categoryData || !era.categoryData[categoryKey]) {
+        return res.status(404).json({ success: false, message: 'Era or category not found.' });
     }
-    places.splice(index, 1); // in-memory only — resets on server restart
+    const index = era.categoryData[categoryKey].findIndex(p => p.name === name);
+    if (index === -1) return res.status(404).json({ success: false, message: 'Place not found.' });
+
+    era.categoryData[categoryKey].splice(index, 1); // in-memory only — resets on server restart
     res.json({ success: true });
 });
 
-app.patch('/admin/places/:id/status', requireAdmin, (req, res) => {
-    const place = places.find(p => p.id === req.params.id);
-    if (!place) {
-        return res.status(404).json({ success: false, message: 'Place not found.' });
-    }
+app.patch('/admin/eras/:eraSlug/:categoryKey/places/:name/status', requireAdmin, (req, res) => {
+    const { eraSlug, categoryKey, name } = req.params;
+    const place = findPlace(eraSlug, categoryKey, name);
+    if (!place) return res.status(404).json({ success: false, message: 'Place not found.' });
+
     place.status = place.status === 'published' ? 'draft' : 'published';
     res.json({ success: true, status: place.status });
 });
@@ -248,7 +318,8 @@ app.post('/admin/events/:slug/reject', requireAdmin, (req, res) => {
 app.get('/admin',requireAdmin, (req, res) => {
     res.render('admin', {
         title: 'Admin Management UI — Egypt Through the Ages',
-        places: places,
+        places: flattenPlaces(),
+        eraCategoryMap: buildEraCategoryMap(),
         events: events,
         bookings: bookings
     });
@@ -258,7 +329,19 @@ app.get('/profile', (req, res) => {
     if (!req.session.user) return res.redirect('/');
     if (req.session.user.role === 'admin') return res.redirect('/admin');
 
-    res.render('profile', { title: 'My Profile | Egypt Through the Ages' });
+    res.render('profile', {
+        title: 'My Profile | Egypt Through the Ages',
+        profile: {
+            name: req.session.user.username,
+            handle: req.session.user.username.toLowerCase(),
+            bio: 'Exploring Egypt through the ages, one place at a time.',
+            location: 'Egypt',
+            joined: 'This session', // no real account-creation date tracked yet
+            avatar: '' // no real avatar upload system yet — falls back to initial letter
+        },
+        places: [], // no real per-user visited/favorite/wishlist data yet
+        reviews: [] // reviews are currently stored per-place, not per-user — see note below
+    });
 });
 
 app.get('/era/:slug', (req, res) => {
@@ -267,10 +350,24 @@ app.get('/era/:slug', (req, res) => {
     if (!era) {
         return res.status(404).send('Era not found');
     }
+    const publicEra = { ...era };
+    if (era.categoryData) {
+        publicEra.categoryData = {};
+        Object.keys(era.categoryData).forEach(categoryKey => {
+            publicEra.categoryData[categoryKey] = era.categoryData[categoryKey].filter(p => p.status !== 'draft');
+        });
+    }
+    if (era.markersData) {
+        const draftNames = new Set();
+        Object.values(era.categoryData || {}).flat().forEach(p => {
+            if (p.status === 'draft') draftNames.add(p.name);
+        });
+        publicEra.markersData = era.markersData.filter(m => !draftNames.has(m.name));
+    }
 
     res.render('era', {
         title: `${era.name} | Egypt Through the Ages`,
-        era: era
+        era: publicEra
     });
 });
 

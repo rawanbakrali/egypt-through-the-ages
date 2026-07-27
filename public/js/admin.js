@@ -1,12 +1,46 @@
 /* ==========================================================================
-   Egypt Through the Ages — Admin Management UI Frontend Script
+   Egypt Through the Ages 
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
   initNavigation();
   initModalTriggers();
   initGlobalSearch();
+  populateEraOptions();
 });
+
+function populateEraOptions() {
+  const eraSelect = document.getElementById('placeFormEra');
+  if (!eraSelect || !window.ERA_CATEGORY_MAP) return;
+
+  Object.keys(window.ERA_CATEGORY_MAP).forEach(eraSlug => {
+    const opt = document.createElement('option');
+    opt.value = eraSlug;
+    opt.textContent = window.ERA_CATEGORY_MAP[eraSlug].name;
+    eraSelect.appendChild(opt);
+  });
+}
+
+function populateCategoryOptions(preselectCategoryKey) {
+  const eraSelect = document.getElementById('placeFormEra');
+  const categorySelect = document.getElementById('placeFormCategory');
+  const eraSlug = eraSelect.value;
+
+  categorySelect.innerHTML = '';
+
+  if (!eraSlug || !window.ERA_CATEGORY_MAP[eraSlug]) {
+    categorySelect.innerHTML = '<option value="">Select an era first</option>';
+    return;
+  }
+
+  window.ERA_CATEGORY_MAP[eraSlug].categories.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat.key;
+    opt.textContent = cat.label;
+    if (cat.key === preselectCategoryKey) opt.selected = true;
+    categorySelect.appendChild(opt);
+  });
+}
 
 // View Titles Mapping
 const VIEW_TITLES = {
@@ -101,6 +135,10 @@ function initModalTriggers() {
       document.getElementById('modalPlaceTitle').textContent = "Add New Historical Place";
       document.getElementById('formPlace').reset();
       document.getElementById('placeFormId').value = "";
+      document.getElementById('placeFormOriginalName').value = "";
+      document.getElementById('placeFormEra').disabled = false;
+      document.getElementById('placeFormCategory').disabled = false;
+      populateCategoryOptions();
       openModal('modalPlace');
     });
   });
@@ -133,9 +171,10 @@ function toggleDrawer(drawerId) {
 // HISTORICAL PLACES FORM & STATUS TOGGLE
 // ==========================================
 
-async function togglePlaceStatus(placeId) {
+async function togglePlaceStatus(compositeId) {
+  const [eraSlug, categoryKey, name] = compositeId.split('|||');
   try {
-    const res = await fetch(`/admin/places/${placeId}/status`, { method: 'PATCH' });
+    const res = await fetch(`/admin/eras/${eraSlug}/${categoryKey}/places/${encodeURIComponent(name)}/status`, { method: 'PATCH' });
     const data = await res.json();
 
     if (!data.success) {
@@ -143,7 +182,7 @@ async function togglePlaceStatus(placeId) {
       return;
     }
 
-    document.querySelectorAll(`tr[data-id="${placeId}"]`).forEach(row => {
+    document.querySelectorAll(`tr[data-id="${compositeId}"]`).forEach(row => {
       const badge = row.querySelector('.status-badge');
       if (badge) {
         const isPublished = data.status === 'published';
@@ -158,43 +197,56 @@ async function togglePlaceStatus(placeId) {
   }
 }
 
-function openEditPlaceModal(placeId) {
-  const row = document.querySelector(`tr[data-id="${placeId}"]`);
-  if (!row) return;
-
-  const title = row.querySelector('.cell-title') ? row.querySelector('.cell-title').textContent : '';
-  const categoryCell = row.cells[1] ? row.cells[1].textContent : '';
-  const badge = row.querySelector('.status-badge');
-  const status = badge && badge.textContent.trim().toLowerCase() === 'published' ? 'published' : 'draft';
-  const img = row.querySelector('.cell-thumb') ? row.querySelector('.cell-thumb').src : '';
+function openEditPlaceModal(compositeId) {
+  const place = (window.ADMIN_PLACES || []).find(p => p.compositeId === compositeId);
+  if (!place) return;
 
   document.getElementById('modalPlaceTitle').textContent = "Edit Historical Place";
-  document.getElementById('placeFormId').value = placeId;
-  document.getElementById('placeFormName').value = title;
-  document.getElementById('placeFormCategory').value = categoryCell.trim() || 'Ancient Egypt';
-  document.getElementById('placeFormStatus').value = status;
-  document.getElementById('placeFormLocation').value = "Egypt";
-  document.getElementById('placeFormImage').value = img;
-  document.getElementById('placeFormDescription').value = `Historical site information for ${title}`;
+  document.getElementById('placeFormId').value = compositeId;
+  document.getElementById('placeFormOriginalName').value = place.name;
+  document.getElementById('placeFormName').value = place.name;
+  document.getElementById('placeFormStatus').value = place.status;
+  document.getElementById('placeFormLocation').value = place.location;
+  document.getElementById('placeFormImage').value = place.image;
+  document.getElementById('placeFormDescription').value = place.description || '';
+
+  const eraSelect = document.getElementById('placeFormEra');
+  eraSelect.value = place.eraSlug;
+  eraSelect.disabled = true; // era/category can't be changed once created — see Phase B note
+  populateCategoryOptions(place.categoryKey);
+  document.getElementById('placeFormCategory').disabled = true;
 
   openModal('modalPlace');
 }
 
 async function handlePlaceFormSubmit(e) {
   e.preventDefault();
-  const id = document.getElementById('placeFormId').value;
+  const compositeId = document.getElementById('placeFormId').value;
+  const originalName = document.getElementById('placeFormOriginalName').value;
   const name = document.getElementById('placeFormName').value;
-  const category = document.getElementById('placeFormCategory').value;
+  const eraSlug = document.getElementById('placeFormEra').value;
+  const categoryKey = document.getElementById('placeFormCategory').value;
   const status = document.getElementById('placeFormStatus').value;
   const location = document.getElementById('placeFormLocation').value;
   const image = document.getElementById('placeFormImage').value;
   const description = document.getElementById('placeFormDescription').value;
 
-  const payload = { name, category, status, location, image, description };
+  if (!eraSlug || !categoryKey) {
+    showToast('Please select both an era and a category.');
+    return;
+  }
+
+  const payload = { name, location, image, description, status };
 
   try {
-    const url = id ? `/admin/places/${id}` : '/admin/places';
-    const method = id ? 'PUT' : 'POST';
+    let url, method;
+    if (compositeId) {
+      url = `/admin/eras/${eraSlug}/${categoryKey}/places/${encodeURIComponent(originalName)}`;
+      method = 'PUT';
+    } else {
+      url = `/admin/eras/${eraSlug}/${categoryKey}/places`;
+      method = 'POST';
+    }
 
     const res = await fetch(url, {
       method,
@@ -209,8 +261,6 @@ async function handlePlaceFormSubmit(e) {
     }
 
     closeModal('modalPlace');
-    // Reload so the table reflects the real, current server-side data —
-    // avoids any risk of the page's HTML drifting from actual saved state.
     window.location.reload();
   } catch (err) {
     showToast('Network error — could not save place.');
@@ -428,8 +478,9 @@ async function executeDelete() {
   const { type, id, name } = activeDeletePayload;
 
   if (type === 'place') {
+    const [eraSlug, categoryKey, name] = id.split('|||');
     try {
-      const res = await fetch(`/admin/places/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/admin/eras/${eraSlug}/${categoryKey}/places/${encodeURIComponent(name)}`, { method: 'DELETE' });
       const data = await res.json();
 
       if (!data.success) {
