@@ -436,8 +436,6 @@ module.exports = {
 
   },
 
-  // ---- STUB DATA (Step 12): proves /era/:slug works for multiple eras.
-  // Full content for each is the actual Stage 2 era-building work, done later.
   "ancient-egypt": {
     slug: "ancient-egypt",
     name: "Ancient Egypt",

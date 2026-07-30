@@ -22,9 +22,8 @@
   const galleryGrid = document.getElementById('galleryGrid');
   const galleryEmptyMessage = document.getElementById('galleryEmptyMessage');
 
-  // Gallery and Reviews are now tracked PER PLACE, keyed by place name, in-session only.
-  const galleryByPlace = {}; // { "Al-Azhar Mosque": [ dataUrl, dataUrl, ... ] }
-  const reviewsByPlace = {}; // { "Al-Azhar Mosque": [ {rating, review, tags}, ... ] }
+  const galleryByPlace = {}; 
+  const reviewsByPlace = {}; 
 
   function renderReviewsForPlace(placeName) {
     const reviewList = document.getElementById('reviewList');
@@ -273,14 +272,12 @@
       listName: listSelect.value || null, // placeholder source — will come from user's real lists once profile/backend exist
     };
 
-    // Frontend-only phase: no backend/API yet, per roadmap Point 16.
     console.log('Review saved (local only):', reviewData);
 
     // Feed this review's photos into this place's in-session Gallery tab
     addImagesToGallery(placeKey, uploadedImages.map((img) => img.dataUrl));
 
     // Store this review under the place it belongs to, then refresh
-    // that place's Reviews tab and its live rating.
     const placeKey = activePlaceSlug || 'Unknown place';
     if (!reviewsByPlace[placeKey]) reviewsByPlace[placeKey] = [];
     reviewsByPlace[placeKey].push({

@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Initialize Map centered on Egypt's geographic center
     const map = L.map('map', {
         center: [26.8206, 30.8025],
         zoom: 6,
@@ -8,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
         maxZoom: 12
     });
 
-    // 2. Add custom Zoom and Fullscreen placement on the bottom right (as per design image)
     L.control.zoom({
         position: 'bottomright'
     }).addTo(map);
@@ -67,7 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
             iconAnchor: [8, 8]
         });
 
-        // Rule 17 Compliance: Popup design has a high-contrast white layout inside the CSS
         const popupContent = `
             <div class="map-popup-card">
                 <span class="popup-era-tag" style="color: ${loc.color};">${loc.era.toUpperCase()} EGYPT</span>

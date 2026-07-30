@@ -105,7 +105,7 @@
     }
   });
 
-  // FORGOT PASSWORD (UI only — no real email sent)
+  // FORGOT PASSWORD (UI only not functioning yet)
   document.getElementById('forgotForm').addEventListener('submit', (e) => {
     e.preventDefault();
     clearMessage();
