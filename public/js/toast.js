@@ -9,7 +9,7 @@
     if (!toastEl) {
       toastEl = document.createElement('div');
       toastEl.id = 'globalToast';
-      toastEl.className = 'toast-notification';
+     toastEl.className = 'toast-notification';
       document.body.appendChild(toastEl);
     }
 

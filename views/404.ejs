@@ -1,0 +1,25 @@
+<!-- views/404.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('partials/navbar') %>
+
+    <section style="min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 5%;">
+        <span class="small-label" style="margin-bottom: 20px;">404 — PAGE NOT FOUND</span>
+        <h1 class="hero-title" style="margin-bottom: 20px;">This page doesn't exist</h1>
+        <p class="body-text-secondary" style="max-width: 480px; margin-bottom: 40px;">
+            The page you're looking for may have been moved, renamed, or never existed at all.
+        </p>
+        <a href="/" class="btn-outline">RETURN HOME &rarr;</a>
+    </section>
+
+    <%- include('partials/footer') %>
+    <%- include('partials/auth-modal') %>
+</body>
+</html>

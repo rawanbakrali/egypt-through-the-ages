@@ -1,0 +1,40 @@
+<tr data-id="<%= b.id %>"<% if (variant === 'overview') { %> data-status="<%= b.status %>"<% } %>>
+  <td><strong><%= b.id %></strong></td>
+  <td>
+    <div class="cell-media">
+      <img src="<%= b.eventImage %>" alt="<%= b.eventTitle %>" class="cell-thumb" />
+      <div class="cell-info"><span class="cell-title"><%= b.eventTitle %></span></div>
+    </div>
+  </td>
+  <td><%= b.bookedBy %></td>
+  <% if (variant === 'full') { %>
+    <td><%= b.email %></td>
+  <% } %>
+  <td><%= b.date %></td>
+  <% if (variant === 'overview') { %>
+    <td>
+      <span class="status-badge badge-<%= b.status %>" data-action="override-booking" data-id="<%= b.id %>" data-status="<%= b.status %>" title="Click to override status">
+        <%= b.status.charAt(0).toUpperCase() + b.status.slice(1) %>
+      </span>
+    </td>
+    <td><%= b.tickets %></td>
+    <td>
+      <div class="action-group">
+        <button class="action-btn" title="Manage Booking Status" data-action="override-booking" data-id="<%= b.id %>" data-status="<%= b.status %>">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </td>
+  <% } else { %>
+    <td><%= b.tickets %></td>
+    <td><%= b.totalPrice %></td>
+    <td>
+      <span class="status-badge badge-<%= b.status %>" data-action="override-booking" data-id="<%= b.id %>" data-status="<%= b.status %>">
+        <%= b.status.charAt(0).toUpperCase() + b.status.slice(1) %>
+      </span>
+    </td>
+    <td>
+      <button class="btn btn-secondary btn-sm" data-action="override-booking" data-id="<%= b.id %>" data-status="<%= b.status %>">Override Status</button>
+    </td>
+  <% } %>
+</tr>

@@ -6,8 +6,18 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavigation();
   initModalTriggers();
   initGlobalSearch();
+  initActionDelegation(); 
   populateEraOptions();
+
+  const logoutBtn = document.getElementById('adminLogoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      await fetch('/logout', { method: 'POST' });
+      window.location.href = '/';
+    });
+  }
 });
+
 
 function populateEraOptions() {
   const eraSelect = document.getElementById('placeFormEra');
@@ -138,6 +148,10 @@ function initModalTriggers() {
       document.getElementById('placeFormOriginalName').value = "";
       document.getElementById('placeFormEra').disabled = false;
       document.getElementById('placeFormCategory').disabled = false;
+      document.getElementById('placeFormImage').value = "";
+      const placePreview = document.getElementById('placeFormImagePreview');
+      placePreview.src = "";
+      placePreview.style.display = 'none';
       populateCategoryOptions();
       openModal('modalPlace');
     });
@@ -149,6 +163,10 @@ function initModalTriggers() {
       document.getElementById('modalEventTitle').textContent = "Add Official Event";
       document.getElementById('formEvent').reset();
       document.getElementById('eventFormSlug').value = "";
+      document.getElementById('eventFormImage').value = "";
+      const eventPreview = document.getElementById('eventFormImagePreview');
+      eventPreview.src = "";
+      eventPreview.style.display = 'none';
       openModal('modalEvent');
     });
   });
@@ -172,9 +190,8 @@ function toggleDrawer(drawerId) {
 // ==========================================
 
 async function togglePlaceStatus(compositeId) {
-  const [eraSlug, categoryKey, name] = compositeId.split('|||');
   try {
-    const res = await fetch(`/admin/eras/${eraSlug}/${categoryKey}/places/${encodeURIComponent(name)}/status`, { method: 'PATCH' });
+    const res = await fetch(`/admin/places/${compositeId}/status`, { method: 'PATCH' });
     const data = await res.json();
 
     if (!data.success) {
@@ -210,11 +227,15 @@ function openEditPlaceModal(compositeId) {
   document.getElementById('placeFormImage').value = place.image;
   document.getElementById('placeFormDescription').value = place.description || '';
 
+  const placePreview = document.getElementById('placeFormImagePreview');
+  placePreview.src = place.image;
+  placePreview.style.display = place.image ? 'block' : 'none';
+
   const eraSelect = document.getElementById('placeFormEra');
   eraSelect.value = place.eraSlug;
-  eraSelect.disabled = true; // era/category can't be changed once created — see Phase B note
+  eraSelect.disabled = false;
   populateCategoryOptions(place.categoryKey);
-  document.getElementById('placeFormCategory').disabled = true;
+  document.getElementById('placeFormCategory').disabled = false;
 
   openModal('modalPlace');
 }
@@ -222,31 +243,49 @@ function openEditPlaceModal(compositeId) {
 async function handlePlaceFormSubmit(e) {
   e.preventDefault();
   const compositeId = document.getElementById('placeFormId').value;
-  const originalName = document.getElementById('placeFormOriginalName').value;
   const name = document.getElementById('placeFormName').value;
   const eraSlug = document.getElementById('placeFormEra').value;
   const categoryKey = document.getElementById('placeFormCategory').value;
   const status = document.getElementById('placeFormStatus').value;
   const location = document.getElementById('placeFormLocation').value;
-  const image = document.getElementById('placeFormImage').value;
   const description = document.getElementById('placeFormDescription').value;
+  const fileInput = document.getElementById('placeFormImageFile');
+  const hiddenImage = document.getElementById('placeFormImage');
 
   if (!eraSlug || !categoryKey) {
-    showToast('Please select both an era and a category.');
+  showToast('Please select both an era and a category.');
+  return;
+}
+
+  // If a new file was chosen, upload it first
+  let imageUrl = hiddenImage.value;
+  if (fileInput.files && fileInput.files[0]) {
+    const formData = new FormData();
+    formData.append('image', fileInput.files[0]);
+    try {
+      const uploadRes = await fetch('/admin/upload', { method: 'POST', body: formData });
+      const uploadData = await uploadRes.json();
+      if (!uploadData.success) {
+        showToast(uploadData.message || 'Image upload failed.');
+        return;
+      }
+      imageUrl = uploadData.url;
+    } catch (err) {
+      showToast('Network error — could not upload image.');
+      return;
+    }
+  }
+
+  if (!imageUrl) {
+    showToast('Please choose an image.');
     return;
   }
 
-  const payload = { name, location, image, description, status };
+  const payload = { name, era: eraSlug, category: categoryKey, location, image: imageUrl, description, status };
 
   try {
-    let url, method;
-    if (compositeId) {
-      url = `/admin/eras/${eraSlug}/${categoryKey}/places/${encodeURIComponent(originalName)}`;
-      method = 'PUT';
-    } else {
-      url = `/admin/eras/${eraSlug}/${categoryKey}/places`;
-      method = 'POST';
-    }
+    const url = compositeId ? `/admin/places/${compositeId}` : '/admin/places';
+    const method = compositeId ? 'PUT' : 'POST';
 
     const res = await fetch(url, {
       method,
@@ -272,21 +311,22 @@ async function handlePlaceFormSubmit(e) {
 // ==========================================
 
 function openEditEventModal(eventSlug) {
-  const row = document.querySelector(`tr[data-id="${eventSlug}"]`);
-  if (!row) return;
-
-  const title = row.querySelector('.cell-title') ? row.querySelector('.cell-title').textContent : '';
+  const event = (window.ADMIN_EVENTS || []).find(e => e.slug === eventSlug);
+  if (!event) return;
 
   document.getElementById('modalEventTitle').textContent = "Edit Event";
-  document.getElementById('eventFormSlug').value = eventSlug;
-  document.getElementById('eventFormTitle').value = title;
-  document.getElementById('eventFormType').value = "official";
-  document.getElementById('eventFormCategory').value = "Cultural";
-  document.getElementById('eventFormDate').value = "Upcoming";
-  document.getElementById('eventFormBookingStatus').value = "open";
-  document.getElementById('eventFormLocation').value = "Cairo";
-  document.getElementById('eventFormImage').value = "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=300&q=80";
-  document.getElementById('eventFormDescription').value = `Full event details for ${title}`;
+  document.getElementById('eventFormSlug').value = event.slug;
+  document.getElementById('eventFormTitle').value = event.title;
+  document.getElementById('eventFormType').value = event.type;
+  document.getElementById('eventFormCategory').value = event.category;
+  document.getElementById('eventFormDate').value = event.date;
+  document.getElementById('eventFormBookingStatus').value = event.booking;
+  document.getElementById('eventFormLocation').value = event.location;
+  document.getElementById('eventFormImage').value = event.image;
+  const eventPreview = document.getElementById('eventFormImagePreview');
+  eventPreview.src = event.image;
+  eventPreview.style.display = event.image ? 'block' : 'none';
+  document.getElementById('eventFormDescription').value = event.description || '';
 
   openModal('modalEvent');
 }
@@ -295,14 +335,39 @@ async function handleEventFormSubmit(e) {
   e.preventDefault();
   const slug = document.getElementById('eventFormSlug').value;
   const title = document.getElementById('eventFormTitle').value;
+  const type = document.getElementById('eventFormType').value;
   const category = document.getElementById('eventFormCategory').value;
   const date = document.getElementById('eventFormDate').value;
   const bookingStatus = document.getElementById('eventFormBookingStatus').value;
   const location = document.getElementById('eventFormLocation').value;
-  const image = document.getElementById('eventFormImage').value;
   const description = document.getElementById('eventFormDescription').value;
+  const fileInput = document.getElementById('eventFormImageFile');
+  const hiddenImage = document.getElementById('eventFormImage');
 
-  const payload = { title, category, date, bookingStatus, location, image, description };
+  let imageUrl = hiddenImage.value;
+  if (fileInput.files && fileInput.files[0]) {
+    const formData = new FormData();
+    formData.append('image', fileInput.files[0]);
+    try {
+      const uploadRes = await fetch('/admin/upload', { method: 'POST', body: formData });
+      const uploadData = await uploadRes.json();
+      if (!uploadData.success) {
+        showToast(uploadData.message || 'Image upload failed.');
+        return;
+      }
+      imageUrl = uploadData.url;
+    } catch (err) {
+      showToast('Network error — could not upload image.');
+      return;
+    }
+  }
+
+  if (!imageUrl) {
+    showToast('Please choose an image.');
+    return;
+  }
+
+  const payload = { title, type, category, date, bookingStatus, location, image: imageUrl, description };
 
   try {
     const url = slug ? `/admin/events/${slug}` : '/admin/events';
@@ -348,6 +413,25 @@ function filterOverviewEvents(filter, btnEl) {
     }
   });
 }
+function switchEventSubTab(filter, btnEl) {
+  const tabs = btnEl.parentElement.querySelectorAll('.tab-btn');
+  tabs.forEach(t => t.classList.remove('is-active'));
+  btnEl.classList.add('is-active');
+
+  const rows = document.querySelectorAll('#tableEventsFull tbody tr');
+  rows.forEach(row => {
+    const type = row.getAttribute('data-type');
+    if (filter === 'all') {
+      row.style.display = '';
+    } else if (filter === 'submission' && type !== 'official') {
+      row.style.display = '';
+    } else if (filter === 'official' && type === 'official') {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
 
 function openReviewSubmissionModal(slug) {
   activeSubmissionSlug = slug;
@@ -355,24 +439,71 @@ function openReviewSubmissionModal(slug) {
   const event = (window.ADMIN_EVENTS || []).find(e => e.slug === slug);
 
   if (content && event) {
-    content.innerHTML = `
-      <div style="display: flex; flex-direction: column; gap: 1rem;">
-        <div>
-          <span class="status-badge badge-submission">${event.type === 'community' ? 'Community Submission' : 'Business Submission'}</span>
-          <h4 style="font-family: var(--font-serif); font-size: 1.2rem; margin-top: 0.5rem;">${event.title}</h4>
-        </div>
-        <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; border: 1px solid #e5e7eb; font-size: 0.85rem;">
-          <strong>Description:</strong><br>
-          ${event.description}
-        </div>
-        <div style="font-size: 0.85rem;">
-          <strong>Date:</strong> ${event.date} ${event.time || ''}<br>
-          <strong>Location:</strong> ${event.location}<br>
-          <strong>Category:</strong> ${event.category}
-          ${event.ticketUrl ? `<br><strong>Booking Link:</strong> <a href="${event.ticketUrl}" target="_blank">${event.ticketUrl}</a>` : ''}
-        </div>
-      </div>
-    `;
+    content.innerHTML = '';
+
+    const wrapper = document.createElement('div');
+    wrapper.style.display = 'flex';
+    wrapper.style.flexDirection = 'column';
+    wrapper.style.gap = '1rem';
+
+    // Header block: badge + title
+    const headerBlock = document.createElement('div');
+    const badge = document.createElement('span');
+    badge.className = 'status-badge badge-submission';
+    badge.textContent = event.type === 'community' ? 'Community Submission' : 'Business Submission';
+    const heading = document.createElement('h4');
+    heading.style.fontFamily = 'var(--font-serif)';
+    heading.style.fontSize = '1.2rem';
+    heading.style.marginTop = '0.5rem';
+    heading.textContent = event.title;
+    headerBlock.appendChild(badge);
+    headerBlock.appendChild(heading);
+
+    // Description block
+    const descBlock = document.createElement('div');
+    descBlock.style.background = '#f9fafb';
+    descBlock.style.padding = '1rem';
+    descBlock.style.borderRadius = '8px';
+    descBlock.style.border = '1px solid #e5e7eb';
+    descBlock.style.fontSize = '0.85rem';
+    const descLabel = document.createElement('strong');
+    descLabel.textContent = 'Description:';
+    descBlock.appendChild(descLabel);
+    descBlock.appendChild(document.createElement('br'));
+    descBlock.appendChild(document.createTextNode(event.description || ''));
+
+    // Meta block: date, location, category, ticket link
+    const metaBlock = document.createElement('div');
+    metaBlock.style.fontSize = '0.85rem';
+
+    const appendMeta = (label, value) => {
+      const strong = document.createElement('strong');
+      strong.textContent = `${label}: `;
+      metaBlock.appendChild(strong);
+      metaBlock.appendChild(document.createTextNode(value || ''));
+      metaBlock.appendChild(document.createElement('br'));
+    };
+
+    appendMeta('Date', `${event.date || ''} ${event.time || ''}`.trim());
+    appendMeta('Location', event.location);
+    appendMeta('Category', event.category);
+
+    if (event.ticketUrl) {
+      const strong = document.createElement('strong');
+      strong.textContent = 'Booking Link: ';
+      const link = document.createElement('a');
+      link.href = event.ticketUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = event.ticketUrl;
+      metaBlock.appendChild(strong);
+      metaBlock.appendChild(link);
+    }
+
+    wrapper.appendChild(headerBlock);
+    wrapper.appendChild(descBlock);
+    wrapper.appendChild(metaBlock);
+    content.appendChild(wrapper);
   }
   openModal('modalSubmission');
 }
@@ -451,13 +582,16 @@ function handleBookingOverrideSubmit(e) {
   const newStatus = document.getElementById('overrideBookingSelect').value;
 
   document.querySelectorAll(`tr[data-id="${id}"]`).forEach(row => {
-    row.setAttribute('data-status', newStatus);
-    const badge = row.querySelector('.status-badge');
-    if (badge) {
-      badge.className = `status-badge badge-${newStatus}`;
-      badge.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
-    }
+  row.setAttribute('data-status', newStatus);
+  row.querySelectorAll('[data-action="override-booking"]').forEach(el => {
+    el.dataset.status = newStatus;
   });
+  const badge = row.querySelector('.status-badge');
+  if (badge) {
+    badge.className = `status-badge badge-${newStatus}`;
+    badge.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+  }
+});
 
   showToast(`Booking ${id} status overridden to ${newStatus.toUpperCase()}`);
   closeModal('modalBooking');
@@ -478,9 +612,8 @@ async function executeDelete() {
   const { type, id, name } = activeDeletePayload;
 
   if (type === 'place') {
-    const [eraSlug, categoryKey, name] = id.split('|||');
     try {
-      const res = await fetch(`/admin/eras/${eraSlug}/${categoryKey}/places/${encodeURIComponent(name)}`, { method: 'DELETE' });
+     const res = await fetch(`/admin/places/${id}`, { method: 'DELETE' });
       const data = await res.json();
 
       if (!data.success) {
@@ -522,7 +655,7 @@ async function executeDelete() {
 }
 
 // ==========================================
-// GLOBAL SEARCH & TOAST SYSTEM
+// GLOBAL SEARCH
 // ==========================================
 
 function initGlobalSearch() {
@@ -545,23 +678,39 @@ function initGlobalSearch() {
     });
   });
 }
+function initActionDelegation() {
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-action]');
+    if (!el) return;
+    const action = el.dataset.action;
 
-function showToast(message) {
-  const container = document.getElementById('toastContainer');
-  if (!container) return;
-
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.innerHTML = `
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-    <span>${message}</span>
-  `;
-  container.appendChild(toast);
-
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateY(10px)';
-    toast.style.transition = 'all 0.2s ease';
-    setTimeout(() => toast.remove(), 200);
-  }, 3000);
+    switch (action) {
+      case 'toggle-place-status':
+        togglePlaceStatus(el.dataset.id);
+        break;
+      case 'edit-place':
+        openEditPlaceModal(el.dataset.id);
+        break;
+      case 'delete-place':
+        confirmDelete('place', el.dataset.id, el.dataset.name);
+        break;
+      case 'edit-event':
+        openEditEventModal(el.dataset.slug);
+        break;
+      case 'delete-event':
+        confirmDelete('event', el.dataset.slug, el.dataset.name);
+        break;
+      case 'view-event-page':
+        window.open('/events', '_blank');
+        break;
+      case 'review-submission':
+        openReviewSubmissionModal(el.dataset.slug);
+        break;
+      case 'override-booking':
+        openOverrideBookingModal(el.dataset.id, el.dataset.status);
+        break;
+      default:
+        break;
+    }
+  });
 }
