@@ -21,13 +21,13 @@ exports.eraPage = async (req, res, next) => {
                 path: req.originalUrl
             });
         }
-        // Fetch this era's real, published places from MongoDB
         const publishedPlaces = await Place.find({ era: eraSlug, status: 'published' });
         const categoryData = {};
         (era.categories || []).forEach(cat => {
             categoryData[cat.key] = publishedPlaces
                 .filter(p => p.category === cat.key)
                 .map(p => ({
+                    placeId: p._id.toString(),
                     name: p.name,
                     location: p.location,
                     fullLocation: p.fullLocation,

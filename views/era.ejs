@@ -350,9 +350,9 @@
     <script src="/js/wishlist.js"></script>
     <script src="/js/visited.js"></script>
     <script>
-       document.getElementById('drawerReviewBtn').addEventListener('click', () => {
-        if (window.currentDrawerItem) {
-          window.openReviewModal(window.currentDrawerItem.name);
+      document.getElementById('drawerReviewBtn').addEventListener('click', () => {
+        if (window.currentDrawerItem && window.currentDrawerItem.placeId) {
+          window.openReviewModal(window.currentDrawerItem.placeId, window.currentDrawerItem.name);
         }
       });
     </script>

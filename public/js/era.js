@@ -276,32 +276,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function updateDrawerRating(item) {
+    function updateDrawerRatingVisibility(item) {
         const ratingRow = document.getElementById('drawerRatingRow');
-        const starsEl = document.querySelector('.stars');
-        const ratingTextEl = document.querySelector('.rating-text');
         if (!ratingRow) return;
-
         const isInteractive = item.interactive !== false;
-        if (!isInteractive) {
-            ratingRow.style.display = 'none';
-            return;
-        }
-        ratingRow.style.display = 'flex';
-
-        const summary = window.getRatingSummary ? window.getRatingSummary(item.name) : null;
-        if (summary) {
-            const rounded = Math.round(summary.average);
-            if (starsEl) starsEl.innerText = '★★★★★'.slice(0, rounded) + '☆☆☆☆☆'.slice(0, 5 - rounded);
-            if (ratingTextEl) ratingTextEl.innerText = `${summary.average.toFixed(1)} (${summary.count} review${summary.count === 1 ? '' : 's'})`;
-        } else {
-            if (starsEl) starsEl.innerText = '☆☆☆☆☆';
-            if (ratingTextEl) ratingTextEl.innerText = 'No ratings yet';
-        }
+        ratingRow.style.display = isInteractive ? 'flex' : 'none';
+        return isInteractive;
     }
-    window.updateDrawerRating = updateDrawerRating;
     window.refreshDrawerRating = function () {
-        if (window.currentDrawerItem) updateDrawerRating(window.currentDrawerItem);
+        if (window.currentDrawerItem && window.currentDrawerItem.placeId && window.refreshPlaceReviews) {
+            window.refreshPlaceReviews(window.currentDrawerItem.placeId);
+        }
     };
 
     function populateDrawer(item) {
@@ -314,10 +299,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const mainImageEl = document.querySelector('.drawer-main-img');
         if (mainImageEl && item.image) mainImageEl.src = item.image;
 
-        updateDrawerRating(item);
-        if (window.renderReviewsForPlace) window.renderReviewsForPlace(item.name);
-        if (window.renderGalleryForPlace) window.renderGalleryForPlace(item.name);
-
+        const isInteractive = updateDrawerRatingVisibility(item);
+        if (isInteractive && item.placeId && window.refreshPlaceReviews) {
+            window.refreshPlaceReviews(item.placeId);
+        }
+        
         const tagsContainer = document.querySelector('.drawer-tags');
         if (tagsContainer) {
             tagsContainer.innerHTML = item.tags.map(tag => `<span class="tag">${tag}</span>`).join('');

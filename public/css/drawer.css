@@ -479,3 +479,16 @@
   color: #050505;
   text-decoration: underline;
 }
+.review-delete-btn {
+    margin-top: 12px;
+    background: none;
+    border: none;
+    color: #B91C1C;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+}
+.review-delete-btn:hover {
+    text-decoration: underline;
+}

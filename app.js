@@ -9,6 +9,7 @@ const uploadRoutes = require('./routes/uploadRoutes');
 const placesRoutes = require('./routes/placesRoutes');
 const eventsRoutes = require('./routes/eventsRoutes');
 const pageRoutes = require('./routes/pageRoutes');
+const reviewsRoutes = require('./routes/reviewsRoutes');
 const { notFoundHandler, globalErrorHandler } = require('./middleware/errorHandlers');
 
 const app = express();
@@ -44,6 +45,7 @@ app.use(uploadRoutes);
 app.use(placesRoutes);
 app.use(eventsRoutes);
 app.use(pageRoutes);
+app.use(reviewsRoutes);
 
 app.use(notFoundHandler);
 app.use(globalErrorHandler);
