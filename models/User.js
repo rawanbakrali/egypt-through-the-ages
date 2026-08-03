@@ -18,10 +18,18 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    role: {
+   role: {
         type: String,
         enum: ['user', 'admin'],
         default: 'user'
+    },
+    bio: {
+        type: String,
+        default: 'Exploring Egypt through the ages, one place at a time.'
+    },
+    location: {
+        type: String,
+        default: 'Egypt'
     }
 }, {
     timestamps: true // adds createdAt / updatedAt automatically

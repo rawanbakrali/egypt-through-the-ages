@@ -1,4 +1,4 @@
-/* Profile Page Styles */
+/* Profile Page Styles — retheme to match locked Zara-inspired palette */
 /* Egypt Through the Ages - Profile Page */
 
 * {
@@ -8,8 +8,8 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: #0b0b0c;
-  color: #f3efe6;
+  background: #050505;
+  color: #F5F5F5;
   font-family: 'Inter', Arial, sans-serif;
 }
 
@@ -27,8 +27,8 @@ button {
 .site-header {
   position: sticky;
   top: 0;
-  background: #0b0b0c;
-  border-bottom: 1px solid #1e1e1f;
+  background: #050505;
+  border-bottom: 1px solid #262626;
   z-index: 40;
 }
 
@@ -49,18 +49,18 @@ button {
 }
 
 .wordmark__main {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 600;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 500;
   font-size: 22px;
   letter-spacing: 3px;
-  color: #f3efe6;
+  color: #F5F5F5;
 }
 
 .wordmark__sub {
   font-size: 9px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: #6f6c67;
+  color: #8A8A8A;
   margin-top: 3px;
 }
 
@@ -75,11 +75,11 @@ button {
   font-size: 12px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #a9a6a0;
+  color: #B7B7B7;
 }
 
 .site-nav a:hover {
-  color: #f3efe6;
+  color: #F5F5F5;
 }
 
 .site-header__actions {
@@ -95,22 +95,22 @@ button {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  border: 1px solid #262627;
+  border: 1px solid #262626;
   background: transparent;
-  color: #a9a6a0;
+  color: #B7B7B7;
   cursor: pointer;
 }
 
 .icon-btn:hover {
-  color: #f3efe6;
-  border-color: #d8b878;
+  color: #F5F5F5;
+  border-color: #F5F5F5;
 }
 
 .avatar-pill {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 600;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 500;
   font-size: 15px;
-  color: #f3efe6;
+  color: #F5F5F5;
 }
 
 /* ---------------- page layout ---------------- */
@@ -126,16 +126,16 @@ button {
 .profile-header {
   position: relative;
   margin-top: 24px;
-  border-radius: 18px;
+  border-radius: 20px;
   overflow: hidden;
-  border: 1px solid #1e1e1f;
-  background: #141415;
+  border: 1px solid #262626;
+  background: #111111;
 }
 
 .profile-header__banner {
   height: 190px;
   width: 100%;
-  background: linear-gradient(180deg, #17130d 0%, #0b0b0c 100%);
+  background: linear-gradient(180deg, #171717 0%, #050505 100%);
 }
 
 .banner-columns {
@@ -152,27 +152,22 @@ button {
   padding: 0 32px 28px;
   margin-top: -64px;
 }
-.profile-banner img {
-    width: 100%;
-    height: 320px;
-    object-fit: cover;
-    object-position: center 60%; /* Move image downward */
-}
+
 .profile-avatar {
   flex-shrink: 0;
   width: 112px;
   height: 112px;
   border-radius: 50%;
-  background: #1c1c1d;
-  border: 3px solid #141415;
-  outline: 1px solid #262627;
+  background: #171717;
+  border: 3px solid #111111;
+  outline: 1px solid #262626;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Playfair Display', Georgia, serif;
   font-size: 44px;
-  font-weight: 600;
-  color: #d8b878;
+  font-weight: 500;
+  color: #F5F5F5;
   position: relative;
   overflow: hidden;
 }
@@ -193,22 +188,22 @@ button {
 }
 
 .profile-info h1 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 600;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 500;
   font-size: 30px;
   margin: 0 0 2px;
-  color: #f3efe6;
+  color: #F5F5F5;
 }
 
 .profile-handle {
   margin: 0 0 8px;
-  color: #6f6c67;
+  color: #8A8A8A;
   font-size: 13px;
 }
 
 .profile-bio {
   margin: 0 0 10px;
-  color: #a9a6a0;
+  color: #B7B7B7;
   font-size: 14px;
   max-width: 520px;
 }
@@ -218,7 +213,7 @@ button {
   align-items: center;
   gap: 10px;
   font-size: 12.5px;
-  color: #6f6c67;
+  color: #8A8A8A;
 }
 
 .meta-item {
@@ -228,7 +223,7 @@ button {
 }
 
 .meta-item svg {
-  color: #d8b878;
+  color: #F5F5F5;
 }
 
 .meta-dot {
@@ -250,29 +245,28 @@ button {
   padding: 9px 18px;
   border-radius: 999px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
 }
 
 .btn--ghost {
   background: transparent;
-  border-color: #262627;
-  color: #f3efe6;
+  border-color: #262626;
+  color: #F5F5F5;
 }
 
 .btn--ghost:hover {
-  border-color: #d8b878;
-  color: #d8b878;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .btn--solid {
-  background: #d8b878;
-  color: #14120c;
+  background: #F5F5F5;
+  color: #050505;
 }
 
 .btn--solid:hover {
-  background: #cba36a;
+  background: #E0E0E0;
 }
 
 /* ---------------- stats bar ---------------- */
@@ -285,9 +279,9 @@ button {
 }
 
 .stat-card {
-  background: #171718;
-  border: 1px solid #1e1e1f;
-  border-radius: 12px;
+  background: #111111;
+  border: 1px solid #262626;
+  border-radius: 18px;
   padding: 18px 20px;
   display: flex;
   flex-direction: column;
@@ -295,16 +289,16 @@ button {
 }
 
 .stat-value {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Playfair Display', Georgia, serif;
   font-size: 30px;
-  font-weight: 600;
-  color: #d8b878;
+  font-weight: 500;
+  color: #F5F5F5;
   line-height: 1;
 }
 
 .stat-label {
   font-size: 12px;
-  color: #6f6c67;
+  color: #8A8A8A;
 }
 
 /* ---------------- tabs ---------------- */
@@ -313,7 +307,7 @@ button {
   display: flex;
   gap: 32px;
   margin-top: 34px;
-  border-bottom: 1px solid #1e1e1f;
+  border-bottom: 1px solid #262626;
 }
 
 .tab {
@@ -321,19 +315,19 @@ button {
   border: none;
   padding: 0 0 14px;
   font-size: 13px;
-  letter-spacing: 1px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #6f6c67;
+  color: #8A8A8A;
   cursor: pointer;
   position: relative;
 }
 
 .tab:hover {
-  color: #a9a6a0;
+  color: #B7B7B7;
 }
 
 .tab.is-active {
-  color: #f3efe6;
+  color: #F5F5F5;
 }
 
 .tab.is-active::after {
@@ -343,7 +337,7 @@ button {
   right: 0;
   bottom: -1px;
   height: 2px;
-  background: #d8b878;
+  background: #F5F5F5;
 }
 
 .tab-panel {
@@ -363,16 +357,16 @@ button {
 }
 
 .panel-heading h2 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Playfair Display', Georgia, serif;
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 500;
   margin: 0;
-  color: #f3efe6;
+  color: #F5F5F5;
 }
 
 .panel-sub {
   font-size: 12px;
-  color: #6f6c67;
+  color: #8A8A8A;
 }
 
 /* ---------------- activity feed (overview tab) ---------------- */
@@ -390,7 +384,7 @@ button {
   align-items: center;
   gap: 14px;
   padding: 14px 4px;
-  border-bottom: 1px solid #1e1e1f;
+  border-bottom: 1px solid #262626;
   font-size: 14px;
 }
 
@@ -402,13 +396,13 @@ button {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: #171718;
-  border: 1px solid #262627;
+  background: #111111;
+  border: 1px solid #262626;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #d8b878;
+  color: #F5F5F5;
 }
 
 .activity-icon svg {
@@ -418,17 +412,17 @@ button {
 
 .activity-text {
   flex: 1;
-  color: #a9a6a0;
+  color: #B7B7B7;
 }
 
 .activity-text b {
-  color: #f3efe6;
-  font-weight: 500;
+  color: #F5F5F5;
+  font-weight: 600;
 }
 
 .activity-time {
   font-size: 12px;
-  color: #6f6c67;
+  color: #8A8A8A;
   white-space: nowrap;
 }
 
@@ -441,14 +435,14 @@ button {
 }
 
 .place-card {
-  background: #171718;
-  border: 1px solid #1e1e1f;
-  border-radius: 12px;
+  background: #111111;
+  border: 1px solid #262626;
+  border-radius: 18px;
   overflow: hidden;
 }
 
 .place-card:hover {
-  border-color: #262627;
+  border-color: #F5F5F5;
 }
 
 .place-card[hidden] {
@@ -458,17 +452,14 @@ button {
 .place-card__media {
   position: relative;
   height: 130px;
-  background: linear-gradient(135deg, #221c14, #14110c);
+  background: #171717;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #d8b878;
-  opacity: 0.9;
+  color: #8A8A8A;
   overflow: hidden;
 }
 
-/* fallback landmark icon sits behind the photo; only shows if the
-   image fails to load (its onerror handler hides the <img>) */
 .place-card__fallback {
   display: flex;
   align-items: center;
@@ -496,11 +487,11 @@ button {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: rgba(11, 11, 12, 0.72);
+  background: rgba(5, 5, 5, 0.72);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #d8b878;
+  color: #F5F5F5;
   z-index: 2;
 }
 
@@ -516,13 +507,13 @@ button {
 .place-card__name {
   font-size: 14.5px;
   font-weight: 600;
-  color: #f3efe6;
+  color: #F5F5F5;
   margin: 0 0 2px;
 }
 
 .place-card__location {
   font-size: 12px;
-  color: #6f6c67;
+  color: #8A8A8A;
   margin: 0 0 10px;
 }
 
@@ -539,24 +530,22 @@ button {
 }
 
 .star.is-filled {
-  color: #d8b878;
+  color: #F5F5F5;
 }
 
 .star.is-empty {
-  color: #3a3a3c;
+  color: #3A3A3A;
 }
 
 .place-card__date {
   font-size: 11px;
-  color: #6f6c67;
+  color: #8A8A8A;
 }
 
 .no-rating {
   font-size: 11px;
-  color: #6f6c67;
+  color: #8A8A8A;
 }
-
-/* list view for the Lists tab */
 
 .place-grid.is-list {
   grid-template-columns: 1fr;
@@ -600,9 +589,9 @@ button {
 }
 
 .review-card {
-  background: #171718;
-  border: 1px solid #1e1e1f;
-  border-radius: 12px;
+  background: #111111;
+  border: 1px solid #262626;
+  border-radius: 18px;
   padding: 18px 20px;
 }
 
@@ -617,12 +606,12 @@ button {
 .review-card__place {
   font-size: 15px;
   font-weight: 600;
-  color: #f3efe6;
+  color: #F5F5F5;
 }
 
 .review-card__location {
   font-size: 12px;
-  color: #6f6c67;
+  color: #8A8A8A;
   margin-top: 2px;
 }
 
@@ -638,14 +627,14 @@ button {
 
 .review-card__text {
   font-size: 13.5px;
-  color: #a9a6a0;
-  line-height: 1.6;
+  color: #B7B7B7;
+  line-height: 1.7;
   margin: 8px 0 10px;
 }
 
 .review-card__time {
   font-size: 11.5px;
-  color: #6f6c67;
+  color: #8A8A8A;
 }
 
 /* ---------------- lists tab toolbar ---------------- */
@@ -671,22 +660,22 @@ button {
   gap: 6px;
   padding: 8px 14px;
   border-radius: 999px;
-  border: 1px solid #262627;
+  border: 1px solid #262626;
   background: transparent;
-  color: #a9a6a0;
+  color: #B7B7B7;
   font-size: 12.5px;
   cursor: pointer;
 }
 
 .pill:hover {
-  border-color: #d8b878;
-  color: #f3efe6;
+  border-color: #F5F5F5;
+  color: #F5F5F5;
 }
 
 .pill.is-active {
-  background: #d8b878;
-  border-color: #d8b878;
-  color: #14120c;
+  background: #F5F5F5;
+  border-color: #F5F5F5;
+  color: #050505;
 }
 
 .lists-toolbar__right {
@@ -700,14 +689,14 @@ button {
   align-items: center;
   gap: 8px;
   font-size: 12.5px;
-  color: #6f6c67;
+  color: #8A8A8A;
 }
 
 .sort-select select {
-  background: #171718;
-  border: 1px solid #262627;
-  color: #f3efe6;
-  border-radius: 8px;
+  background: #111111;
+  border: 1px solid #262626;
+  color: #F5F5F5;
+  border-radius: 14px;
   padding: 6px 10px;
   font-size: 12.5px;
   cursor: pointer;
@@ -715,7 +704,7 @@ button {
 
 .view-switch {
   display: flex;
-  border: 1px solid #262627;
+  border: 1px solid #262626;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -723,7 +712,7 @@ button {
 .view-btn {
   background: transparent;
   border: none;
-  color: #6f6c67;
+  color: #8A8A8A;
   width: 34px;
   height: 32px;
   display: flex;
@@ -733,23 +722,24 @@ button {
 }
 
 .view-btn.is-active {
-  background: #1e1e20;
-  color: #d8b878;
+  background: rgba(255, 255, 255, 0.08);
+  color: #F5F5F5;
 }
 
 .empty-state {
   text-align: center;
-  color: #6f6c67;
+  color: #8A8A8A;
   font-size: 13.5px;
   padding: 50px 0;
 }
 
-/* ---------------- edit profile modal ---------------- */
+/* ---------------- edit profile modal ----------------
+   Interactive Surface Rule: WHITE background (locked spec Section 17) */
 
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(6, 6, 7, 0.75);
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -764,9 +754,8 @@ button {
 .modal {
   width: 100%;
   max-width: 420px;
-  background: #141415;
-  border: 1px solid #262627;
-  border-radius: 18px;
+  background: #FFFFFF;
+  border-radius: 20px;
   overflow: hidden;
 }
 
@@ -775,14 +764,24 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 18px 22px;
-  border-bottom: 1px solid #1e1e1f;
+  border-bottom: 1px solid #E0E0E0;
 }
 
 .modal__header h2 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Playfair Display', Georgia, serif;
   font-size: 19px;
+  font-weight: 500;
   margin: 0;
-  color: #f3efe6;
+  color: #050505;
+}
+
+.modal__header .icon-btn {
+  border-color: #E0E0E0;
+  color: #666;
+}
+.modal__header .icon-btn:hover {
+  color: #050505;
+  border-color: #050505;
 }
 
 .modal__body {
@@ -797,16 +796,16 @@ button {
   flex-direction: column;
   gap: 6px;
   font-size: 12.5px;
-  color: #6f6c67;
+  color: #666;
 }
 
 .field input,
 .field textarea {
-  background: #171718;
-  border: 1px solid #262627;
-  border-radius: 8px;
+  background: #F5F5F5;
+  border: 1px solid #E0E0E0;
+  border-radius: 14px;
   padding: 10px 12px;
-  color: #f3efe6;
+  color: #050505;
   font-size: 13.5px;
   font-family: inherit;
   resize: none;
@@ -814,33 +813,8 @@ button {
 
 .field input:focus,
 .field textarea:focus {
-  border-color: #d8b878;
+  border-color: #050505;
   outline: none;
-}
-
-.field-with-prefix {
-  display: flex;
-  align-items: center;
-  background: #171718;
-  border: 1px solid #262627;
-  border-radius: 8px;
-  padding: 0 12px;
-}
-
-.field-with-prefix .prefix {
-  color: #6f6c67;
-  font-size: 13.5px;
-}
-
-.field-with-prefix input {
-  border: none;
-  background: transparent;
-  padding: 10px 4px;
-  flex: 1;
-}
-
-.field-with-prefix:focus-within {
-  border-color: #d8b878;
 }
 
 .modal__footer {
@@ -850,6 +824,14 @@ button {
   margin-top: 6px;
 }
 
+.modal__footer .btn--ghost {
+  border-color: #E0E0E0;
+  color: #050505;
+}
+.modal__footer .btn--ghost:hover {
+  background: rgba(0,0,0,0.05);
+}
+
 /* ---------------- toast message ---------------- */
 
 .toast {
@@ -857,9 +839,9 @@ button {
   bottom: 28px;
   left: 50%;
   transform: translateX(-50%);
-  background: #141415;
-  border: 1px solid #d8b878;
-  color: #f3efe6;
+  background: #111111;
+  border: 1px solid #262626;
+  color: #F5F5F5;
   padding: 12px 22px;
   border-radius: 999px;
   font-size: 13px;

@@ -2,6 +2,9 @@ const eras = require('../data/eras');
 const bookings = require('../data/bookings');
 const Place = require('../models/Place');
 const Event = require('../models/Event');
+const Review = require('../models/Reviews');
+const UserPlaceStatus = require('../models/UserPlaceStatus');
+const User = require('../models/User');
 const { flattenPlaces, buildEraCategoryMap } = require('../models/helpers');
 
 exports.home = (req, res) => {
@@ -43,7 +46,6 @@ exports.eraPage = async (req, res, next) => {
                 }));
         });
 
-        // Rebuild markersData from places that actually have coordinates
         const markersData = publishedPlaces
             .filter(p => p.coords && p.coords.length === 2)
             .map(p => ({
@@ -87,21 +89,63 @@ exports.adminDashboard = async (req, res, next) => {
     }
 };
 
-exports.profile = (req, res) => {
-    if (!req.session.user) return res.redirect('/');
-    if (req.session.user.role === 'admin') return res.redirect('/admin');
+exports.profile = async (req, res, next) => {
+    try {
+        if (!req.session.user) return res.redirect('/');
+        if (req.session.user.role === 'admin') return res.redirect('/admin');
 
-    res.render('profile', {
-        title: 'My Profile | Egypt Through the Ages',
-        profile: {
-            name: req.session.user.username,
-            handle: req.session.user.username.toLowerCase(),
-            bio: 'Exploring Egypt through the ages, one place at a time.',
-            location: 'Egypt',
-            joined: 'This session', // no real account-creation date tracked yet
-            avatar: '' // no real avatar upload system yet — falls back to initial letter
-        },
-        places: [], // no real per-user visited/favorite/wishlist data yet
-        reviews: [] // reviews are currently stored per-place, not per-user
-    });
+        const userId = req.session.user.id;
+
+        const [currentUserDoc, statusEntries, reviewEntries] = await Promise.all([
+            User.findById(userId),
+            UserPlaceStatus.find({ userId }).populate('placeId').sort({ createdAt: -1 }),
+            Review.find({ userId }).populate('placeId').sort({ createdAt: -1 })
+        ]);
+
+        const myRatingsByPlaceId = {};
+        reviewEntries.forEach(r => {
+            if (r.placeId) myRatingsByPlaceId[r.placeId._id.toString()] = r.rating;
+        });
+
+        const places = statusEntries
+            .filter(entry => entry.placeId)
+            .map(entry => ({
+                status: entry.type, // "favorite" | "wishlist" | "visited"
+                rating: myRatingsByPlaceId[entry.placeId._id.toString()] || 0,
+                name: entry.placeId.name,
+                location: entry.placeId.fullLocation || entry.placeId.location,
+                date: entry.createdAt.toISOString(),
+                image: entry.placeId.image
+            }));
+
+        const reviews = reviewEntries
+            .filter(entry => entry.placeId)
+            .map(entry => {
+                const era = eras[entry.placeId.era] || {};
+                const categoryInfo = (era.categories || []).find(c => c.key === entry.placeId.category) || {};
+                return {
+                    placeName: entry.placeName,
+                    category: categoryInfo.label || entry.placeId.category,
+                    rating: entry.rating,
+                    text: entry.reviewText,
+                    time: entry.createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                };
+            });
+
+        res.render('profile', {
+            title: 'My Profile | Egypt Through the Ages',
+            profile: {
+                name: req.session.user.username,
+                handle: req.session.user.username.toLowerCase(),
+                bio: currentUserDoc.bio,
+                location: currentUserDoc.location,
+                joined: currentUserDoc.createdAt.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+                avatar: '' // no real avatar upload system yet — falls back to initial letter
+            },
+            places,
+            reviews
+        });
+    } catch (err) {
+        next(err);
+    }
 };

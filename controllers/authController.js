@@ -82,6 +82,8 @@ exports.updateAccount = async (req, res) => {
         }
 
         if (username) user.username = username;
+        if (req.body.bio !== undefined) user.bio = req.body.bio;
+        if (req.body.location !== undefined) user.location = req.body.location;
 
         if (email && email.toLowerCase() !== user.email) {
             const existing = await User.findOne({ email: email.toLowerCase() });

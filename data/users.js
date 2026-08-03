@@ -1,5 +1,3 @@
-// data/users.js
-//
 // TEMPORARY mock user  
 
 const users = [

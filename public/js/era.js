@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // ==========================================
     // 1. TAB SWITCHING LOGIC
-    // ==========================================
     const tabs = document.querySelectorAll('.tab-btn');
 
     tabs.forEach(tab => {
@@ -17,9 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ==========================================
     // 2. MAP INITIALIZATION
-    // ==========================================
+
     const map = L.map('era-map', {
         center: window.ERA_DATA.mapCenter,
         zoom: window.ERA_DATA.mapZoom,
@@ -32,18 +29,14 @@ document.addEventListener("DOMContentLoaded", () => {
         attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
     }).addTo(map);
 
-    // ==========================================
     // 3. MAP DATA (now sourced from window.ERA_DATA)
-    // ==========================================
     const markersData = window.ERA_DATA.markersData;
 
     let currentMarkers = [];
     let activeCity = null;
     let activeCategory = 'All Sites';
 
-    // ==========================================
     // 4. RENDER MARKERS & UPDATE PANEL
-    // ==========================================
     function renderMarkers() {
         // Clear existing map pins
         currentMarkers.forEach(m => map.removeLayer(m));
@@ -84,10 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderMarkers(); // Render on load
 
-    // ==========================================
     // 5. FILTER & CITY CLICK BEHAVIOR
-    // ==========================================
-    // Category Filters (Mosques, Citadels, etc.)
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             // Change which button is highlighted
@@ -117,9 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ==========================================
     // 6. DRAWER LOGIC
-    // ==========================================
     const drawer = document.getElementById('monumentDrawer');
     const overlay = document.getElementById('drawerOverlay');
     const closeBtn = document.getElementById('closeDrawerBtn');
@@ -193,9 +181,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
-    // ==========================================
+
     // 7. CATEGORY SWITCHER (Single Active State)
-    // ==========================================
     const categoryCards = document.querySelectorAll('.feature-card-vertical');
     const dynamicGridContainer = document.getElementById('dynamic-grid-container');
     const dynamicGrid = document.getElementById('dynamicGrid');
@@ -203,9 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let activeGridCategory = null;
 
-    // ==========================================
     // 7b. CATEGORY DATA (now sourced from window.ERA_DATA)
-    // ==========================================
     const categoryData = window.ERA_DATA.categoryData;
     const locationFilterStrip = document.getElementById('locationFilterStrip');
     let activeLocationFilter = 'All';
@@ -249,9 +234,8 @@ document.addEventListener("DOMContentLoaded", () => {
         renderCardsIntoGrid(filtered);
         dynamicGridContainer.style.maxHeight = dynamicGridContainer.scrollHeight + 'px';
     }
-    // ==========================================
+
     // 7c. INJECT CATEGORY CARDS
-    // ==========================================
     function renderCardsIntoGrid(items) {
         dynamicGrid.innerHTML = '';
         items.forEach(item => {
@@ -300,10 +284,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (mainImageEl && item.image) mainImageEl.src = item.image;
 
         const isInteractive = updateDrawerRatingVisibility(item);
-        if (isInteractive && item.placeId && window.refreshPlaceReviews) {
-            window.refreshPlaceReviews(item.placeId);
+        if (isInteractive && item.placeId) {
+            if (window.refreshPlaceReviews) window.refreshPlaceReviews(item.placeId);
+            if (window.refreshPlaceStatuses) window.refreshPlaceStatuses(item.placeId);
         }
-        
+
         const tagsContainer = document.querySelector('.drawer-tags');
         if (tagsContainer) {
             tagsContainer.innerHTML = item.tags.map(tag => `<span class="tag">${tag}</span>`).join('');

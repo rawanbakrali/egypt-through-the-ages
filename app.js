@@ -10,6 +10,7 @@ const placesRoutes = require('./routes/placesRoutes');
 const eventsRoutes = require('./routes/eventsRoutes');
 const pageRoutes = require('./routes/pageRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
+const userPlaceStatusRoutes = require('./routes/userPlaceStatusRoutes');
 const { notFoundHandler, globalErrorHandler } = require('./middleware/errorHandlers');
 
 const app = express();
@@ -46,11 +47,11 @@ app.use(placesRoutes);
 app.use(eventsRoutes);
 app.use(pageRoutes);
 app.use(reviewsRoutes);
+app.use(userPlaceStatusRoutes);
 
 app.use(notFoundHandler);
 app.use(globalErrorHandler);
 
-// Start Server
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
 });

@@ -1,12 +1,3 @@
-// Profile Page JavaScript
-// Egypt Through the Ages - Profile Page
-// Note: everything here is stored in normal JS variables (no database),
-// so data resets if you refresh the page.
-//
-// The place cards (photos, names, ratings...) live directly in the HTML
-// as static markup with <img> tags - this file only reads their
-// data-* attributes to filter, sort, and switch views. It does NOT
-// build any <img> tags itself.
 
 // ---- icons used for the activity feed + review stars ----
 var iconHeart = '<svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.7-7.5-10.2A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 7.5 3.4C19.5 15.8 12 20.5 12 20.5z" fill="currentColor"/></svg>';
@@ -48,7 +39,7 @@ var currentFilter = "all";
 var currentSort = "recent";
 var currentView = "grid";
 
-// ---- small helper functions ----
+//  small helper functions 
 
 function findPlace(id) {
   for (var i = 0; i < places.length; i++) {
@@ -68,7 +59,6 @@ function formatDate(dateString) {
 function getStatusIcon(status) {
   if (status === "favorite") return iconHeart;
   if (status === "wishlist") return iconBookmark;
-  if (status === "currently-visiting") return iconEye;
   if (status === "visited") return iconCheck;
   return "";
 }
@@ -108,7 +98,7 @@ function renderStats() {
 
   for (var i = 0; i < places.length; i++) {
     var status = places[i].status;
-    if (status === "visited" || status === "currently-visiting") visitedCount++;
+    if (status === "visited" ) visitedCount++;
     if (status === "favorite") favoriteCount++;
     if (status === "wishlist") wishlistCount++;
   }
@@ -128,7 +118,6 @@ function renderActivity() {
     var text = "";
     if (p.status === "favorite") text = "Added <b>" + p.name + "</b> to Favorites";
     else if (p.status === "wishlist") text = "Added <b>" + p.name + "</b> to Wishlist";
-    else if (p.status === "currently-visiting") text = "Marked <b>" + p.name + "</b> as currently visiting";
     else if (p.status === "visited") text = "Marked <b>" + p.name + "</b> as visited";
 
     feedItems.push({ date: p.date, icon: getStatusIcon(p.status), text: text });
