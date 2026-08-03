@@ -28,7 +28,6 @@ exports.toggleStatus = async (req, res) => {
         res.json({ success: true, active: true });
     } catch (err) {
         if (err.code === 11000) {
-            // Race condition safety net — treat as already active
             return res.json({ success: true, active: true });
         }
         console.error('Toggle status error:', err);

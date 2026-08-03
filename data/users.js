@@ -1,5 +1,3 @@
-// TEMPORARY mock user  
-
 const users = [
   {
     id: 1,

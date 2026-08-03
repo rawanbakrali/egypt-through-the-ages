@@ -11,7 +11,6 @@ function requireAuth(req, res, next) {
     next();
 }
 
-// Blocks non-admin requests to admin-only endpoints
 function requireAdmin(req, res, next) {
     if (!req.session.user || req.session.user.role !== 'admin') {
         return res.status(403).json({ success: false, message: 'Admin access required.' });

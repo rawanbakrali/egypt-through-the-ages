@@ -1,4 +1,3 @@
-// controllers/reviewsController.js
 const Review = require('../models/Reviews');
 const Place = require('../models/Place');
 exports.createReview = async (req, res) => {
