@@ -406,3 +406,8 @@ body {
   border-radius: 12px;
   padding: 12px 14px;
 }
+.booking-card .btn.is-active {
+    background: #F5F5F5;
+    color: #050505;
+    border-color: #F5F5F5;
+}

@@ -11,6 +11,7 @@ const eventsRoutes = require('./routes/eventsRoutes');
 const pageRoutes = require('./routes/pageRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
 const userPlaceStatusRoutes = require('./routes/userPlaceStatusRoutes');
+const bookingsRoutes = require('./routes/bookingsRoutes');
 const { notFoundHandler, globalErrorHandler } = require('./middleware/errorHandlers');
 
 const app = express();
@@ -26,11 +27,9 @@ app.set('views', path.join(__dirname, 'views'));
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Parse form-encoded POST bodies (needed for login/register forms)
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // needed for fetch() calls that send JSON bodies
 
-// Session middleware — in-memory store (default), resets on server restart
 app.use(session({
     secret: 'egypt-through-the-ages-dev-secret', // TEMPORARY — move to an env variable before any real deployment
     resave: false,
@@ -48,6 +47,7 @@ app.use(eventsRoutes);
 app.use(pageRoutes);
 app.use(reviewsRoutes);
 app.use(userPlaceStatusRoutes);
+app.use(bookingsRoutes);
 
 app.use(notFoundHandler);
 app.use(globalErrorHandler);

@@ -1,8 +1,3 @@
-// public/js/events.js
-// UI-only interactions for the Events system (Section 19).
-// Nothing here persists across a page refresh — that's intentional
-// until the real backend + admin approval workflow exists.
-
 document.addEventListener('DOMContentLoaded', () => {
   initFilters();
   initSubmissionModal();
@@ -32,9 +27,6 @@ function markerIcon(color) {
 }
 
 function grayscaleTileLayer() {
-  // CARTO's light_all basemap, hue-rotated/desaturated via CSS filter on the
-  // tile pane — keeps the "grayscale tiles" requirement (Section 13) without
-  // needing a paid grayscale tile provider.
   return L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OpenStreetMap &copy; CARTO',
     maxZoom: 19
@@ -198,38 +190,68 @@ function initSubmissionModal() {
   });
 }
 
-/* ---------- Single event page: booking actions ---------- */
+/* ---------- Single event page: booking actions (real backend) ---------- */
 function initBookingActions() {
   const card = document.querySelector('.booking-card');
   if (!card) return;
 
+  const eventId = card.dataset.eventId;
   const interestedBtn = card.querySelector('[data-action="interested"]');
   const attendBtn = card.querySelector('[data-action="attend"]');
   const markAttendedBtn = card.querySelector('[data-action="mark-attended"]');
   const leaveReviewBtn = card.querySelector('[data-action="leave-review"]');
 
-  interestedBtn?.addEventListener('click', () => {
-    interestedBtn.textContent = interestedBtn.textContent === "I'm Interested"
-      ? '✓ Interested'
-      : "I'm Interested";
-    interestedBtn.classList.toggle('is-active');
+  async function setBookingStatus(status) {
+    try {
+      const res = await fetch('/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventId, status })
+      });
+      const data = await res.json();
+      if (!data.success) {
+        if (window.showToast) window.showToast(data.message || 'Something went wrong.');
+        return null;
+      }
+      return data.status; // null if it was toggled off
+    } catch (err) {
+      if (window.showToast) window.showToast('Network error — could not update booking.');
+      return null;
+    }
+  }
+
+  // "Interested" and "Attending" are mutually exclusive
+  interestedBtn?.addEventListener('click', async () => {
+    const result = await setBookingStatus('interested');
+    const isActive = result === 'interested';
+    interestedBtn.textContent = isActive ? '✓ Interested' : "I'm Interested";
+    interestedBtn.classList.toggle('is-active', isActive);
+    if (attendBtn) {
+      attendBtn.textContent = "I'll Attend";
+      attendBtn.classList.remove('is-active');
+    }
   });
 
-  attendBtn?.addEventListener('click', () => {
-    attendBtn.textContent = attendBtn.textContent === "I'll Attend"
-      ? '✓ Attending'
-      : "I'll Attend";
-    attendBtn.classList.toggle('is-active');
+  attendBtn?.addEventListener('click', async () => {
+    const result = await setBookingStatus('attending');
+    const isActive = result === 'attending';
+    attendBtn.textContent = isActive ? '✓ Attending' : "I'll Attend";
+    attendBtn.classList.toggle('is-active', isActive);
+    if (interestedBtn) {
+      interestedBtn.textContent = "I'm Interested";
+      interestedBtn.classList.remove('is-active');
+    }
   });
 
-  markAttendedBtn?.addEventListener('click', () => {
-    markAttendedBtn.hidden = true;
-    if (leaveReviewBtn) leaveReviewBtn.hidden = false;
+  markAttendedBtn?.addEventListener('click', async () => {
+    const result = await setBookingStatus('attended');
+    if (result === 'attended') {
+      markAttendedBtn.hidden = true;
+      if (leaveReviewBtn) leaveReviewBtn.hidden = false;
+    }
   });
 
   leaveReviewBtn?.addEventListener('click', () => {
-    // Hook this up to the existing Review Modal (Section 5B) once
-    // events share the same review component as places.
-    alert('This would open the Review Modal, same as place reviews.');
+    if (window.showToast) window.showToast('Event reviews are coming soon.');
   });
 }

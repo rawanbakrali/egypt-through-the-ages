@@ -1,6 +1,4 @@
-<!--
-  views/event.ejs — route: GET /event/:slug
--->
+<!--views/event.ejs — route: GET /event/:slug-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,23 +52,31 @@
     </div>
 
     <aside class="event-detail__sidebar">
-      <div class="booking-card">
+      <div class="booking-card" data-event-id="<%= event._id %>">
         <% const eventDate = new Date(event.date); %>
-        <% const isPast = eventDate < new Date('2026-07-23'); %>
+        <% const isPast = eventDate < new Date(); %>
 
         <% if (event.booking === 'reserved') { %>
           <a href="<%= event.ticketUrl %>" target="_blank" rel="noopener" class="btn btn--primary btn--full">
             Reserve Seat
           </a>
           <p class="booking-note">You'll be taken to the organizer's official booking site.</p>
+        <% } %>
 
-        <% } else if (!isPast) { %>
-          <button class="btn btn--secondary btn--full" data-action="interested">I'm Interested</button>
-          <button class="btn btn--primary btn--full" data-action="attend">I'll Attend</button>
-
+        <% if (!isPast) { %>
+          <button class="btn btn--secondary btn--full require-auth<%= myBookingStatus === 'interested' ? ' is-active' : '' %>" data-auth-label="mark yourself as interested" data-action="interested">
+            <%= myBookingStatus === 'interested' ? "✓ Interested" : "I'm Interested" %>
+          </button>
+          <button class="btn btn--primary btn--full require-auth<%= myBookingStatus === 'attending' ? ' is-active' : '' %>" data-auth-label="mark yourself as attending" data-action="attend">
+            <%= myBookingStatus === 'attending' ? "✓ Attending" : "I'll Attend" %>
+          </button>
         <% } else { %>
-          <button class="btn btn--primary btn--full" data-action="mark-attended">Mark as Attended</button>
-          <button class="btn btn--secondary btn--full" data-action="leave-review" hidden>Leave a Review</button>
+          <button class="btn btn--primary btn--full require-auth" data-auth-label="mark this event as attended" data-action="mark-attended" <%= myBookingStatus === 'attended' ? 'hidden' : '' %>>
+            Mark as Attended
+          </button>
+          <button class="btn btn--secondary btn--full" data-action="leave-review" <%= myBookingStatus === 'attended' ? '' : 'hidden' %>>
+            Leave a Review
+          </button>
         <% } %>
       </div>
     </aside>

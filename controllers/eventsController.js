@@ -1,4 +1,5 @@
 const Event = require('../models/Event');
+const Booking = require('../models/Booking');
 
 exports.listEvents = async (req, res, next) => {
     try {
@@ -21,9 +22,17 @@ exports.showEvent = async (req, res, next) => {
                 path: req.originalUrl
             });
         }
+
+        let myBookingStatus = null;
+        if (req.session.user) {
+            const booking = await Booking.findOne({ userId: req.session.user.id, eventId: event._id });
+            if (booking) myBookingStatus = booking.status;
+        }
+
         res.render('event', {
             title: `${event.title} | Egypt Through the Ages`,
-            event: event
+            event: event,
+            myBookingStatus: myBookingStatus
         });
     } catch (err) {
         next(err);
