@@ -1,4 +1,6 @@
+const crypto = require('crypto');
 const User = require('../models/User');
+const { sendPasswordResetEmail } = require('../utils/mailer');
 
 exports.login = async (req, res) => {
     try {
@@ -131,6 +133,83 @@ exports.deleteAccount = async (req, res) => {
         });
     } catch (err) {
         console.error('Delete account error:', err);
+        res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
+    }
+};
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email: email.toLowerCase() });
+        if (!user) {
+            return res.json({ success: true, message: "If an account exists for this email, you'll receive a reset link shortly." });
+        }
+
+        const token = crypto.randomBytes(32).toString('hex');
+        user.resetToken = token;
+        user.resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+        await user.save();
+
+        const resetUrl = `${req.protocol}://${req.get('host')}/reset-password/${token}`;
+        await sendPasswordResetEmail(user.email, resetUrl);
+
+        res.json({ success: true, message: "If an account exists for this email, you'll receive a reset link shortly." });
+    } catch (err) {
+        console.error('Forgot password error:', err);
+        res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
+    }
+};
+
+exports.showResetPasswordPage = async (req, res, next) => {
+    try {
+        const user = await User.findOne({
+            resetToken: req.params.token,
+            resetTokenExpiry: { $gt: new Date() }
+        });
+
+        if (!user) {
+            return res.render('reset-password', {
+                title: 'Reset Password | Egypt Through the Ages',
+                token: null,
+                invalid: true
+            });
+        }
+
+        res.render('reset-password', {
+            title: 'Reset Password | Egypt Through the Ages',
+            token: req.params.token,
+            invalid: false
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { password, confirmPassword } = req.body;
+
+        if (password !== confirmPassword) {
+            return res.status(400).json({ success: false, message: 'Passwords do not match.' });
+        }
+
+        const user = await User.findOne({
+            resetToken: token,
+            resetTokenExpiry: { $gt: new Date() }
+        });
+
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'This reset link is invalid or has expired.' });
+        }
+
+        user.password = password; // re-hashed automatically by the pre-save hook
+        user.resetToken = null;
+        user.resetTokenExpiry = null;
+        await user.save();
+
+        res.json({ success: true, message: 'Password reset successfully. You can now sign in.' });
+    } catch (err) {
+        console.error('Reset password error:', err);
         res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
     }
 };

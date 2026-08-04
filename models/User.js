@@ -30,6 +30,14 @@ const userSchema = new mongoose.Schema({
     location: {
         type: String,
         default: 'Egypt'
+    },
+    resetToken: {
+        type: String,
+        default: null
+    },
+    resetTokenExpiry: {
+        type: Date,
+        default: null
     }
 }, {
     timestamps: true // adds createdAt / updatedAt automatically

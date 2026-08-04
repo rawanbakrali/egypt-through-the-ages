@@ -10,6 +10,11 @@ const {
     deleteAccountRules
 } = require('../middleware/validators/authValidators');
 
+
+
+router.post('/forgot-password', authController.forgotPassword);
+router.get('/reset-password/:token', authController.showResetPasswordPage);
+router.post('/reset-password/:token', authController.resetPassword);
 router.post('/login', loginRules, handleValidationErrors, authController.login);
 router.post('/register', registerRules, handleValidationErrors, authController.register);
 router.post('/logout', authController.logout);

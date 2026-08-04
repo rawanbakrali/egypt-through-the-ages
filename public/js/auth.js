@@ -105,11 +105,23 @@
     }
   });
 
-  // FORGOT PASSWORD (UI only not functioning yet)
-  document.getElementById('forgotForm').addEventListener('submit', (e) => {
+  // FORGOT PASSWORD — real email sent
+  document.getElementById('forgotForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     clearMessage();
-    showMessage("If an account exists for this email, you'll receive a reset link shortly.", 'success');
+    const email = document.getElementById('forgotEmail').value;
+
+    try {
+      const res = await fetch('/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      showMessage(data.message, data.success ? 'success' : 'error');
+    } catch (err) {
+      showMessage('Network error — please try again.', 'error');
+    }
   });
 
   window.openAuthModal = openAuthModal;
