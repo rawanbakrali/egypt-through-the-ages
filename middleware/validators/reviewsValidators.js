@@ -13,8 +13,17 @@ function handleValidationErrors(req, res, next) {
 
 const createReviewRules = [
     body('placeId')
-        .notEmpty().withMessage('A place must be specified.')
+        .optional({ checkFalsy: true })
         .isMongoId().withMessage('Invalid place.'),
+    body('eventId')
+        .optional({ checkFalsy: true })
+        .isMongoId().withMessage('Invalid event.'),
+    body().custom((body) => {
+        if (!body.placeId === !body.eventId) {
+            throw new Error('Specify either a place or an event to review, not both.');
+        }
+        return true;
+    }),
     body('rating')
         .notEmpty().withMessage('A star rating is required.')
         .isInt({ min: 1, max: 5 }).withMessage('Rating must be between 1 and 5.'),

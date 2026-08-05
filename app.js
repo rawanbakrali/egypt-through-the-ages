@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
-const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const { attachUserToLocals } = require('./middleware/auth');
 const authRoutes = require('./routes/authRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
@@ -12,6 +12,8 @@ const pageRoutes = require('./routes/pageRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
 const userPlaceStatusRoutes = require('./routes/userPlaceStatusRoutes');
 const bookingsRoutes = require('./routes/bookingsRoutes');
+const usersRoutes = require('./routes/usersRoutes');
+const chatRoutes = require('./routes/chatRoutes');
 const { notFoundHandler, globalErrorHandler } = require('./middleware/errorHandlers');
 
 const app = express();
@@ -29,17 +31,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // needed for fetch() calls that send JSON bodies
+app.use(cookieParser());
 
-app.use(session({
-    secret: 'egypt-through-the-ages-dev-secret', // TEMPORARY — move to an env variable before any real deployment
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 * 24 } // 24 hours
-}));
-
+// Reads the JWT auth cookie and makes login state available to every view/route
 app.use(attachUserToLocals);
 
-// Global middleware: makes login state available to every view automatically
 app.use(authRoutes);
 app.use(uploadRoutes);
 app.use(placesRoutes);
@@ -48,6 +44,8 @@ app.use(pageRoutes);
 app.use(reviewsRoutes);
 app.use(userPlaceStatusRoutes);
 app.use(bookingsRoutes);
+app.use(usersRoutes);
+app.use(chatRoutes);
 
 app.use(notFoundHandler);
 app.use(globalErrorHandler);

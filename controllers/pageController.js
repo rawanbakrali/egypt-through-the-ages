@@ -5,6 +5,7 @@ const Event = require('../models/Event');
 const Review = require('../models/Reviews');
 const UserPlaceStatus = require('../models/UserPlaceStatus');
 const User = require('../models/User');
+const Booking = require('../models/Booking');
 const { flattenPlaces, buildEraCategoryMap } = require('../models/helpers');
 
 exports.home = (req, res) => {
@@ -76,13 +77,21 @@ exports.adminDashboard = async (req, res, next) => {
     try {
         const flatPlaces = await flattenPlaces();
         const allEvents = await Event.find({}).sort({ createdAt: -1 });
+        const allUsers = await User.find({}).sort({ createdAt: -1 });
 
         res.render('admin', {
             title: 'Admin Management UI — Egypt Through the Ages',
             places: flatPlaces,
             eraCategoryMap: buildEraCategoryMap(),
             events: allEvents,
-            bookings: bookings
+            bookings: bookings,
+            users: allUsers.map(u => ({
+                id: u._id.toString(),
+                username: u.username,
+                email: u.email,
+                role: u.role,
+                joined: u.createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+            }))
         });
     } catch (err) {
         next(err);
@@ -96,10 +105,11 @@ exports.profile = async (req, res, next) => {
 
         const userId = req.session.user.id;
 
-        const [currentUserDoc, statusEntries, reviewEntries] = await Promise.all([
+        const [currentUserDoc, statusEntries, reviewEntries, attendedBookings] = await Promise.all([
             User.findById(userId),
             UserPlaceStatus.find({ userId }).populate('placeId').sort({ createdAt: -1 }),
-            Review.find({ userId }).populate('placeId').sort({ createdAt: -1 })
+            Review.find({ userId }).populate('placeId').populate('eventId').sort({ createdAt: -1 }),
+            Booking.find({ userId, status: 'attended' }).populate('eventId').sort({ updatedAt: -1 })
         ]);
 
         const myRatingsByPlaceId = {};
@@ -118,19 +128,41 @@ exports.profile = async (req, res, next) => {
                 image: entry.placeId.image
             }));
 
-        const reviews = reviewEntries
-            .filter(entry => entry.placeId)
-            .map(entry => {
-                const era = eras[entry.placeId.era] || {};
-                const categoryInfo = (era.categories || []).find(c => c.key === entry.placeId.category) || {};
+        const reviews = reviewEntries.map(entry => {
+            const time = entry.createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+            if (entry.eventTitle) {
                 return {
-                    placeName: entry.placeName,
-                    category: categoryInfo.label || entry.placeId.category,
+                    placeName: entry.eventTitle,
+                    category: (entry.eventId && entry.eventId.category) || 'Event',
                     rating: entry.rating,
                     text: entry.reviewText,
-                    time: entry.createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                    time
                 };
-            });
+            }
+
+            const era = eras[entry.placeId && entry.placeId.era] || {};
+            const placeCategory = entry.placeId && entry.placeId.category;
+            const categoryInfo = (era.categories || []).find(c => c.key === placeCategory) || {};
+            return {
+                placeName: entry.placeName,
+                category: categoryInfo.label || (entry.placeId && entry.placeId.category) || '',
+                rating: entry.rating,
+                text: entry.reviewText,
+                time
+            };
+        });
+
+        const attendedEvents = attendedBookings
+            .filter(entry => entry.eventId)
+            .map(entry => ({
+                title: entry.eventId.title,
+                slug: entry.eventId.slug,
+                location: entry.eventId.location,
+                image: entry.eventId.image,
+                date: entry.eventId.date ? entry.eventId.date.toISOString() : null,
+                attendedOn: entry.updatedAt.toISOString()
+            }));
 
         res.render('profile', {
             title: 'My Profile | Egypt Through the Ages',
@@ -143,7 +175,8 @@ exports.profile = async (req, res, next) => {
                 avatar: '' // no real avatar upload system yet — falls back to initial letter
             },
             places,
-            reviews
+            reviews,
+            attendedEvents
         });
     } catch (err) {
         next(err);

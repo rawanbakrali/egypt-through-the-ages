@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const User = require('../models/User');
 const { sendPasswordResetEmail } = require('../utils/mailer');
+const { setAuthCookie, clearAuthCookie } = require('../middleware/auth');
 
 exports.login = async (req, res) => {
     try {
@@ -16,8 +17,8 @@ exports.login = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Invalid email or password.' });
         }
 
-        // Store only safe fields in the session (never the password)
-        req.session.user = { id: user._id.toString(), username: user.username, email: user.email, role: user.role };
+        // Store only safe fields in the JWT (never the password)
+        setAuthCookie(res, { id: user._id.toString(), username: user.username, email: user.email, role: user.role });
 
         // Redirect back to wherever the user came from, defaulting to home
         const redirectTo = req.body.redirectTo || '/';
@@ -49,7 +50,7 @@ exports.register = async (req, res) => {
         });
         await newUser.save();
 
-        req.session.user = { id: newUser._id.toString(), username: newUser.username, email: newUser.email, role: newUser.role };
+        setAuthCookie(res, { id: newUser._id.toString(), username: newUser.username, email: newUser.email, role: newUser.role });
         res.json({ success: true, redirectTo: '/' });
     } catch (err) {
         console.error('Register error:', err);
@@ -58,9 +59,8 @@ exports.register = async (req, res) => {
 };
 
 exports.logout = (req, res) => {
-    req.session.destroy(() => {
-        res.json({ success: true });
-    });
+    clearAuthCookie(res);
+    res.json({ success: true });
 };
 
 exports.updateAccount = async (req, res) => {
@@ -100,7 +100,7 @@ exports.updateAccount = async (req, res) => {
         }
 
         await user.save();
-        req.session.user = { id: user._id.toString(), username: user.username, email: user.email, role: user.role };
+        setAuthCookie(res, { id: user._id.toString(), username: user.username, email: user.email, role: user.role });
 
         res.json({ success: true, message: 'Account updated successfully.' });
     } catch (err) {
@@ -128,14 +128,15 @@ exports.deleteAccount = async (req, res) => {
 
         await User.findByIdAndDelete(user._id);
 
-        req.session.destroy(() => {
-            res.json({ success: true, message: 'Account deleted successfully.' });
-        });
+        clearAuthCookie(res);
+        res.json({ success: true, message: 'Account deleted successfully.' });
     } catch (err) {
         console.error('Delete account error:', err);
         res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
     }
 };
+
+
 exports.forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;

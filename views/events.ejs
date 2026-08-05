@@ -12,6 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/events.css">
+  <link rel="stylesheet" href="/css/drawer.css">
+  <link rel="stylesheet" href="/css/chatbot.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
 <body>
@@ -87,10 +89,15 @@
   </script>
 
   <%- include('partials/event-submission-modal') %>
+  <%- include('partials/auth-modal') %>
+  <%- include('partials/chatbot') %>
 
   <%- include('partials/footer') %>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="/js/events.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/auth-guard.js"></script>
+  <script src="/js/chatbot.js"></script>
 </body>
 </html>

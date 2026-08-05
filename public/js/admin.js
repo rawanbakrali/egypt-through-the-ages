@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavigation();
   initModalTriggers();
   initGlobalSearch();
-  initActionDelegation(); 
+  initActionDelegation();
   populateEraOptions();
 
   const logoutBtn = document.getElementById('adminLogoutBtn');
@@ -14,6 +14,76 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// ==========================================
+// LOCATION PICKER (Leaflet click-to-set-marker)
+// ==========================================
+
+const DEFAULT_MAP_CENTER = [30.0444, 31.2357]; // Cairo
+const mapPickers = {};
+
+function getOrCreateMapPicker(containerId, latInputId, lngInputId) {
+  if (mapPickers[containerId]) return mapPickers[containerId];
+  if (typeof L === 'undefined') return null;
+
+  const latInput = document.getElementById(latInputId);
+  const lngInput = document.getElementById(lngInputId);
+  const map = L.map(containerId).setView(DEFAULT_MAP_CENTER, 6);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap &copy; CARTO',
+    maxZoom: 19
+  }).addTo(map);
+
+  let marker = null;
+
+  function placeMarker(lat, lng) {
+    if (marker) {
+      marker.setLatLng([lat, lng]);
+    } else {
+      marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+      marker.on('dragend', () => {
+        const pos = marker.getLatLng();
+        latInput.value = pos.lat;
+        lngInput.value = pos.lng;
+      });
+    }
+    latInput.value = lat;
+    lngInput.value = lng;
+  }
+
+  function clear() {
+    if (marker) {
+      map.removeLayer(marker);
+      marker = null;
+    }
+    latInput.value = '';
+    lngInput.value = '';
+  }
+
+  map.on('click', (e) => placeMarker(e.latlng.lat, e.latlng.lng));
+
+  const picker = { map, placeMarker, clear };
+  mapPickers[containerId] = picker;
+  return picker;
+}
+
+// Call after the modal is opened — `coords` is [lat, lng] or null/undefined
+function openLocationPicker(containerId, latInputId, lngInputId, coords) {
+  const picker = getOrCreateMapPicker(containerId, latInputId, lngInputId);
+  if (!picker) return;
+
+  setTimeout(() => {
+    picker.map.invalidateSize();
+    if (coords && coords.length === 2) {
+      picker.placeMarker(coords[0], coords[1]);
+      picker.map.setView(coords, 13);
+    } else {
+      picker.clear();
+      picker.map.setView(DEFAULT_MAP_CENTER, 6);
+    }
+  }, 50);
+}
 
 
 function populateEraOptions() {
@@ -151,6 +221,7 @@ function initModalTriggers() {
       placePreview.style.display = 'none';
       populateCategoryOptions();
       openModal('modalPlace');
+      openLocationPicker('placeFormMap', 'placeFormLat', 'placeFormLng', null);
     });
   });
 
@@ -165,21 +236,9 @@ function initModalTriggers() {
       eventPreview.src = "";
       eventPreview.style.display = 'none';
       openModal('modalEvent');
+      openLocationPicker('eventFormMap', 'eventFormLat', 'eventFormLng', null);
     });
   });
-
-  // Drawer Toggle
-  const drawerBtn = document.getElementById('toggleNotificationsDrawer');
-  if (drawerBtn) {
-    drawerBtn.addEventListener('click', () => toggleDrawer('drawerNotifications'));
-  }
-}
-
-function toggleDrawer(drawerId) {
-  const drawer = document.getElementById(drawerId);
-  if (drawer) {
-    drawer.classList.toggle('is-open');
-  }
 }
 
 // ==========================================
@@ -235,6 +294,7 @@ function openEditPlaceModal(compositeId) {
   document.getElementById('placeFormCategory').disabled = false;
 
   openModal('modalPlace');
+  openLocationPicker('placeFormMap', 'placeFormLat', 'placeFormLng', place.coords || null);
 }
 
 async function handlePlaceFormSubmit(e) {
@@ -248,11 +308,18 @@ async function handlePlaceFormSubmit(e) {
   const description = document.getElementById('placeFormDescription').value;
   const fileInput = document.getElementById('placeFormImageFile');
   const hiddenImage = document.getElementById('placeFormImage');
+  const lat = document.getElementById('placeFormLat').value;
+  const lng = document.getElementById('placeFormLng').value;
 
   if (!eraSlug || !categoryKey) {
   showToast('Please select both an era and a category.');
   return;
 }
+
+  if (!lat || !lng) {
+    showToast('Please click the map to set a location.');
+    return;
+  }
 
   // If a new file was chosen, upload it first
   let imageUrl = hiddenImage.value;
@@ -278,7 +345,7 @@ async function handlePlaceFormSubmit(e) {
     return;
   }
 
-  const payload = { name, era: eraSlug, category: categoryKey, location, image: imageUrl, description, status };
+  const payload = { name, era: eraSlug, category: categoryKey, location, image: imageUrl, description, status, lat, lng };
 
   try {
     const url = compositeId ? `/admin/places/${compositeId}` : '/admin/places';
@@ -316,7 +383,7 @@ function openEditEventModal(eventSlug) {
   document.getElementById('eventFormTitle').value = event.title;
   document.getElementById('eventFormType').value = event.type;
   document.getElementById('eventFormCategory').value = event.category;
-  document.getElementById('eventFormDate').value = event.date;
+  document.getElementById('eventFormDate').value = event.date ? event.date.slice(0, 10) : '';
   document.getElementById('eventFormBookingStatus').value = event.booking;
   document.getElementById('eventFormLocation').value = event.location;
   document.getElementById('eventFormImage').value = event.image;
@@ -326,6 +393,8 @@ function openEditEventModal(eventSlug) {
   document.getElementById('eventFormDescription').value = event.description || '';
 
   openModal('modalEvent');
+  const coords = event.coordinates ? [event.coordinates.lat, event.coordinates.lng] : null;
+  openLocationPicker('eventFormMap', 'eventFormLat', 'eventFormLng', coords);
 }
 
 async function handleEventFormSubmit(e) {
@@ -340,6 +409,13 @@ async function handleEventFormSubmit(e) {
   const description = document.getElementById('eventFormDescription').value;
   const fileInput = document.getElementById('eventFormImageFile');
   const hiddenImage = document.getElementById('eventFormImage');
+  const lat = document.getElementById('eventFormLat').value;
+  const lng = document.getElementById('eventFormLng').value;
+
+  if (!lat || !lng) {
+    showToast('Please click the map to set a location.');
+    return;
+  }
 
   let imageUrl = hiddenImage.value;
   if (fileInput.files && fileInput.files[0]) {
@@ -364,7 +440,7 @@ async function handleEventFormSubmit(e) {
     return;
   }
 
-  const payload = { title, type, category, date, bookingStatus, location, image: imageUrl, description };
+  const payload = { title, type, category, date, bookingStatus, location, image: imageUrl, description, lat, lng };
 
   try {
     const url = slug ? `/admin/events/${slug}` : '/admin/events';
@@ -481,7 +557,10 @@ function openReviewSubmissionModal(slug) {
       metaBlock.appendChild(document.createElement('br'));
     };
 
-    appendMeta('Date', `${event.date || ''} ${event.time || ''}`.trim());
+    const formattedDate = event.date
+      ? new Date(event.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+      : '';
+    appendMeta('Date', `${formattedDate} ${event.time || ''}`.trim());
     appendMeta('Location', event.location);
     appendMeta('Category', event.category);
 
@@ -595,6 +674,49 @@ function handleBookingOverrideSubmit(e) {
 }
 
 // ==========================================
+// USER MANAGEMENT
+// ==========================================
+
+function openEditUserModal(userId) {
+  const user = (window.ADMIN_USERS || []).find(u => u.id === userId);
+  if (!user) return;
+
+  document.getElementById('userFormId').value = user.id;
+  document.getElementById('userFormUsername').value = user.username;
+  document.getElementById('userFormEmail').value = user.email;
+  document.getElementById('userFormRole').value = user.role;
+
+  openModal('modalUser');
+}
+
+async function handleUserFormSubmit(e) {
+  e.preventDefault();
+  const id = document.getElementById('userFormId').value;
+  const username = document.getElementById('userFormUsername').value;
+  const email = document.getElementById('userFormEmail').value;
+  const role = document.getElementById('userFormRole').value;
+
+  try {
+    const res = await fetch(`/admin/users/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email, role })
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      showToast(data.message || 'Failed to save user.');
+      return;
+    }
+
+    closeModal('modalUser');
+    window.location.reload();
+  } catch (err) {
+    showToast('Network error — could not save user.');
+  }
+}
+
+// ==========================================
 // DELETE CONFIRMATION
 // ==========================================
 
@@ -643,6 +765,25 @@ async function executeDelete() {
       return;
     } catch (err) {
       showToast('Network error — could not delete event.');
+      closeModal('modalDelete');
+      return;
+    }
+  }
+
+  if (type === 'user') {
+    try {
+      const res = await fetch(`/admin/users/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!data.success) {
+        showToast(data.message || 'Failed to delete user.');
+        closeModal('modalDelete');
+        return;
+      }
+      closeModal('modalDelete');
+      window.location.reload();
+      return;
+    } catch (err) {
+      showToast('Network error — could not delete user.');
       closeModal('modalDelete');
       return;
     }
@@ -705,6 +846,12 @@ function initActionDelegation() {
         break;
       case 'override-booking':
         openOverrideBookingModal(el.dataset.id, el.dataset.status);
+        break;
+      case 'edit-user':
+        openEditUserModal(el.dataset.id);
+        break;
+      case 'delete-user':
+        confirmDelete('user', el.dataset.id, el.dataset.name);
         break;
       default:
         break;

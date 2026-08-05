@@ -37,6 +37,18 @@ function formatDate(dateString) {
   return months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
 }
 
+function eventCardHtml(event) {
+  var html = '<article class="place-card event-card-link" onclick="location.href=\'/event/' + event.slug + '\'">';
+  html += '<div class="place-card__media">';
+  html += '<img src="' + event.image + '" alt="' + event.title + '">';
+  html += '</div>';
+  html += '<div class="place-card__body">';
+  html += '<div><p class="place-card__name">' + event.title + '</p><p class="place-card__location">' + event.location + '</p></div>';
+  html += '<div><p class="place-card__date">Attended ' + formatDate(event.attendedOn) + '</p></div>';
+  html += '</div></article>';
+  return html;
+}
+
 function placeCardHtml(place) {
   var dateWord = place.status === "visited" ? "Visited" : "Added";
   var html = '<article class="place-card" data-status="' + place.status + '" data-rating="' + place.rating + '" data-name="' + place.name + '" data-location="' + place.location + '" data-date="' + place.date + '">';
@@ -188,6 +200,7 @@ for (var ri = reviews.length - 1; ri >= 0; ri--) {
   <nav class="tabs" id="profileTabs">
     <button class="tab is-active" data-tab="overview">Overview</button>
     <button class="tab" data-tab="visited">Visited</button>
+    <button class="tab" data-tab="events">Attended Events</button>
     <button class="tab" data-tab="reviews">Reviews</button>
     <button class="tab" data-tab="lists">Lists</button>
   </nav>
@@ -227,6 +240,19 @@ for (var ri = reviews.length - 1; ri >= 0; ri--) {
           <%- placeCardHtml(p) %>
         <% }) %>
       </div>
+    </div>
+
+    <!-- attended events tab -->
+    <div class="tab-panel" id="panel-events">
+      <div class="panel-heading">
+        <h2>Attended Events</h2>
+      </div>
+      <div class="place-grid" id="eventsGrid">
+        <% attendedEvents.forEach(function (ev) { %>
+          <%- eventCardHtml(ev) %>
+        <% }) %>
+      </div>
+      <p class="empty-state" <%= attendedEvents.length ? 'hidden' : '' %>>No attended events yet — mark an event as attended from its page once it's over.</p>
     </div>
 
     <!-- reviews tab -->

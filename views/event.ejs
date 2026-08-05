@@ -49,6 +49,19 @@
           data-type="<%= event.type %>"
         ></div>
       </section>
+
+      <section class="event-section">
+        <h2 class="section-title">Reviews</h2>
+        <div class="event-rating-row">
+          <span class="stars">☆☆☆☆☆</span>
+          <span class="rating-text">No ratings yet</span>
+        </div>
+        <div class="review-list" id="reviewList">
+          <p class="review-empty-message" id="reviewEmptyMessage">
+            No reviews yet — be the first to share your experience!
+          </p>
+        </div>
+      </section>
     </div>
 
     <aside class="event-detail__sidebar">
@@ -71,6 +84,9 @@
             <%= myBookingStatus === 'attending' ? "✓ Attending" : "I'll Attend" %>
           </button>
         <% } else { %>
+          <p class="booking-note booking-note--attended" data-role="attended-badge" <%= myBookingStatus === 'attended' ? '' : 'hidden' %>>
+            ✓ You attended this event
+          </p>
           <button class="btn btn--primary btn--full require-auth" data-auth-label="mark this event as attended" data-action="mark-attended" <%= myBookingStatus === 'attended' ? 'hidden' : '' %>>
             Mark as Attended
           </button>
@@ -84,11 +100,16 @@
 
   <%- include('partials/footer') %>
   <%- include('partials/auth-modal') %>
+  <%- include('partials/review-modal') %>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="/js/events.js"></script>
+  <script src="/js/reviews.js"></script>
   <script src="/js/auth.js"></script>
   <script src="/js/auth-guard.js"></script>
   <script src="/js/toast.js"></script>
+  <script>
+    window.refreshEventReviews('<%= event._id %>');
+  </script>
 </body>
 </html>

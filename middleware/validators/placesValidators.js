@@ -29,6 +29,12 @@ const createPlaceRules = [
     body('image')
         .trim()
         .notEmpty().withMessage('An image is required.'),
+    body('lat')
+        .notEmpty().withMessage('Please pick a location on the map.')
+        .isFloat({ min: -90, max: 90 }).withMessage('Invalid latitude.'),
+    body('lng')
+        .notEmpty().withMessage('Please pick a location on the map.')
+        .isFloat({ min: -180, max: 180 }).withMessage('Invalid longitude.'),
     body('description')
         .optional({ checkFalsy: true })
         .isLength({ max: 2000 }).withMessage('Description must be under 2000 characters.'),
@@ -51,7 +57,13 @@ const updatePlaceRules = [
         .isLength({ max: 2000 }).withMessage('Description must be under 2000 characters.'),
     body('status')
         .optional({ checkFalsy: true })
-        .isIn(['published', 'draft']).withMessage('Status must be either Published or Draft.')
+        .isIn(['published', 'draft']).withMessage('Status must be either Published or Draft.'),
+    body('lat')
+        .optional({ checkFalsy: true })
+        .isFloat({ min: -90, max: 90 }).withMessage('Invalid latitude.'),
+    body('lng')
+        .optional({ checkFalsy: true })
+        .isFloat({ min: -180, max: 180 }).withMessage('Invalid longitude.')
 ];
 
 module.exports = { handleValidationErrors, createPlaceRules, updatePlaceRules };

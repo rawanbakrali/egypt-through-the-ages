@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/admin.css">
   <link rel="stylesheet" href="/css/drawer.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
 <body>
 
@@ -47,14 +48,6 @@
           <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           <span>Users</span>
         </a>
-        <a class="nav-item" data-view="media">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          <span>Media</span>
-        </a>
-        <a class="nav-item" data-view="settings">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          <span>Settings</span>
-        </a>
       </nav>
 
       <div class="sidebar-footer">
@@ -81,22 +74,15 @@
             <input type="text" id="globalAdminSearch" placeholder="Search dashboard...">
           </div>
 
-          <button class="icon-btn" id="toggleNotificationsDrawer" title="Notifications">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            <span class="badge-dot"></span>
-          </button>
-
-          <div class="user-dropdown">
+          <div class="user-badge">
             <div class="user-avatar">A</div>
             <span class="user-name">Admin</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
         </div>
       </header>
 
       <!-- CONTENT BODY -->
       <div class="admin-content">
-
         <!-- ==========================================
              VIEW 1: OVERVIEW DASHBOARD (Reference Pic)
              ========================================== -->
@@ -338,26 +324,49 @@
 
         <!-- OTHER MANAGE VIEWS -->
         <section class="view-section" id="view-users">
-          <div class="admin-card" style="padding: 2rem;">
-            <h2>User Management</h2>
-            <p style="color: var(--text-muted); margin-top: 0.5rem;">Manage platform admin accounts, editor permissions, and community event submitters.</p>
+          <div class="admin-card">
+            <div class="card-header">
+              <h3 class="card-title">User Management</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="admin-table" id="tableUsers">
+                <thead>
+                  <tr>
+                    <th>USERNAME</th>
+                    <th>EMAIL</th>
+                    <th>ROLE</th>
+                    <th>JOINED</th>
+                    <th>ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% users.forEach(u => { %>
+                  <tr data-id="<%= u.id %>">
+                    <td><span class="cell-title"><%= u.username %></span></td>
+                    <td><%= u.email %></td>
+                    <td>
+                      <span class="status-badge <%= u.role === 'admin' ? 'badge-published' : 'badge-draft' %>">
+                        <%= u.role === 'admin' ? 'Admin' : 'User' %>
+                      </span>
+                    </td>
+                    <td><%= u.joined %></td>
+                    <td>
+                      <div class="action-group">
+                        <button class="action-btn" title="Edit User" data-action="edit-user" data-id="<%= u.id %>">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="action-btn delete" title="Delete User" data-action="delete-user" data-id="<%= u.id %>" data-name="<%= u.username %>">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
-
-        <section class="view-section" id="view-media">
-          <div class="admin-card" style="padding: 2rem;">
-            <h2>Media Gallery</h2>
-            <p style="color: var(--text-muted); margin-top: 0.5rem;">Upload and manage historical images, event assets, and banner photos.</p>
-          </div>
-        </section>
-
-        <section class="view-section" id="view-settings">
-          <div class="admin-card" style="padding: 2rem;">
-            <h2>Platform Settings</h2>
-            <p style="color: var(--text-muted); margin-top: 0.5rem;">Configure global settings, era themes, and email notifications.</p>
-          </div>
-        </section>
-
       </div>
 
         <%- include('partials/footer') %>
@@ -404,6 +413,13 @@
             <div class="form-group full-width">
               <label class="form-label">Location</label>
               <input type="text" id="placeFormLocation" class="form-input" placeholder="e.g. Cairo, Egypt" required>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Map Position</label>
+              <p class="form-hint">Click the map to set the exact location.</p>
+              <div id="placeFormMap" class="form-map"></div>
+              <input type="hidden" id="placeFormLat" value="">
+              <input type="hidden" id="placeFormLng" value="">
             </div>
             <div class="form-group full-width">
               <label class="form-label">Image</label>
@@ -454,7 +470,7 @@
             </div>
             <div class="form-group">
               <label class="form-label">Date</label>
-              <input type="text" id="eventFormDate" class="form-input" placeholder="e.g. Nov 12 - Nov 21, 2025" required>
+              <input type="date" id="eventFormDate" class="form-input" required>
             </div>
             <div class="form-group">
               <label class="form-label">Booking Status</label>
@@ -467,6 +483,13 @@
             <div class="form-group full-width">
               <label class="form-label">Location</label>
               <input type="text" id="eventFormLocation" class="form-input" placeholder="e.g. Cairo Opera House" required>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Map Position</label>
+              <p class="form-hint">Click the map to set the exact location.</p>
+              <div id="eventFormMap" class="form-map"></div>
+              <input type="hidden" id="eventFormLat" value="">
+              <input type="hidden" id="eventFormLng" value="">
             </div>
             <div class="form-group full-width">
               <label class="form-label">Image</label>
@@ -483,6 +506,42 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="closeModal('modalEvent')">Cancel</button>
           <button type="submit" class="btn btn-primary">Save Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- EDIT USER -->
+  <div class="modal-backdrop" id="modalUser">
+    <div class="white-modal" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit User</h3>
+        <button class="modal-close-btn" onclick="closeModal('modalUser')">&times;</button>
+      </div>
+      <form id="formUser" onsubmit="handleUserFormSubmit(event)">
+        <div class="modal-body">
+          <input type="hidden" id="userFormId" value="">
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label class="form-label">Username</label>
+              <input type="text" id="userFormUsername" class="form-input" required>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Email</label>
+              <input type="email" id="userFormEmail" class="form-input" required>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Role</label>
+              <select id="userFormRole" class="form-select">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modalUser')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save User</button>
         </div>
       </form>
     </div>
@@ -557,34 +616,16 @@
     </div>
   </div>
 
-  <!-- NOTIFICATIONS DRAWER -->
-  <div class="slide-drawer" id="drawerNotifications">
-    <div class="drawer-header">
-      <h3 style="font-family: var(--font-serif); font-size: 1.15rem;">Notifications</h3>
-      <button class="modal-close-btn" onclick="toggleDrawer('drawerNotifications')">&times;</button>
-    </div>
-    <div class="drawer-body">
-      <div class="notification-item">
-        <div class="notification-title">New Event Submitted</div>
-        <p style="font-size: 0.8rem; color: var(--text-muted);">"Al-Muizz Street Festival" awaits admin review.</p>
-        <div class="notification-time">10 mins ago</div>
-      </div>
-      <div class="notification-item">
-        <div class="notification-title">Booking Full Alert</div>
-        <p style="font-size: 0.8rem; color: var(--text-muted);">"Sound & Light Show — Pyramids of Giza" is now full.</p>
-        <div class="notification-time">1 hour ago</div>
-      </div>
-    </div>
-  </div>
-
 <!-- JAVASCRIPT -->
   <script>
     window.ADMIN_EVENTS = <%- JSON.stringify(events) %>;
     window.ERA_CATEGORY_MAP = <%- JSON.stringify(eraCategoryMap) %>;
     window.ADMIN_PLACES = <%- JSON.stringify(places) %>;
+    window.ADMIN_USERS = <%- JSON.stringify(users) %>;
   </script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="/js/toast.js"></script>
-    <script src="/js/admin.js"></script> 
+    <script src="/js/admin.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/auth-guard.js"></script>
 </body>

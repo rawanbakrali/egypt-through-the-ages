@@ -7,6 +7,7 @@ const { handleValidationErrors, createReviewRules } = require('../middleware/val
 router.post('/reviews', requireAuth, createReviewRules, handleValidationErrors, reviewsController.createReview);
 router.delete('/reviews/:id', requireAuth, reviewsController.deleteReview);
 router.get('/reviews/place/:placeId', reviewsController.getReviewsForPlace); // public — anyone can view reviews
+router.get('/reviews/event/:eventId', reviewsController.getReviewsForEvent); // public — anyone can view reviews
 router.get('/reviews/mine', requireAuth, reviewsController.getMyReviews);
 
 module.exports = router;

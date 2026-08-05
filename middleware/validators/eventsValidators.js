@@ -21,7 +21,8 @@ const submitEventRules = [
         .notEmpty().withMessage('Description is required.')
         .isLength({ max: 2000 }).withMessage('Description must be under 2000 characters.'),
     body('date')
-        .notEmpty().withMessage('Date is required.'),
+        .notEmpty().withMessage('Date is required.')
+        .isISO8601().withMessage('Please provide a valid date.'),
     body('time')
         .notEmpty().withMessage('Time is required.'),
     body('location')
@@ -33,7 +34,16 @@ const submitEventRules = [
         .notEmpty().withMessage('Please select a category.'),
     body('ticketUrl')
         .optional({ checkFalsy: true })
-        .isURL().withMessage('Booking link must be a valid URL.')
+        .isURL().withMessage('Booking link must be a valid URL.'),
+    body('image')
+        .optional({ checkFalsy: true })
+        .trim(),
+    body('lat')
+        .optional({ checkFalsy: true })
+        .isFloat({ min: -90, max: 90 }).withMessage('Invalid latitude.'),
+    body('lng')
+        .optional({ checkFalsy: true })
+        .isFloat({ min: -180, max: 180 }).withMessage('Invalid longitude.')
 ];
 
 const createEventRules = [
@@ -48,6 +58,15 @@ const createEventRules = [
     body('image')
         .trim()
         .notEmpty().withMessage('An image is required.'),
+    body('date')
+        .notEmpty().withMessage('Date is required.')
+        .isISO8601().withMessage('Please provide a valid date.'),
+    body('lat')
+        .notEmpty().withMessage('Please pick a location on the map.')
+        .isFloat({ min: -90, max: 90 }).withMessage('Invalid latitude.'),
+    body('lng')
+        .notEmpty().withMessage('Please pick a location on the map.')
+        .isFloat({ min: -180, max: 180 }).withMessage('Invalid longitude.'),
     body('description')
         .optional({ checkFalsy: true })
         .isLength({ max: 2000 }).withMessage('Description must be under 2000 characters.'),
@@ -71,6 +90,15 @@ const updateEventRules = [
     body('bookingStatus')
         .optional({ checkFalsy: true })
         .isIn(['open', 'reserved']).withMessage('Booking status must be Open or Reserved.'),
+    body('date')
+        .optional({ checkFalsy: true })
+        .isISO8601().withMessage('Please provide a valid date.'),
+    body('lat')
+        .optional({ checkFalsy: true })
+        .isFloat({ min: -90, max: 90 }).withMessage('Invalid latitude.'),
+    body('lng')
+        .optional({ checkFalsy: true })
+        .isFloat({ min: -180, max: 180 }).withMessage('Invalid longitude.'),
     body('type')
         .optional({ checkFalsy: true })
         .isIn(['official', 'business', 'community']).withMessage('Invalid event type.')

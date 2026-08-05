@@ -3,7 +3,7 @@ const Place = require('../models/Place');
 
 exports.createPlace = async (req, res) => {
     try {
-        const { name, era, category, location, image, description, status } = req.body;
+        const { name, era, category, location, image, description, status, lat, lng } = req.body;
 
         if (!eras[era]) {
             return res.status(400).json({ success: false, message: 'Invalid era.' });
@@ -20,6 +20,7 @@ exports.createPlace = async (req, res) => {
             location,
             fullLocation: location,
             image,
+            coords: [parseFloat(lat), parseFloat(lng)],
             desc: description || '',
             history: description || '',
             tags: [],
@@ -43,7 +44,7 @@ exports.updatePlace = async (req, res) => {
         const place = await Place.findById(req.params.id);
         if (!place) return res.status(404).json({ success: false, message: 'Place not found.' });
 
-        const { name, era, category, location, image, description, status } = req.body;
+        const { name, era, category, location, image, description, status, lat, lng } = req.body;
 
         if (era) {
             if (!eras[era]) {
@@ -64,6 +65,7 @@ exports.updatePlace = async (req, res) => {
         if (name) place.name = name;
         if (location) { place.location = location; place.fullLocation = location; }
         if (image) place.image = image;
+        if (lat !== undefined && lng !== undefined) place.coords = [parseFloat(lat), parseFloat(lng)];
         if (description !== undefined) place.desc = description;
         if (status) place.status = status;
 

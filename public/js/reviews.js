@@ -12,18 +12,18 @@
   const tagChipsContainer = document.getElementById('reviewTagChips');
 
   let currentRating = 0;
-  let activePlaceId = null;
+  let activeSubject = { type: 'place', id: null }; // type: 'place' | 'event'
   let uploadedFiles = []; // { file, dataUrl } — dataUrl is just for local preview
   let reviewTags = [];
 
   const galleryGrid = document.getElementById('galleryGrid');
   const galleryEmptyMessage = document.getElementById('galleryEmptyMessage');
 
-  // FETCH + RENDER REVIEWS FOR A PLACE (real backend)
+  // FETCH + RENDER REVIEWS FOR A PLACE OR EVENT (real backend)
 
-  async function refreshPlaceReviews(placeId) {
+  async function refreshReviews(type, id) {
     try {
-      const res = await fetch(`/reviews/place/${placeId}`);
+      const res = await fetch(`/reviews/${type}/${id}`);
       const data = await res.json();
       if (!data.success) return;
 
@@ -34,7 +34,8 @@
       console.error('Failed to load reviews:', err);
     }
   }
-  window.refreshPlaceReviews = refreshPlaceReviews;
+  window.refreshPlaceReviews = (placeId) => refreshReviews('place', placeId);
+  window.refreshEventReviews = (eventId) => refreshReviews('event', eventId);
 
   function renderRating(summary) {
     const starsEl = document.querySelector('.stars');
@@ -103,8 +104,8 @@
     try {
       const res = await fetch(`/reviews/${reviewId}`, { method: 'DELETE' });
       const data = await res.json();
-      if (data.success && activePlaceId) {
-        refreshPlaceReviews(activePlaceId);
+      if (data.success && activeSubject.id) {
+        refreshReviews(activeSubject.type, activeSubject.id);
       } else if (window.showToast) {
         window.showToast(data.message || 'Failed to delete review.');
       }
@@ -155,8 +156,8 @@
   });
 
   // REVIEW MODAL
-  function openReviewModal(placeId) {
-    activePlaceId = placeId;
+  function openReviewModal(type, id) {
+    activeSubject = { type, id };
     currentRating = 0;
     textarea.value = '';
     uploadedFiles = [];
@@ -271,7 +272,7 @@
       if (window.showToast) window.showToast('Please select a star rating before saving.');
       return;
     }
-    if (!activePlaceId) return;
+    if (!activeSubject.id) return;
 
     saveBtn.disabled = true;
     saveBtn.textContent = 'Saving...';
@@ -287,16 +288,22 @@
         if (uploadData.success) imageUrls.push(uploadData.url);
       }
 
+      const payload = {
+        rating: currentRating,
+        reviewText: textarea.value.trim(),
+        tags: reviewTags,
+        images: imageUrls
+      };
+      if (activeSubject.type === 'event') {
+        payload.eventId = activeSubject.id;
+      } else {
+        payload.placeId = activeSubject.id;
+      }
+
       const res = await fetch('/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          placeId: activePlaceId,
-          rating: currentRating,
-          reviewText: textarea.value.trim(),
-          tags: reviewTags,
-          images: imageUrls
-        })
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
 
@@ -306,7 +313,7 @@
       }
 
       closeReviewModal();
-      refreshPlaceReviews(activePlaceId);
+      refreshReviews(activeSubject.type, activeSubject.id);
     } catch (err) {
       if (window.showToast) window.showToast('Network error — could not save review.');
     } finally {

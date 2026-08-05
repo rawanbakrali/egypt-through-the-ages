@@ -15,6 +15,7 @@ async function flattenPlaces() {
             name: place.name,
             location: place.fullLocation || place.location,
             image: place.image,
+            coords: place.coords && place.coords.length === 2 ? place.coords : null,
             description: place.desc,
             status: place.status,
             updatedAt: place.updatedAt

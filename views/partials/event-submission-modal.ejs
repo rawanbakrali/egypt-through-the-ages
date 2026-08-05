@@ -37,6 +37,14 @@
         <input type="text" name="location" required placeholder="Venue and area">
       </label>
 
+      <div class="form-field">
+        <span>Map position</span>
+        <p class="form-map-hint">Click the map to drop a pin at the exact spot, or drag it into place.</p>
+        <div id="submitEventMap" class="submit-event-map"></div>
+        <input type="hidden" name="lat" id="submitEventLat">
+        <input type="hidden" name="lng" id="submitEventLng">
+      </div>
+
       <label class="form-field">
         <span>Category</span>
         <select name="category" required>

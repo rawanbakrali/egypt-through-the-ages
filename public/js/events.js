@@ -127,7 +127,46 @@ function initSubmissionModal() {
   const businessOnlyFields = overlay.querySelectorAll('[data-business-only]');
   const toggleBtns = overlay.querySelectorAll('.type-toggle-btn');
 
-  const open = () => { overlay.hidden = false; };
+  const DEFAULT_SUBMIT_COORDS = [30.0444, 31.2357]; // Cairo
+  const submitLatInput = document.getElementById('submitEventLat');
+  const submitLngInput = document.getElementById('submitEventLng');
+  let submitMapPicker = null;
+
+  function ensureSubmitMapPicker() {
+    if (submitMapPicker || typeof L === 'undefined') return submitMapPicker;
+
+    const map = L.map('submitEventMap').setView(DEFAULT_SUBMIT_COORDS, 6);
+    grayscaleTileLayer().addTo(map);
+    document.getElementById('submitEventMap').classList.add('map-grayscale');
+
+    const marker = L.marker(DEFAULT_SUBMIT_COORDS, { draggable: true }).addTo(map);
+
+    function setPosition(lat, lng) {
+      marker.setLatLng([lat, lng]);
+      submitLatInput.value = lat;
+      submitLngInput.value = lng;
+    }
+
+    marker.on('dragend', () => {
+      const pos = marker.getLatLng();
+      setPosition(pos.lat, pos.lng);
+    });
+    map.on('click', (e) => setPosition(e.latlng.lat, e.latlng.lng));
+
+    submitMapPicker = { map, setPosition };
+    return submitMapPicker;
+  }
+
+  const open = () => {
+    overlay.hidden = false;
+    const picker = ensureSubmitMapPicker();
+    setTimeout(() => {
+      if (!picker) return;
+      picker.map.invalidateSize();
+      picker.setPosition(DEFAULT_SUBMIT_COORDS[0], DEFAULT_SUBMIT_COORDS[1]);
+      picker.map.setView(DEFAULT_SUBMIT_COORDS, 6);
+    }, 50);
+  };
   const close = () => {
     overlay.hidden = true;
     form.reset();
@@ -157,6 +196,28 @@ function initSubmissionModal() {
     const submissionType = activeToggle ? activeToggle.dataset.submissionType : 'business';
     const formData = new FormData(form);
 
+    let imageUrl = null;
+    const imageFile = formData.get('images');
+    if (imageFile && imageFile.size > 0) {
+      if (!window.IS_LOGGED_IN) {
+        alert('Sign in to attach an image to your submission — submitting without one.');
+      } else {
+        const uploadForm = new FormData();
+        uploadForm.append('image', imageFile);
+        try {
+          const uploadRes = await fetch('/upload', { method: 'POST', body: uploadForm });
+          const uploadData = await uploadRes.json();
+          if (uploadData.success) {
+            imageUrl = uploadData.url;
+          } else {
+            alert(uploadData.message || 'Image upload failed — submitting without it.');
+          }
+        } catch (err) {
+          alert('Network error — image not uploaded. Submitting without it.');
+        }
+      }
+    }
+
     const payload = {
       submissionType,
       title: formData.get('title'),
@@ -165,9 +226,10 @@ function initSubmissionModal() {
       time: formData.get('time'),
       location: formData.get('location'),
       category: formData.get('category'),
-      ticketUrl: formData.get('ticketUrl') || null
-      // Note: image uploads aren't wired to a real backend yet — any
-      // files selected here are not actually sent or stored.
+      ticketUrl: formData.get('ticketUrl') || null,
+      image: imageUrl,
+      lat: formData.get('lat'),
+      lng: formData.get('lng')
     };
 
     try {
@@ -200,6 +262,7 @@ function initBookingActions() {
   const attendBtn = card.querySelector('[data-action="attend"]');
   const markAttendedBtn = card.querySelector('[data-action="mark-attended"]');
   const leaveReviewBtn = card.querySelector('[data-action="leave-review"]');
+  const attendedBadge = card.querySelector('[data-role="attended-badge"]');
 
   async function setBookingStatus(status) {
     try {
@@ -248,10 +311,12 @@ function initBookingActions() {
     if (result === 'attended') {
       markAttendedBtn.hidden = true;
       if (leaveReviewBtn) leaveReviewBtn.hidden = false;
+      if (attendedBadge) attendedBadge.hidden = false;
+      if (window.showToast) window.showToast("Marked as attended — you'll see it on your profile.");
     }
   });
 
   leaveReviewBtn?.addEventListener('click', () => {
-    if (window.showToast) window.showToast('Event reviews are coming soon.');
+    if (window.openReviewModal) window.openReviewModal('event', eventId);
   });
 }

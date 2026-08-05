@@ -441,6 +441,10 @@ button {
   overflow: hidden;
 }
 
+.event-card-link {
+  cursor: pointer;
+}
+
 .place-card:hover {
   border-color: #F5F5F5;
 }

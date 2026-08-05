@@ -350,7 +350,7 @@
     <script>
       document.getElementById('drawerReviewBtn').addEventListener('click', () => {
         if (window.currentDrawerItem && window.currentDrawerItem.placeId) {
-          window.openReviewModal(window.currentDrawerItem.placeId, window.currentDrawerItem.name);
+          window.openReviewModal('place', window.currentDrawerItem.placeId);
         }
       });
     </script>

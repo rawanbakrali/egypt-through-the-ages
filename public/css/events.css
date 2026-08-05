@@ -318,6 +318,17 @@ body {
   top: 100px;
 }
 .booking-note { font-size: 12px; color: var(--text-muted); margin-top: 8px; text-align: center; }
+.booking-note--attended {
+  font-size: 14px;
+  font-weight: 600;
+  color: #16A34A;
+  background: rgba(22, 163, 74, 0.12);
+  border: 1px solid rgba(22, 163, 74, 0.35);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 0 0 12px;
+  text-align: center;
+}
 
 @media (max-width: 900px) {
   .event-detail { grid-template-columns: 1fr; }
@@ -334,7 +345,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 2000;
 }
 .modal-overlay[hidden] { display: none; }
 
@@ -393,6 +404,14 @@ body {
 .form-field textarea:focus,
 .form-field select:focus { outline: none; border-color: #111; }
 
+.form-map-hint { font-size: 12px; font-weight: 400; color: #777; margin: 0; }
+.submit-event-map {
+  height: 200px;
+  border-radius: 14px;
+  border: 1px solid #ddd;
+  overflow: hidden;
+}
+
 .form-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px; }
 .form-actions .btn--secondary { color: #111; border-color: #111; }
 .form-actions .btn--secondary:hover { background: rgba(0,0,0,0.06); }
@@ -410,4 +429,85 @@ body {
     background: #F5F5F5;
     color: #050505;
     border-color: #F5F5F5;
+}
+
+/* =========================================
+   EVENT REVIEWS
+   ========================================= */
+.event-rating-row { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.stars { color: #D4AF37; letter-spacing: 2px; }
+.rating-text { font-size: 13px; color: var(--text-secondary); }
+
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.review-card {
+    padding: 20px;
+    border: 1px solid #E5E5E5;
+    border-radius: 14px;
+    background: #FFFFFF;
+}
+
+.review-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.review-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #111;
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.review-card-meta h4 {
+    font-size: 14px;
+    margin-bottom: 2px;
+    color: #111;
+}
+
+.review-card-stars {
+    font-size: 13px;
+    color: #D4AF37;
+    letter-spacing: 1px;
+}
+
+.review-card-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.review-card-tags .tag {
+    font-size: 12px;
+    padding: 6px 12px;
+    background: #EEEEEE;
+    border-radius: 999px;
+    color: #333;
+}
+
+.review-card-text {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+}
+
+.review-empty-message {
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 40px 0;
 }
