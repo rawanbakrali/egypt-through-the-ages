@@ -1,5 +1,4 @@
 const eras = require('../data/eras');
-const bookings = require('../data/bookings');
 const Place = require('../models/Place');
 const Event = require('../models/Event');
 const Review = require('../models/Reviews');
@@ -79,12 +78,27 @@ exports.adminDashboard = async (req, res, next) => {
         const allEvents = await Event.find({}).sort({ createdAt: -1 });
         const allUsers = await User.find({}).sort({ createdAt: -1 });
 
+        const allBookings = await Booking.find({})
+            .populate('userId', 'username email')
+            .populate('eventId', 'image')
+            .sort({ createdAt: -1 });
+
+        const flatBookings = allBookings.map(b => ({
+            id: '#' + b._id.toString().slice(-6).toUpperCase(),
+            eventTitle: b.eventTitle,
+            eventImage: b.eventId ? b.eventId.image : '/assets/events/placeholder.jpg',
+            bookedBy: b.userId ? b.userId.username : 'Deleted user',
+            email: b.userId ? b.userId.email : '—',
+            status: b.status,
+            date: b.createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        }));
+
         res.render('admin', {
             title: 'Admin Management UI — Egypt Through the Ages',
             places: flatPlaces,
             eraCategoryMap: buildEraCategoryMap(),
             events: allEvents,
-            bookings: bookings,
+            bookings: flatBookings,
             users: allUsers.map(u => ({
                 id: u._id.toString(),
                 username: u.username,

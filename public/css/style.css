@@ -83,6 +83,11 @@ ul {
     .hero-title { font-size: 56px; }
 }
 
+/* --- Mobile: hero title scales down further on phones --- */
+@media (max-width: 600px) {
+    .hero-title { font-size: 42px; }
+}
+
 .section-title {
     font-family: var(--font-display);
     font-size: 42px;
@@ -119,6 +124,20 @@ ul {
     letter-spacing: 0.18em;
     text-transform: uppercase;
 }
+
+/* --- Tablet: heading scale --- */
+@media (max-width: 1024px) {
+    .section-title { font-size: 34px; }
+    .card-title { font-size: 24px; }
+}
+
+/* --- Mobile: heading scale --- */
+@media (max-width: 600px) {
+    .section-title { font-size: 26px; }
+    .card-title { font-size: 20px; }
+    .body-text-secondary { font-size: 13.5px; }
+}
+
 /* =========================================
    NAVBAR (FIXED)
    ========================================= */
@@ -186,6 +205,45 @@ ul {
     height: 1px;
     background-color: var(--text-primary);
 }
+
+/* --- Tablet: navbar --- */
+@media (max-width: 1024px) {
+    .navbar {
+        padding: 0 24px;
+    }
+    .nav-right {
+        gap: 20px;
+    }
+}
+
+/* --- Mobile: navbar collapses to logo + hamburger --- */
+@media (max-width: 768px) {
+    .navbar {
+        height: 64px;
+        padding: 0 20px;
+    }
+    .logo-main {
+        font-size: 19px;
+    }
+    .logo-sub {
+        font-size: 9px;
+        letter-spacing: 0.22em;
+    }
+    /* Text nav links move into the side-nav-panel via the hamburger;
+       keep only the trigger visible in the bar itself */
+    .navbar .nav-right .nav-label {
+        display: none;
+    }
+    .nav-right {
+        gap: 0;
+    }
+    .hamburger-btn {
+        margin-left: 0;
+        /* Larger hit area for touch */
+        padding: 10px;
+    }
+}
+
 /* =========================================
    SIDE NAV PANEL 
    ========================================= */
@@ -251,6 +309,21 @@ ul {
 .side-nav-link:hover {
     opacity: 0.6;
 }
+
+/* --- Mobile: side nav panel fits narrow phones --- */
+@media (max-width: 420px) {
+    .side-nav-panel {
+        width: 85vw;
+        right: -85vw;
+        padding: 28px 24px;
+    }
+    .side-nav-link {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+}
+
 /*=======================================
    FOOTER
 ========================================= */
@@ -288,6 +361,19 @@ ul {
         text-align: center;
     }
 }
+
+/* --- Mobile refinement: footer --- */
+@media (max-width: 600px) {
+    .site-footer {
+        padding: 24px 6%;
+    }
+    .footer-links {
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
 /* --- Dynamic Grid Layout --- */
 #cards-container {
     display: grid;
@@ -346,6 +432,19 @@ ul {
     font-weight: bold;
     font-size: 0.85rem;
 }
+
+/* --- Mobile: single-column card grid, tighter gutters --- */
+@media (max-width: 600px) {
+    #cards-container {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 16px 0;
+    }
+    .card-hero-image {
+        height: 200px;
+    }
+}
+
 /* =========================================
    TOAST NOTIFICATION (global, non-blocking)
    ========================================= */
@@ -375,4 +474,13 @@ ul {
     opacity: 1;
     visibility: visible;
     transform: translateX(-50%) translateY(0);
+}
+
+/* --- Mobile: toast sits closer to thumb reach, slightly smaller --- */
+@media (max-width: 600px) {
+    .toast-notification {
+        bottom: 20px;
+        padding: 12px 20px;
+        font-size: 13px;
+    }
 }

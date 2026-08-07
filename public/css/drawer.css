@@ -156,6 +156,52 @@
 .review-btn-secondary:hover {
   background: rgba(0, 0, 0, 0.05);
 }
+
+/* --- Tablet: review modal --- */
+@media (max-width: 1024px) {
+  .review-modal {
+    width: 400px;
+    padding: 28px;
+  }
+}
+
+/* --- Mobile: review modal --- */
+@media (max-width: 480px) {
+  .review-modal-overlay {
+    align-items: flex-end; /* Bottom-sheet feel is easier to reach on phones */
+  }
+  .review-modal {
+    width: 100%;
+    max-width: 100vw;
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px 28px 20px;
+    max-height: 88vh;
+    overflow-y: auto;
+    transform: translateY(24px);
+  }
+  .review-modal-overlay.is-open .review-modal {
+    transform: translateY(0);
+  }
+  .review-modal-title {
+    font-size: 20px;
+  }
+  .review-star {
+    font-size: 28px;
+  }
+  /* 16px prevents iOS Safari auto-zoom on focus */
+  .review-textarea {
+    font-size: 16px;
+    min-height: 100px;
+  }
+  .review-modal-footer {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+  .review-btn {
+    width: 100%;
+  }
+}
+
 /* ============================================
    REVIEW MODAL — IMAGE UPLOAD
    ============================================ */
@@ -227,6 +273,25 @@
 .review-image-remove-btn:hover {
   background: rgba(0, 0, 0, 0.85);
 }
+
+/* --- Mobile: image upload --- */
+@media (max-width: 480px) {
+  .review-upload-label {
+    width: 100%;
+    justify-content: center;
+    height: 44px;
+  }
+  .review-image-preview-item {
+    width: 64px;
+    height: 64px;
+  }
+  /* Slightly larger remove target for touch */
+  .review-image-remove-btn {
+    width: 22px;
+    height: 22px;
+  }
+}
+
 /* ============================================
    REVIEW MODAL — TAGS
    ============================================ */
@@ -310,6 +375,15 @@
 .review-tag-input:focus {
   outline: none;
 }
+
+/* --- Mobile: tags input (16px avoids iOS zoom) --- */
+@media (max-width: 480px) {
+  .review-tag-input {
+    font-size: 16px;
+    min-width: 100px;
+  }
+}
+
 /* ============================================
    REVIEW MODAL — ADD TO LIST
    ============================================ */
@@ -339,6 +413,14 @@
   outline: none;
   border-color: #050505;
 }
+
+/* --- Mobile: select (16px avoids iOS zoom) --- */
+@media (max-width: 480px) {
+  .review-list-select {
+    font-size: 16px;
+  }
+}
+
 /* ============================================
    AUTH MODAL (Login / Register / Forgot Password)
    Interactive Surface Rule: WHITE background (Point 17)
@@ -491,4 +573,43 @@
 }
 .review-delete-btn:hover {
     text-decoration: underline;
+}
+
+/* --- Tablet: auth modal --- */
+@media (max-width: 1024px) {
+  .auth-modal {
+    width: 380px;
+    padding: 32px;
+  }
+}
+
+/* --- Mobile: auth modal --- */
+@media (max-width: 480px) {
+  .auth-modal-overlay {
+    align-items: flex-end;
+  }
+  .auth-modal {
+    width: 100%;
+    max-width: 100vw;
+    border-radius: 20px 20px 0 0;
+    padding: 28px 20px 32px 20px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(24px);
+  }
+  .auth-modal-overlay.is-open .auth-modal {
+    transform: translateY(0);
+  }
+  .auth-modal-title {
+    font-size: 21px;
+    margin-bottom: 20px;
+  }
+  .auth-modal-close {
+    top: 16px;
+    right: 16px;
+  }
+  /* 16px prevents iOS Safari auto-zoom on focus */
+  .auth-field input {
+    font-size: 16px;
+  }
 }

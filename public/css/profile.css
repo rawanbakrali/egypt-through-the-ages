@@ -1,5 +1,4 @@
-/* Profile Page Styles — retheme to match locked Zara-inspired palette */
-/* Egypt Through the Ages - Profile Page */
+
 
 * {
   box-sizing: border-box;
@@ -113,12 +112,46 @@ button {
   color: #F5F5F5;
 }
 
+/* --- Tablet: site header --- */
+@media (max-width: 1024px) {
+  .site-header__inner {
+    padding: 14px 24px;
+  }
+  .site-nav {
+    gap: 22px;
+  }
+}
+
+/* --- Mobile: site header --- */
+@media (max-width: 720px) {
+  .site-header__inner {
+    padding: 12px 20px;
+  }
+  .wordmark__main {
+    font-size: 18px;
+  }
+}
+
 /* ---------------- page layout ---------------- */
 
 .profile {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 32px 80px;
+}
+
+/* --- Tablet: page gutters --- */
+@media (max-width: 1024px) {
+  .profile {
+    padding: 0 24px 64px;
+  }
+}
+
+/* --- Mobile: page gutters --- */
+@media (max-width: 600px) {
+  .profile {
+    padding: 0 16px 48px;
+  }
 }
 
 /* ---------------- profile header ---------------- */
@@ -236,6 +269,25 @@ button {
   margin-top: 16px;
 }
 
+/* --- Tablet: profile header --- */
+@media (max-width: 1024px) {
+  .profile-header__banner {
+    height: 160px;
+  }
+  .profile-header__content {
+    padding: 0 24px 24px;
+    margin-top: -56px;
+  }
+  .profile-avatar {
+    width: 96px;
+    height: 96px;
+    font-size: 38px;
+  }
+  .profile-info h1 {
+    font-size: 26px;
+  }
+}
+
 /* ---------------- buttons ---------------- */
 
 .btn {
@@ -269,6 +321,14 @@ button {
   background: #E0E0E0;
 }
 
+/* --- Mobile: buttons get a bigger touch target --- */
+@media (max-width: 600px) {
+  .btn {
+    padding: 11px 18px;
+    min-height: 44px;
+  }
+}
+
 /* ---------------- stats bar ---------------- */
 
 .stats-bar {
@@ -299,6 +359,21 @@ button {
 .stat-label {
   font-size: 12px;
   color: #8A8A8A;
+}
+
+/* --- Mobile: tighter stat cards so 2-up doesn't feel cramped --- */
+@media (max-width: 600px) {
+  .stats-bar {
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .stat-card {
+    padding: 14px 14px;
+    border-radius: 14px;
+  }
+  .stat-value {
+    font-size: 24px;
+  }
 }
 
 /* ---------------- tabs ---------------- */
@@ -369,6 +444,45 @@ button {
   color: #8A8A8A;
 }
 
+/* --- Tablet: tabs --- */
+@media (max-width: 1024px) {
+  .tabs {
+    gap: 24px;
+    margin-top: 28px;
+  }
+}
+
+/* --- Mobile: tabs scroll instead of wrapping/crushing --- */
+@media (max-width: 600px) {
+  .tabs {
+    gap: 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .tab {
+    flex-shrink: 0;
+    padding-bottom: 12px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .tab-panel {
+    padding-top: 24px;
+  }
+  .panel-heading {
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .panel-heading h2 {
+    font-size: 19px;
+  }
+}
+
 /* ---------------- activity feed (overview tab) ---------------- */
 
 .activity-feed {
@@ -424,6 +538,18 @@ button {
   font-size: 12px;
   color: #8A8A8A;
   white-space: nowrap;
+}
+
+/* --- Mobile: activity feed --- */
+@media (max-width: 600px) {
+  .activity-feed li {
+    font-size: 13px;
+    gap: 12px;
+  }
+  .activity-icon {
+    width: 30px;
+    height: 30px;
+  }
 }
 
 /* ---------------- place cards / grid ---------------- */
@@ -581,6 +707,22 @@ button {
   margin: 0;
 }
 
+/* --- Mobile: list-view rows wrap cleanly instead of squeezing --- */
+@media (max-width: 600px) {
+  .place-grid.is-list .place-card {
+    align-items: flex-start;
+  }
+  .place-grid.is-list .place-card__media {
+    width: 76px;
+    height: 60px;
+  }
+  .place-grid.is-list .place-card__body {
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    padding: 10px 12px;
+  }
+}
+
 /* ---------------- reviews tab ---------------- */
 
 .review-feed {
@@ -639,6 +781,16 @@ button {
 .review-card__time {
   font-size: 11.5px;
   color: #8A8A8A;
+}
+
+/* --- Mobile: review cards --- */
+@media (max-width: 600px) {
+  .review-card {
+    padding: 14px 16px;
+  }
+  .review-card__top {
+    flex-wrap: wrap;
+  }
 }
 
 /* ---------------- lists tab toolbar ---------------- */
@@ -735,6 +887,24 @@ button {
   color: #8A8A8A;
   font-size: 13.5px;
   padding: 50px 0;
+}
+
+/* --- Mobile: pills scroll horizontally instead of wrapping into a wall --- */
+@media (max-width: 600px) {
+  .filter-pills {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+  .pill {
+    flex-shrink: 0;
+    min-height: 40px;
+  }
+  .lists-toolbar__right {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
 /* ---------------- edit profile modal ----------------
@@ -836,6 +1006,40 @@ button {
   background: rgba(0,0,0,0.05);
 }
 
+/* --- Mobile: edit profile modal becomes a bottom sheet, matching the
+   pattern used for the review/auth modals elsewhere on the site --- */
+@media (max-width: 480px) {
+  .modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .modal {
+    max-width: 100%;
+    border-radius: 20px 20px 0 0;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal__header {
+    padding: 16px 20px;
+  }
+  .modal__body {
+    padding: 18px 20px 20px;
+  }
+  /* 16px prevents iOS Safari auto-zoom on focus */
+  .field input,
+  .field textarea {
+    font-size: 16px;
+  }
+  .modal__footer {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  .modal__footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 /* ---------------- toast message ---------------- */
 
 .toast {
@@ -854,6 +1058,17 @@ button {
 
 .toast[hidden] {
   display: none;
+}
+
+/* --- Mobile: toast --- */
+@media (max-width: 600px) {
+  .toast {
+    bottom: 20px;
+    padding: 11px 20px;
+    font-size: 12.5px;
+    max-width: 90vw;
+    text-align: center;
+  }
 }
 
 /* ---------------- responsive ---------------- */

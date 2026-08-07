@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
     },
     bio: {
         type: String,
-        default: 'Exploring Egypt through the ages, one place at a time.'
+        default: 'add your bio.'
     },
     location: {
         type: String,

@@ -1,4 +1,3 @@
-
 /* =========================================
    HERO SECTION (70vh)
    ========================================= */
@@ -57,6 +56,43 @@
     font-size: 16px;
     line-height: 1.6;
 }
+
+/* --- Tablet: hero --- */
+@media (max-width: 1024px) {
+    .hero {
+        height: 62vh;
+        padding: 0 6%;
+    }
+    .hero-content {
+        max-width: 480px;
+    }
+}
+
+/* --- Mobile: hero --- */
+@media (max-width: 600px) {
+    .hero {
+        margin-top: 64px;
+        height: 78vh;
+        min-height: 480px;
+        padding: 0 24px;
+        align-items: flex-end;
+        padding-bottom: 56px;
+    }
+    /* Steeper, bottom-weighted gradient reads better on a tall narrow crop */
+    .hero-overlay {
+        background: linear-gradient(0deg, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0.75) 35%, rgba(5,5,5,0.35) 70%, rgba(5,5,5,0.15) 100%);
+    }
+    .hero-content {
+        max-width: 100%;
+    }
+    .hero-divider {
+        margin-bottom: 20px;
+    }
+    .hero-subtitle {
+        font-size: 15px;
+    }
+}
+
 /* =========================================
    ERA STRIPS (PANORAMIC)
    ========================================= */
@@ -121,11 +157,30 @@
     .era-strips-container {
         flex-direction: column;
         height: auto;
+        /* Give the strips real breathing room instead of fusing
+           directly onto the hero's bottom edge */
+        margin-top: 16px;
+        border-top: 1px solid var(--border-color);
+    }
+    .era-strip {
+        height: 68px;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+}
+
+/* --- Mobile refinement: era strips --- */
+@media (max-width: 600px) {
+    .era-strips-container {
+        margin-top: 12px;
     }
     .era-strip {
         height: 64px;
-        border-right: none;
-        border-bottom: 1px solid var(--border-color);
+        padding: 0 20px;
+    }
+    .era-strip-label {
+        font-size: 14px;
+        letter-spacing: 0.06em;
     }
 }
 
@@ -167,6 +222,24 @@
         align-items: flex-start;
     }
 }
+
+/* --- Mobile refinement: intro --- */
+@media (max-width: 600px) {
+    .home-intro {
+        padding: 44px 6%;
+        gap: 24px;
+    }
+    .intro-text {
+        font-size: 15px;
+        max-width: 100%;
+    }
+    /* Touch target */
+    .discover-link {
+        padding: 6px 0;
+        min-height: 44px;
+    }
+}
+
 /* =========================================
    MAP SECTION
    ========================================= */
@@ -237,6 +310,42 @@
     color: var(--text-secondary);
     font-family: var(--font-ui);
     font-weight: 600;
+}
+
+/* --- Tablet: map --- */
+@media (max-width: 1024px) {
+    #map-wrapper {
+        height: 380px;
+    }
+}
+
+/* --- Mobile: map & legend --- */
+@media (max-width: 600px) {
+    .map-section {
+        padding: 0 6% 44px 6%;
+    }
+    #map-wrapper {
+        height: 300px;
+        border-radius: 12px;
+    }
+    /* Floating legend over a short mobile map eats too much of the view;
+       dock it above the map instead of overlaying it. */
+    .map-legend {
+        position: static;
+        width: 100%;
+        margin-bottom: 12px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+        padding: 14px 16px;
+        backdrop-filter: none;
+    }
+    .legend-item {
+        gap: 8px;
+    }
+    .legend-text {
+        font-size: 12px;
+    }
 }
 
 /* =========================================
@@ -325,6 +434,24 @@
 .leaflet-bar a:hover {
     background-color: var(--surface-elevated) !important;
 }
+
+/* --- Mobile: popup & touch targets --- */
+@media (max-width: 600px) {
+    .map-popup-card {
+        padding: 14px;
+        max-width: 220px;
+    }
+    .popup-title {
+        font-size: 15px;
+    }
+    /* Zoom buttons need a real touch target */
+    .leaflet-bar a {
+        width: 36px !important;
+        height: 36px !important;
+        line-height: 36px !important;
+    }
+}
+
 /* =========================================
    DISCOVER EVENTS SECTION
    ========================================= */
@@ -360,5 +487,20 @@
     }
     .discover-events-image {
         height: 280px;
+    }
+}
+
+/* --- Mobile refinement: discover events --- */
+@media (max-width: 600px) {
+    .discover-events-section {
+        padding: 44px 6%;
+        gap: 28px;
+    }
+    .discover-events-text p {
+        max-width: 100%;
+        margin-bottom: 24px;
+    }
+    .discover-events-image {
+        height: 220px;
     }
 }
