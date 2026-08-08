@@ -84,7 +84,7 @@
       <!-- CONTENT BODY -->
       <div class="admin-content">
         <!-- ==========================================
-             VIEW 1: OVERVIEW DASHBOARD (Reference Pic)
+             VIEW 1: OVERVIEW DASHBOARD
              ========================================== -->
         <section class="view-section is-active" id="view-overview">
           <div class="section-overview-intro">
@@ -290,8 +290,8 @@
           </div>
         </section>
 
-        <!--
-              EVENT BOOKINGS FULL VIEW
+        <!-- ==========================================
+             EVENT BOOKINGS FULL VIEW
              ========================================== -->
         <section class="view-section" id="view-bookings">
           <div class="admin-card">
@@ -616,17 +616,23 @@
     </div>
   </div>
 
-<!-- JAVASCRIPT -->
+  <!-- JAVASCRIPT DATA CONTAINERS (XSS SAFE) -->
+  <script type="application/json" id="admin-events-data"><%- JSON.stringify(events) %></script>
+  <script type="application/json" id="era-category-map-data"><%- JSON.stringify(eraCategoryMap) %></script>
+  <script type="application/json" id="admin-places-data"><%- JSON.stringify(places) %></script>
+  <script type="application/json" id="admin-users-data"><%- JSON.stringify(users) %></script>
+
   <script>
-    window.ADMIN_EVENTS = <%- JSON.stringify(events) %>;
-    window.ERA_CATEGORY_MAP = <%- JSON.stringify(eraCategoryMap) %>;
-    window.ADMIN_PLACES = <%- JSON.stringify(places) %>;
-    window.ADMIN_USERS = <%- JSON.stringify(users) %>;
+    window.ADMIN_EVENTS = JSON.parse(document.getElementById('admin-events-data').textContent);
+    window.ERA_CATEGORY_MAP = JSON.parse(document.getElementById('era-category-map-data').textContent);
+    window.ADMIN_PLACES = JSON.parse(document.getElementById('admin-places-data').textContent);
+    window.ADMIN_USERS = JSON.parse(document.getElementById('admin-users-data').textContent);
   </script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="/js/toast.js"></script>
-    <script src="/js/admin.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/auth-guard.js"></script>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/admin.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/auth-guard.js"></script>
 </body>
 </html>

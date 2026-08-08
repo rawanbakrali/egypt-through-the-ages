@@ -1,5 +1,7 @@
 const eras = require('../data/eras');
 const Place = require('../models/Place');
+const Review = require('../models/Reviews');
+const UserPlaceStatus = require('../models/UserPlaceStatus');
 
 exports.createPlace = async (req, res) => {
     try {
@@ -79,8 +81,18 @@ exports.updatePlace = async (req, res) => {
 
 exports.deletePlace = async (req, res) => {
     try {
-        const result = await Place.findByIdAndDelete(req.params.id);
-        if (!result) return res.status(404).json({ success: false, message: 'Place not found.' });
+        const place = await Place.findById(req.params.id);
+        if (!place) return res.status(404).json({ success: false, message: 'Place not found.' });
+
+        // Cascade delete: remove every Review and UserPlaceStatus (favorite/wishlist/
+        // visited) that references this place, so deleting it doesn't leave orphaned
+        // documents pointing at a placeId that no longer exists.
+        await Promise.all([
+            Place.findByIdAndDelete(place._id),
+            Review.deleteMany({ placeId: place._id }),
+            UserPlaceStatus.deleteMany({ placeId: place._id })
+        ]);
+
         res.json({ success: true });
     } catch (err) {
         console.error('Delete place error:', err);

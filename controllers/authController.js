@@ -1,5 +1,8 @@
 const crypto = require('crypto');
 const User = require('../models/User');
+const Booking = require('../models/Booking');
+const Review = require('../models/Reviews');
+const UserPlaceStatus = require('../models/UserPlaceStatus');
 const { sendPasswordResetEmail } = require('../utils/mailer');
 const { setAuthCookie, clearAuthCookie } = require('../middleware/auth');
 
@@ -126,7 +129,14 @@ exports.deleteAccount = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Incorrect password.' });
         }
 
-        await User.findByIdAndDelete(user._id);
+        // Cascade delete: remove every Booking, Review, and UserPlaceStatus this user
+        // created, so a self-deleted account doesn't leave orphaned documents behind.
+        await Promise.all([
+            User.findByIdAndDelete(user._id),
+            Booking.deleteMany({ userId: user._id }),
+            Review.deleteMany({ userId: user._id }),
+            UserPlaceStatus.deleteMany({ userId: user._id })
+        ]);
 
         clearAuthCookie(res);
         res.json({ success: true, message: 'Account deleted successfully.' });

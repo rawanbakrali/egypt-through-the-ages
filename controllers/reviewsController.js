@@ -75,8 +75,11 @@ exports.deleteReview = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Review not found.' });
         }
 
-        // Only the review's own author can delete it
-        if (review.userId.toString() !== req.session.user.id) {
+        // The review's own author can always delete it; an admin can also remove
+        // any review as a moderation action (e.g. abusive/spam content).
+        const isOwner = review.userId.toString() === req.session.user.id;
+        const isAdmin = req.session.user.role === 'admin';
+        if (!isOwner && !isAdmin) {
             return res.status(403).json({ success: false, message: 'You can only delete your own reviews.' });
         }
 

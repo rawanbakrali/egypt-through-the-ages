@@ -1,4 +1,7 @@
 const User = require('../models/User');
+const Booking = require('../models/Booking');
+const Review = require('../models/Reviews');
+const UserPlaceStatus = require('../models/UserPlaceStatus');
 
 exports.updateUser = async (req, res) => {
     try {
@@ -40,8 +43,18 @@ exports.deleteUser = async (req, res) => {
             return res.status(400).json({ success: false, message: "You can't delete your own account while logged in." });
         }
 
-        const result = await User.findByIdAndDelete(req.params.id);
-        if (!result) return res.status(404).json({ success: false, message: 'User not found.' });
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ success: false, message: 'User not found.' });
+
+        // Cascade delete: remove every Booking, Review, and UserPlaceStatus this user
+        // created, so deleting their account doesn't leave orphaned documents behind
+        // that reference a userId which no longer exists.
+        await Promise.all([
+            User.findByIdAndDelete(user._id),
+            Booking.deleteMany({ userId: user._id }),
+            Review.deleteMany({ userId: user._id }),
+            UserPlaceStatus.deleteMany({ userId: user._id })
+        ]);
 
         res.json({ success: true });
     } catch (err) {

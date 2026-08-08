@@ -414,5 +414,45 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
-});
 
+    // 8. DEEP LINK: open a specific place's drawer directly on page load, e.g.
+    // /era/ancient-egypt?openPlace=Giza%20Pyramids (used by the homepage overview
+    // map so its markers open the actual place drawer, not just the era page).
+    (function openPlaceFromQueryParam() {
+        const params = new URLSearchParams(window.location.search);
+        const targetName = params.get('openPlace');
+        if (!targetName) return;
+
+        const normalized = targetName.trim().toLowerCase();
+        let matchedCategory = null;
+        let matchedItem = null;
+
+        for (const [categoryKey, items] of Object.entries(categoryData)) {
+            const found = items.find(item => item.name.trim().toLowerCase() === normalized);
+            if (found) {
+                matchedCategory = categoryKey;
+                matchedItem = found;
+                break;
+            }
+        }
+
+        // Place not found under this era (name mismatch, unpublished, etc.) —
+        // fail silently and just leave the visitor on the normal era page.
+        if (!matchedItem) return;
+
+        // Open the matching category grid first so the drawer opens into context
+        // instead of appearing over an otherwise-empty page.
+        const cardEl = document.querySelector(`.feature-card-vertical[data-category="${matchedCategory}"]`);
+        if (cardEl) switchCategory(matchedCategory, cardEl);
+
+        populateDrawer(matchedItem);
+        openDrawer();
+
+        // Strip the query param from the URL so refreshing or sharing the link
+        // afterward doesn't keep re-triggering the same auto-open.
+        params.delete('openPlace');
+        const cleanQuery = params.toString();
+        const cleanUrl = window.location.pathname + (cleanQuery ? `?${cleanQuery}` : '') + window.location.hash;
+        window.history.replaceState({}, '', cleanUrl);
+    })();
+});

@@ -86,12 +86,16 @@
         </p>
       `;
 
-      // Show a delete option only on the current user's own review
-      if (window.CURRENT_USER_ID && review.ownerId === window.CURRENT_USER_ID) {
+      // Show a delete option on the current user's own review, or on any review
+      // if the current user is an admin (moderation — e.g. removing abusive content).
+      const isOwnReview = window.CURRENT_USER_ID && review.ownerId === window.CURRENT_USER_ID;
+      const isAdminModerator = window.CURRENT_USER_ID && window.CURRENT_USER_ROLE === 'admin' && !isOwnReview;
+
+      if (isOwnReview || isAdminModerator) {
         const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'review-delete-btn';
-        deleteBtn.textContent = 'Delete my review';
-        deleteBtn.addEventListener('click', () => deleteReview(review.id));
+        deleteBtn.className = 'review-delete-btn' + (isAdminModerator ? ' review-delete-btn--admin' : '');
+        deleteBtn.textContent = isOwnReview ? 'Delete my review' : 'Remove review (admin)';
+        deleteBtn.addEventListener('click', () => deleteReview(review.id, isAdminModerator));
         card.appendChild(deleteBtn);
       }
 
@@ -99,8 +103,11 @@
     });
   }
 
-  async function deleteReview(reviewId) {
-    if (!confirm('Delete this review? This cannot be undone.')) return;
+  async function deleteReview(reviewId, isModeration) {
+    const confirmMessage = isModeration
+      ? "Remove this user's review as an admin? This cannot be undone."
+      : 'Delete this review? This cannot be undone.';
+    if (!confirm(confirmMessage)) return;
     try {
       const res = await fetch(`/reviews/${reviewId}`, { method: 'DELETE' });
       const data = await res.json();

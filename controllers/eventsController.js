@@ -1,5 +1,6 @@
 const Event = require('../models/Event');
 const Booking = require('../models/Booking');
+const Review = require('../models/Reviews');
 
 exports.listEvents = async (req, res, next) => {
     try {
@@ -129,8 +130,17 @@ exports.updateEvent = async (req, res) => {
 
 exports.deleteEvent = async (req, res) => {
     try {
-        const result = await Event.findOneAndDelete({ slug: req.params.slug });
-        if (!result) return res.status(404).json({ success: false, message: 'Event not found.' });
+        const event = await Event.findOne({ slug: req.params.slug });
+        if (!event) return res.status(404).json({ success: false, message: 'Event not found.' });
+
+        // Cascade delete: remove every Booking and Review tied to this event so
+        // deleting it doesn't leave orphaned documents pointing at a dead eventId.
+        await Promise.all([
+            Event.findByIdAndDelete(event._id),
+            Booking.deleteMany({ eventId: event._id }),
+            Review.deleteMany({ eventId: event._id })
+        ]);
+
         res.json({ success: true });
     } catch (err) {
         console.error('Delete event error:', err);
