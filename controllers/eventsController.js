@@ -1,5 +1,5 @@
 const Event = require('../models/Event');
-const Booking = require('../models/Booking');
+const Booking = require('../models/Booking'); 
 const Review = require('../models/Reviews');
 
 exports.listEvents = async (req, res, next) => {
