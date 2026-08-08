@@ -282,6 +282,15 @@ function openEditPlaceModal(compositeId) {
   document.getElementById('placeFormLocation').value = place.location;
   document.getElementById('placeFormImage').value = place.image;
   document.getElementById('placeFormDescription').value = place.description || '';
+  document.getElementById('placeFormHistory').value = place.history || '';
+  document.getElementById('placeFormBuilt').value = (place.quickFacts && place.quickFacts.built) || '';
+  document.getElementById('placeFormFounder').value = (place.quickFacts && place.quickFacts.founder) || '';
+  document.getElementById('placeFormStyle').value = (place.quickFacts && place.quickFacts.style) || '';
+  document.getElementById('placeFormFunction').value = (place.quickFacts && place.quickFacts.function) || '';
+  document.getElementById('placeFormHours').value = (place.visitorInfo && place.visitorInfo.hours) || '';
+  document.getElementById('placeFormBestTime').value = (place.visitorInfo && place.visitorInfo.bestTime) || '';
+  document.getElementById('placeFormDressCode').value = (place.visitorInfo && place.visitorInfo.dressCode) || '';
+  document.getElementById('placeFormEntryFee').value = (place.visitorInfo && place.visitorInfo.entryFee) || '';
 
   const placePreview = document.getElementById('placeFormImagePreview');
   placePreview.src = place.image;
@@ -306,15 +315,25 @@ async function handlePlaceFormSubmit(e) {
   const status = document.getElementById('placeFormStatus').value;
   const location = document.getElementById('placeFormLocation').value;
   const description = document.getElementById('placeFormDescription').value;
+  const history = document.getElementById('placeFormHistory').value;
+  const built = document.getElementById('placeFormBuilt').value;
+  const founder = document.getElementById('placeFormFounder').value;
+  const style = document.getElementById('placeFormStyle').value;
+  const func = document.getElementById('placeFormFunction').value;
+  const hours = document.getElementById('placeFormHours').value;
+  const bestTime = document.getElementById('placeFormBestTime').value;
+  const dressCode = document.getElementById('placeFormDressCode').value;
+  const entryFee = document.getElementById('placeFormEntryFee').value;
+
   const fileInput = document.getElementById('placeFormImageFile');
   const hiddenImage = document.getElementById('placeFormImage');
   const lat = document.getElementById('placeFormLat').value;
   const lng = document.getElementById('placeFormLng').value;
 
   if (!eraSlug || !categoryKey) {
-  showToast('Please select both an era and a category.');
-  return;
-}
+    showToast('Please select both an era and a category.');
+    return;
+  }
 
   if (!lat || !lng) {
     showToast('Please click the map to set a location.');
@@ -345,7 +364,12 @@ async function handlePlaceFormSubmit(e) {
     return;
   }
 
-  const payload = { name, era: eraSlug, category: categoryKey, location, image: imageUrl, description, status, lat, lng };
+  const payload = {
+    name, era: eraSlug, category: categoryKey, location, image: imageUrl,
+    description, history, status, lat, lng,
+    built, founder, style, function: func,
+    hours, bestTime, dressCode, entryFee
+  };
 
   try {
     const url = compositeId ? `/admin/places/${compositeId}` : '/admin/places';
@@ -463,6 +487,28 @@ async function handleEventFormSubmit(e) {
   } catch (err) {
     showToast('Network error — could not save event.');
   }
+}
+
+function filterOverviewPlaces(filter, btnEl) {
+  const tabs = btnEl.parentElement.querySelectorAll('.tab-btn');
+  tabs.forEach(t => t.classList.remove('is-active'));
+  btnEl.classList.add('is-active');
+
+  const rows = document.querySelectorAll('#tablePlacesOverview tbody tr');
+  rows.forEach(row => {
+    const badge = row.querySelector('.status-badge');
+    const isPublished = badge && badge.classList.contains('badge-published');
+
+    if (filter === 'all') {
+      row.style.display = '';
+    } else if (filter === 'published' && isPublished) {
+      row.style.display = '';
+    } else if (filter === 'draft' && !isPublished) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
 }
 
 function filterOverviewEvents(filter, btnEl) {

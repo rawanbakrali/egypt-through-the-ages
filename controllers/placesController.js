@@ -5,7 +5,11 @@ const UserPlaceStatus = require('../models/UserPlaceStatus');
 
 exports.createPlace = async (req, res) => {
     try {
-        const { name, era, category, location, image, description, status, lat, lng } = req.body;
+        const {
+            name, era, category, location, image, description, status, lat, lng,
+            history, built, founder, style, function: func,
+            hours, bestTime, dressCode, entryFee
+        } = req.body;
 
         if (!eras[era]) {
             return res.status(400).json({ success: false, message: 'Invalid era.' });
@@ -24,13 +28,23 @@ exports.createPlace = async (req, res) => {
             image,
             coords: [parseFloat(lat), parseFloat(lng)],
             desc: description || '',
-            history: description || '',
+            history: history !== undefined ? history : (description || ''),
             tags: [],
             interactive: true,
             status: status || 'published',
             thumbnails: [],
-            quickFacts: {},
-            visitorInfo: {}
+            quickFacts: {
+                built: built || '',
+                founder: founder || '',
+                style: style || '',
+                function: func || ''
+            },
+            visitorInfo: {
+                hours: hours || '',
+                bestTime: bestTime || '',
+                dressCode: dressCode || '',
+                entryFee: entryFee || ''
+            }
         });
         await newPlace.save();
 
@@ -46,7 +60,11 @@ exports.updatePlace = async (req, res) => {
         const place = await Place.findById(req.params.id);
         if (!place) return res.status(404).json({ success: false, message: 'Place not found.' });
 
-        const { name, era, category, location, image, description, status, lat, lng } = req.body;
+        const {
+            name, era, category, location, image, description, status, lat, lng,
+            history, built, founder, style, function: func,
+            hours, bestTime, dressCode, entryFee
+        } = req.body;
 
         if (era) {
             if (!eras[era]) {
@@ -69,7 +87,28 @@ exports.updatePlace = async (req, res) => {
         if (image) place.image = image;
         if (lat !== undefined && lng !== undefined) place.coords = [parseFloat(lat), parseFloat(lng)];
         if (description !== undefined) place.desc = description;
+        if (history !== undefined) place.history = history;
         if (status) place.status = status;
+
+        if (built !== undefined || founder !== undefined || style !== undefined || func !== undefined) {
+            place.quickFacts = {
+                built: built !== undefined ? built : (place.quickFacts ? place.quickFacts.built : ''),
+                founder: founder !== undefined ? founder : (place.quickFacts ? place.quickFacts.founder : ''),
+                style: style !== undefined ? style : (place.quickFacts ? place.quickFacts.style : ''),
+                function: func !== undefined ? func : (place.quickFacts ? place.quickFacts.function : '')
+            };
+            place.markModified('quickFacts');
+        }
+
+        if (hours !== undefined || bestTime !== undefined || dressCode !== undefined || entryFee !== undefined) {
+            place.visitorInfo = {
+                hours: hours !== undefined ? hours : (place.visitorInfo ? place.visitorInfo.hours : ''),
+                bestTime: bestTime !== undefined ? bestTime : (place.visitorInfo ? place.visitorInfo.bestTime : ''),
+                dressCode: dressCode !== undefined ? dressCode : (place.visitorInfo ? place.visitorInfo.dressCode : ''),
+                entryFee: entryFee !== undefined ? entryFee : (place.visitorInfo ? place.visitorInfo.entryFee : '')
+            };
+            place.markModified('visitorInfo');
+        }
 
         await place.save();
         res.json({ success: true, place });

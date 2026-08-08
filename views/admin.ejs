@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %></title>
+  <title>
+    <%= title %>
+  </title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="/css/admin.css">
   <link rel="stylesheet" href="/css/drawer.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
+
 <body>
 
   <div class="admin-layout">
@@ -25,34 +31,59 @@
       <nav class="sidebar-nav">
         <div class="nav-section-label">Main</div>
         <a class="nav-item is-active" data-view="overview">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
           <span>Dashboard</span>
         </a>
 
         <div class="nav-section-label">Content</div>
         <a class="nav-item" data-view="places">
-          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <svg viewBox="0 0 24 24">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
           <span>Historical Places</span>
         </a>
         <a class="nav-item" data-view="events">
-          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
           <span>Events</span>
         </a>
         <a class="nav-item" data-view="bookings">
-          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <svg viewBox="0 0 24 24">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+          </svg>
           <span>Event Bookings</span>
         </a>
 
         <div class="nav-section-label">Manage</div>
         <a class="nav-item" data-view="users">
-          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <svg viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
           <span>Users</span>
         </a>
       </nav>
 
       <div class="sidebar-footer">
         <button class="logout-btn" id="adminLogoutBtn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
           <span>Log Out</span>
         </button>
       </div>
@@ -70,7 +101,10 @@
 
         <div class="header-right">
           <div class="header-search">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
             <input type="text" id="globalAdminSearch" placeholder="Search dashboard...">
           </div>
 
@@ -94,11 +128,18 @@
 
           <!-- TOP 2-COLUMN GRID -->
           <div class="dashboard-grid">
-            
+
             <!-- HISTORICAL PLACES CARD -->
             <div class="admin-card">
               <div class="card-header">
-                <h3 class="card-title">Historical Places</h3>
+                <div class="card-title-wrap">
+                  <h3 class="card-title">Historical Places</h3>
+                  <div class="card-tabs">
+                    <button class="tab-btn is-active" onclick="filterOverviewPlaces('all', this)">All Places</button>
+                    <button class="tab-btn" onclick="filterOverviewPlaces('published', this)">Published</button>
+                    <button class="tab-btn" onclick="filterOverviewPlaces('draft', this)">Drafts</button>
+                  </div>
+                </div>
                 <button class="btn btn-primary btn-sm btn-open-add-place">
                   <span>Add New Place</span>
                 </button>
@@ -115,9 +156,10 @@
                       <th>ACTIONS</th>
                     </tr>
                   </thead>
-                 <tbody>
-                    <% places.slice(0, 3).forEach(place => { %>
-                    <%- include('partials/place-row', { place: place, showLocation: false }) %><% }); %>
+                  <tbody>
+                    <% places.slice(0, 3).forEach(place=> { %>
+                      <%- include('partials/place-row', { place: place, showLocation: false }) %>
+                        <% }); %>
                   </tbody>
                 </table>
               </div>
@@ -125,7 +167,10 @@
               <div class="card-footer">
                 <a class="view-all-link" onclick="switchAdminView('places')">
                   <span>View all places</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
                 </a>
               </div>
             </div>
@@ -158,8 +203,9 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <% events.slice(0, 3).forEach(event => { %>
-                    <%- include('partials/event-row', { event: event, variant: 'overview' }) %><% }); %>
+                    <% events.slice(0, 3).forEach(event=> { %>
+                      <%- include('partials/event-row', { event: event, variant: 'overview' }) %>
+                        <% }); %>
                   </tbody>
                 </table>
               </div>
@@ -167,7 +213,10 @@
               <div class="card-footer">
                 <a class="view-all-link" onclick="switchAdminView('events')">
                   <span>View all events</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
                 </a>
               </div>
             </div>
@@ -180,7 +229,8 @@
                 <div class="card-title-wrap">
                   <h3 class="card-title">Event Bookings</h3>
                   <div class="card-tabs">
-                    <button class="tab-btn is-active" onclick="filterOverviewBookings('all', this)">All Bookings</button>
+                    <button class="tab-btn is-active" onclick="filterOverviewBookings('all', this)">All
+                      Bookings</button>
                     <button class="tab-btn" onclick="filterOverviewBookings('open', this)">Open</button>
                     <button class="tab-btn" onclick="filterOverviewBookings('reserved', this)">Reserved</button>
                     <button class="tab-btn" onclick="filterOverviewBookings('full', this)">Full</button>
@@ -205,8 +255,9 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <% bookings.slice(0, 3).forEach(b => { %>
-                    <%- include('partials/booking-row', { b: b, variant: 'overview' }) %><% }); %>
+                    <% bookings.slice(0, 3).forEach(b=> { %>
+                      <%- include('partials/booking-row', { b: b, variant: 'overview' }) %>
+                        <% }); %>
                   </tbody>
                 </table>
               </div>
@@ -214,7 +265,10 @@
               <div class="card-footer">
                 <a class="view-all-link" onclick="switchAdminView('bookings')">
                   <span>View all bookings</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
                 </a>
               </div>
             </div>
@@ -244,8 +298,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% places.forEach(place => { %>
-                  <%- include('partials/place-row', { place: place, showLocation: true }) %><% }); %>
+                  <% places.forEach(place=> { %>
+                    <%- include('partials/place-row', { place: place, showLocation: true }) %>
+                      <% }); %>
                 </tbody>
               </table>
             </div>
@@ -282,8 +337,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% events.forEach(event => { %>
-                  <%- include('partials/event-row', { event: event, variant: 'full' }) %><% }); %>
+                  <% events.forEach(event=> { %>
+                    <%- include('partials/event-row', { event: event, variant: 'full' }) %>
+                      <% }); %>
                 </tbody>
               </table>
             </div>
@@ -314,8 +370,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% bookings.forEach(b => { %>
-                  <%- include('partials/booking-row', { b: b, variant: 'full' }) %><% }); %>
+                  <% bookings.forEach(b=> { %>
+                    <%- include('partials/booking-row', { b: b, variant: 'full' }) %>
+                      <% }); %>
                 </tbody>
               </table>
             </div>
@@ -340,28 +397,44 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% users.forEach(u => { %>
-                  <tr data-id="<%= u.id %>">
-                    <td><span class="cell-title"><%= u.username %></span></td>
-                    <td><%= u.email %></td>
-                    <td>
-                      <span class="status-badge <%= u.role === 'admin' ? 'badge-published' : 'badge-draft' %>">
-                        <%= u.role === 'admin' ? 'Admin' : 'User' %>
-                      </span>
-                    </td>
-                    <td><%= u.joined %></td>
-                    <td>
-                      <div class="action-group">
-                        <button class="action-btn" title="Edit User" data-action="edit-user" data-id="<%= u.id %>">
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                        </button>
-                        <button class="action-btn delete" title="Delete User" data-action="delete-user" data-id="<%= u.id %>" data-name="<%= u.username %>">
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <% }); %>
+                  <% users.forEach(u=> { %>
+                    <tr data-id="<%= u.id %>">
+                      <td><span class="cell-title">
+                          <%= u.username %>
+                        </span></td>
+                      <td>
+                        <%= u.email %>
+                      </td>
+                      <td>
+                        <span class="status-badge <%= u.role === 'admin' ? 'badge-published' : 'badge-draft' %>">
+                          <%= u.role==='admin' ? 'Admin' : 'User' %>
+                        </span>
+                      </td>
+                      <td>
+                        <%= u.joined %>
+                      </td>
+                      <td>
+                        <div class="action-group">
+                          <button class="action-btn" title="Edit User" data-action="edit-user" data-id="<%= u.id %>">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                              stroke-width="2">
+                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button class="action-btn delete" title="Delete User" data-action="delete-user"
+                            data-id="<%= u.id %>" data-name="<%= u.username %>">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                              stroke-width="2">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path
+                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            </svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <% }); %>
                 </tbody>
               </table>
             </div>
@@ -369,7 +442,7 @@
         </section>
       </div>
 
-        <%- include('partials/footer') %>
+      <%- include('partials/footer') %>
         <%- include('partials/auth-modal') %>
 
     </main>
@@ -425,11 +498,58 @@
               <label class="form-label">Image</label>
               <input type="file" id="placeFormImageFile" class="form-input" accept="image/*">
               <input type="hidden" id="placeFormImage" value="">
-              <img id="placeFormImagePreview" src="" alt="Current image" style="display:none; max-width:140px; margin-top:10px; border-radius:8px;">
+              <img id="placeFormImagePreview" src="" alt="Current image"
+                style="display:none; max-width:140px; margin-top:10px; border-radius:8px;">
             </div>
             <div class="form-group full-width">
-              <label class="form-label">Description</label>
-              <textarea id="placeFormDescription" class="form-textarea" placeholder="Brief historical overview..."></textarea>
+              <label class="form-label">Description (Overview Tab)</label>
+              <textarea id="placeFormDescription" class="form-textarea"
+                placeholder="Brief historical overview for the Overview tab..."></textarea>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Detailed History (History Tab)</label>
+              <textarea id="placeFormHistory" class="form-textarea"
+                placeholder="Detailed history and background for the History tab..."></textarea>
+            </div>
+
+            <!-- QUICK FACTS SECTION -->
+            <div class="form-section-title">Quick Facts</div>
+
+            <div class="form-group">
+              <label class="form-label">Built</label>
+              <input type="text" id="placeFormBuilt" class="form-input" placeholder="e.g. c. 2nd century CE or 970 CE">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Founder</label>
+              <input type="text" id="placeFormFounder" class="form-input" placeholder="e.g. Jawhar al-Siqilli">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Architectural Style</label>
+              <input type="text" id="placeFormStyle" class="form-input" placeholder="e.g. Fatimid / Mamluk / Roman">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Function</label>
+              <input type="text" id="placeFormFunction" class="form-input" placeholder="e.g. Mosque & University">
+            </div>
+
+            <!-- VISITOR INFORMATION SECTION -->
+            <div class="form-section-title">Visitor Information</div>
+
+            <div class="form-group">
+              <label class="form-label">Opening Hours</label>
+              <input type="text" id="placeFormHours" class="form-input" placeholder="e.g. 8:00 AM – 6:00 PM">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Best Time to Visit</label>
+              <input type="text" id="placeFormBestTime" class="form-input" placeholder="e.g. Morning / Late afternoon">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Dress Code</label>
+              <input type="text" id="placeFormDressCode" class="form-input" placeholder="e.g. Modest clothing required / Casual">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Entry Fee</label>
+              <input type="text" id="placeFormEntryFee" class="form-input" placeholder="e.g. Free / 80 EGP">
             </div>
           </div>
         </div>
@@ -441,7 +561,7 @@
     </div>
   </div>
 
-  
+
   <div class="modal-backdrop" id="modalEvent">
     <div class="white-modal">
       <div class="modal-header">
@@ -454,7 +574,8 @@
           <div class="form-grid">
             <div class="form-group full-width">
               <label class="form-label">Event Title</label>
-              <input type="text" id="eventFormTitle" class="form-input" placeholder="e.g. Cairo International Film Festival" required>
+              <input type="text" id="eventFormTitle" class="form-input"
+                placeholder="e.g. Cairo International Film Festival" required>
             </div>
             <div class="form-group">
               <label class="form-label">Type</label>
@@ -482,7 +603,8 @@
             </div>
             <div class="form-group full-width">
               <label class="form-label">Location</label>
-              <input type="text" id="eventFormLocation" class="form-input" placeholder="e.g. Cairo Opera House" required>
+              <input type="text" id="eventFormLocation" class="form-input" placeholder="e.g. Cairo Opera House"
+                required>
             </div>
             <div class="form-group full-width">
               <label class="form-label">Map Position</label>
@@ -495,11 +617,13 @@
               <label class="form-label">Image</label>
               <input type="file" id="eventFormImageFile" class="form-input" accept="image/*">
               <input type="hidden" id="eventFormImage" value="">
-              <img id="eventFormImagePreview" src="" alt="Current image" style="display:none; max-width:140px; margin-top:10px; border-radius:8px;">
+              <img id="eventFormImagePreview" src="" alt="Current image"
+                style="display:none; max-width:140px; margin-top:10px; border-radius:8px;">
             </div>
             <div class="form-group full-width">
               <label class="form-label">Description</label>
-              <textarea id="eventFormDescription" class="form-textarea" placeholder="Event details and details..."></textarea>
+              <textarea id="eventFormDescription" class="form-textarea"
+                placeholder="Event details and details..."></textarea>
             </div>
           </div>
         </div>
@@ -558,7 +682,8 @@
         <div class="modal-body">
           <input type="hidden" id="overrideBookingId" value="">
           <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.25rem;">
-            Override booking state for <strong id="overrideBookingIdLabel" style="color: var(--text-main);">#BK1258</strong>.
+            Override booking state for <strong id="overrideBookingIdLabel"
+              style="color: var(--text-main);">#BK1258</strong>.
           </p>
           <div class="form-group">
             <label class="form-label">Select Status Badge</label>
@@ -635,4 +760,5 @@
   <script src="/js/auth.js"></script>
   <script src="/js/auth-guard.js"></script>
 </body>
+
 </html>
