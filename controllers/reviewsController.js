@@ -1,4 +1,4 @@
-const Review = require('../models/Reviews');
+const Review = require('../models/Reviews'); 
 const Place = require('../models/Place');
 const Event = require('../models/Event');
 const Booking = require('../models/Booking');
