@@ -18,16 +18,36 @@ const { notFoundHandler, globalErrorHandler } = require('./middleware/errorHandl
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('✅ Connected to MongoDB Atlas'))
-    .catch(err => console.error('❌ MongoDB connection error:', err));
+let dbPromise = null;
 
+async function connectDB() {
+    if (mongoose.connection.readyState === 1) return;
+    if (!dbPromise) {
+        dbPromise = mongoose
+            .connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 10000 })
+            .then(() => console.log('✅ Connected to MongoDB Atlas'))
+            .catch(err => {
+                console.error('❌ MongoDB connection error:', err.message);
+                dbPromise = null; // lets the next request try again
+                throw err;
+            });
+    }
+    await dbPromise;
+}
 // Set EJS as the templating engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // needed for fetch() calls that send JSON bodies
