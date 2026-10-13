@@ -3,9 +3,25 @@ const Place = require('../models/Place');
 const Review = require('../models/Reviews');
 const UserPlaceStatus = require('../models/UserPlaceStatus');
 
+// Thumbnails can arrive either as a real array (JSON request body) or as a
+// JSON-encoded string (when the admin form posts a hidden <input> field), so
+// normalize both into a clean array of URL strings.
+function parseThumbnails(thumbnails) {
+    if (Array.isArray(thumbnails)) return thumbnails.filter(Boolean);
+    if (typeof thumbnails === 'string' && thumbnails.trim()) {
+        try {
+            const parsed = JSON.parse(thumbnails);
+            return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
+        } catch (err) {
+            return [];
+        }
+    }
+    return [];
+}
+
 exports.createPlace = async (req, res) => {
     try {
-        const { name, era, category, location, image, description, status, lat, lng } = req.body;
+         const { name, era, category, location, image, description, status, lat, lng, thumbnails } = req.body;
 
         if (!eras[era]) {
             return res.status(400).json({ success: false, message: 'Invalid era.' });
@@ -28,7 +44,7 @@ exports.createPlace = async (req, res) => {
             tags: [],
             interactive: true,
             status: status || 'published',
-            thumbnails: [],
+            thumbnails: parseThumbnails(thumbnails),
             quickFacts: {},
             visitorInfo: {}
         });
@@ -46,7 +62,7 @@ exports.updatePlace = async (req, res) => {
         const place = await Place.findById(req.params.id);
         if (!place) return res.status(404).json({ success: false, message: 'Place not found.' });
 
-        const { name, era, category, location, image, description, status, lat, lng } = req.body;
+         const { name, era, category, location, image, description, status, lat, lng, thumbnails } = req.body;
 
         if (era) {
             if (!eras[era]) {
@@ -70,6 +86,7 @@ exports.updatePlace = async (req, res) => {
         if (lat !== undefined && lng !== undefined) place.coords = [parseFloat(lat), parseFloat(lng)];
         if (description !== undefined) place.desc = description;
         if (status) place.status = status;
+        if (thumbnails !== undefined) place.thumbnails = parseThumbnails(thumbnails);
 
         await place.save();
         res.json({ success: true, place });
@@ -83,10 +100,6 @@ exports.deletePlace = async (req, res) => {
     try {
         const place = await Place.findById(req.params.id);
         if (!place) return res.status(404).json({ success: false, message: 'Place not found.' });
-
-        // Cascade delete: remove every Review and UserPlaceStatus (favorite/wishlist/
-        // visited) that references this place, so deleting it doesn't leave orphaned
-        // documents pointing at a placeId that no longer exists.
         await Promise.all([
             Place.findByIdAndDelete(place._id),
             Review.deleteMany({ placeId: place._id }),

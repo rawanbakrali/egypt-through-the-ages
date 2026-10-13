@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initModalTriggers();
   initGlobalSearch();
   initActionDelegation();
+  initThumbnailUploadHandlers();
   populateEraOptions();
 
   const logoutBtn = document.getElementById('adminLogoutBtn');
@@ -219,6 +220,7 @@ function initModalTriggers() {
       const placePreview = document.getElementById('placeFormImagePreview');
       placePreview.src = "";
       placePreview.style.display = 'none';
+      resetPlaceThumbnails([]);
       populateCategoryOptions();
       openModal('modalPlace');
       openLocationPicker('placeFormMap', 'placeFormLat', 'placeFormLng', null);
@@ -244,6 +246,79 @@ function initModalTriggers() {
 // ==========================================
 // HISTORICAL PLACES FORM & STATUS TOGGLE
 // ==========================================
+
+let placeThumbnailFiles = [];     // File objects queued for upload on save
+let placeExistingThumbnails = []; // Already-saved URLs (edit mode), minus any removed
+
+function renderPlaceThumbnailPreviews() {
+  const grid = document.getElementById('placeFormThumbnailsPreview');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  placeExistingThumbnails.forEach((url, index) => {
+    const el = document.createElement('div');
+    el.style.cssText = 'position:relative; display:inline-block;';
+    el.innerHTML = `
+      <img src="${url}" alt="Thumbnail" style="width:70px; height:70px; object-fit:cover; border-radius:6px;">
+      <button type="button" class="thumb-remove-btn" data-kind="existing" data-index="${index}"
+        style="position:absolute; top:-6px; right:-6px; background:#c0392b; color:#fff; border:none; border-radius:50%; width:20px; height:20px; cursor:pointer; line-height:1;">&times;</button>
+    `;
+    grid.appendChild(el);
+  });
+
+  placeThumbnailFiles.forEach((file, index) => {
+    const el = document.createElement('div');
+    el.style.cssText = 'position:relative; display:inline-block;';
+    const img = document.createElement('img');
+    img.style.cssText = 'width:70px; height:70px; object-fit:cover; border-radius:6px;';
+    img.alt = 'New thumbnail preview';
+    const reader = new FileReader();
+    reader.onload = (e) => { img.src = e.target.result; };
+    reader.readAsDataURL(file);
+    el.appendChild(img);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'thumb-remove-btn';
+    btn.dataset.kind = 'pending';
+    btn.dataset.index = index;
+    btn.innerHTML = '&times;';
+    btn.style.cssText = 'position:absolute; top:-6px; right:-6px; background:#c0392b; color:#fff; border:none; border-radius:50%; width:20px; height:20px; cursor:pointer; line-height:1;';
+    el.appendChild(btn);
+    grid.appendChild(el);
+  });
+}
+
+function resetPlaceThumbnails(existing) {
+  placeThumbnailFiles = [];
+  placeExistingThumbnails = Array.isArray(existing) ? existing.slice() : [];
+  document.getElementById('placeFormThumbnails').value = JSON.stringify(placeExistingThumbnails);
+  renderPlaceThumbnailPreviews();
+}
+
+function initThumbnailUploadHandlers() {
+  const fileInput = document.getElementById('placeFormThumbnailFiles');
+  const grid = document.getElementById('placeFormThumbnailsPreview');
+  if (!fileInput || !grid) return;
+
+  fileInput.addEventListener('change', (e) => {
+    placeThumbnailFiles = placeThumbnailFiles.concat(Array.from(e.target.files));
+    renderPlaceThumbnailPreviews();
+    fileInput.value = '';
+  });
+
+  grid.addEventListener('click', (e) => {
+    const btn = e.target.closest('.thumb-remove-btn');
+    if (!btn) return;
+    const index = parseInt(btn.dataset.index, 10);
+    if (btn.dataset.kind === 'existing') {
+      placeExistingThumbnails.splice(index, 1);
+      document.getElementById('placeFormThumbnails').value = JSON.stringify(placeExistingThumbnails);
+    } else {
+      placeThumbnailFiles.splice(index, 1);
+    }
+    renderPlaceThumbnailPreviews();
+  });
+}
 
 async function togglePlaceStatus(compositeId) {
   try {
@@ -286,6 +361,8 @@ function openEditPlaceModal(compositeId) {
   const placePreview = document.getElementById('placeFormImagePreview');
   placePreview.src = place.image;
   placePreview.style.display = place.image ? 'block' : 'none';
+
+  resetPlaceThumbnails(place.thumbnails || []);
 
   const eraSelect = document.getElementById('placeFormEra');
   eraSelect.value = place.eraSlug;
@@ -340,12 +417,30 @@ async function handlePlaceFormSubmit(e) {
     }
   }
 
-  if (!imageUrl) {
+    if (!imageUrl) {
     showToast('Please choose an image.');
     return;
   }
 
-  const payload = { name, era: eraSlug, category: categoryKey, location, image: imageUrl, description, status, lat, lng };
+  // Upload any newly-added thumbnail files, then combine with kept existing ones
+  const thumbnailUrls = placeExistingThumbnails.slice();
+  for (const file of placeThumbnailFiles) {
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const uploadRes = await fetch('/admin/upload', { method: 'POST', body: formData });
+      const uploadData = await uploadRes.json();
+      if (uploadData.success) {
+        thumbnailUrls.push(uploadData.url);
+      } else {
+        showToast(uploadData.message || 'A thumbnail upload failed.');
+      }
+    } catch (err) {
+      showToast('Network error — could not upload a thumbnail.');
+    }
+  }
+
+  const payload = { name, era: eraSlug, category: categoryKey, location, image: imageUrl, description, status, lat, lng, thumbnails: thumbnailUrls };
 
   try {
     const url = compositeId ? `/admin/places/${compositeId}` : '/admin/places';

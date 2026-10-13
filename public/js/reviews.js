@@ -68,6 +68,12 @@
     reviews.forEach((review) => {
       const starsFilled = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
 
+      const photosHtml = (review.images && review.images.length > 0)
+        ? `<div class="review-card-photos">
+             ${review.images.map(url => `<img src="${url}" alt="Photo from ${review.username}'s review" class="review-card-photo">`).join('')}
+           </div>`
+        : '';
+
       const card = document.createElement('div');
       card.className = 'review-card';
       card.innerHTML = `
@@ -84,7 +90,12 @@
         <p class="review-card-text">
           ${review.reviewText || '(No written review provided.)'}
         </p>
+        ${photosHtml}
       `;
+
+      card.querySelectorAll('.review-card-photo').forEach(img => {
+        img.addEventListener('click', () => openLightbox(img.src));
+      });
 
       // Show a delete option on the current user's own review, or on any review
       // if the current user is an admin (moderation — e.g. removing abusive content).

@@ -1,5 +1,4 @@
 // data/eras.js
-
 module.exports = {
   islamic: {
     slug: "islamic",
@@ -621,7 +620,7 @@ module.exports = {
           location: "Luxor",
           fullLocation: "Luxor, Egypt",
           reviewCount: "398",
-          image: "/assets/eras/luxor-temple-main.jpg",
+          image: "/assets/eras/luxor-temple-main.gif",
           thumbnails: ["/assets/eras/luxor-temple-thumb1.jpg"],
           desc: "Built largely by Amenhotep III and Ramesses II, this temple was dedicated to the rejuvenation of kingship and connected to Karnak by a grand avenue of sphinxes.",
           history: "Built primarily by Amenhotep III around 1400 BCE and later expanded by Ramesses II, Luxor Temple was dedicated not to a single god but to the concept of divine kingship itself, serving as the site where many pharaohs were believed to be ritually reborn as living gods. Unlike most Egyptian temples, it was connected to Karnak by a nearly three-kilometer avenue lined with sphinxes, used during the annual Opet Festival when statues of the gods were paraded between the two sites. Remarkably, the temple has remained in continuous use for religious purposes for over 3,400 years — a mosque built within its walls in the 13th century CE remains active today.",
@@ -1399,7 +1398,7 @@ module.exports = {
     slug: "modern-egypt",
     name: "Modern Egypt",
     smallLabel: "THE MODERN ERA",
-    heroImage: "/assets/hero/modern-egypt-hero.jpg",
+    heroImage: "/assets/hero/modern-egypt-hero.gif",
     subtitle: "From Belle Époque palaces to a rising new capital,<br>a nation building forward<br>while carrying its history with it.",
     timelineRange: "1798 CE – Present",
     markerColor: "#64748B", // locked spec: Modern Egypt = gray
