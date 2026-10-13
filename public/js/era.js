@@ -310,21 +310,23 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const quickFactsList = document.querySelector('.quick-facts');
-        if (quickFactsList && item.quickFacts) {
+        if (quickFactsList) {
+            const qf = item.quickFacts || {};
             quickFactsList.innerHTML = `
-                <li><span class="fact-icon">⏱</span> <strong>Built:</strong> ${item.quickFacts.built}</li>
-                <li><span class="fact-icon">👤</span> <strong>Founder:</strong> ${item.quickFacts.founder}</li>
-                <li><span class="fact-icon">🏛</span> <strong>Architectural Style:</strong> ${item.quickFacts.style}</li>
-                <li><span class="fact-icon">🕌</span> <strong>Function:</strong> ${item.quickFacts.function}</li>
+                <li><span class="fact-icon">⏱</span> <strong>Built:</strong> ${qf.built || '—'}</li>
+                <li><span class="fact-icon">👤</span> <strong>Founder:</strong> ${qf.founder || '—'}</li>
+                <li><span class="fact-icon">🏛</span> <strong>Architectural Style:</strong> ${qf.style || '—'}</li>
+                <li><span class="fact-icon">🕌</span> <strong>Function:</strong> ${qf.function || '—'}</li>
             `;
         }
 
         const infoGroups = document.querySelectorAll('.info-group p');
-        if (infoGroups.length >= 4 && item.visitorInfo) {
-            infoGroups[0].innerText = item.visitorInfo.hours;
-            infoGroups[1].innerText = item.visitorInfo.bestTime;
-            infoGroups[2].innerText = item.visitorInfo.dressCode;
-            infoGroups[3].innerText = item.visitorInfo.entryFee;
+        if (infoGroups.length >= 4) {
+            const vi = item.visitorInfo || {};
+            infoGroups[0].innerText = vi.hours || '—';
+            infoGroups[1].innerText = vi.bestTime || '—';
+            infoGroups[2].innerText = vi.dressCode || '—';
+            infoGroups[3].innerText = vi.entryFee || '—';
         }
         const actionsRow = document.getElementById('drawerActionsRow');
         if (actionsRow) {

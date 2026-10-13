@@ -477,6 +477,7 @@ html {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  flex: 1;
 }
 
 .admin-table {
@@ -651,6 +652,10 @@ html {
   padding: 0.85rem 1.5rem;
   border-top: 1px solid var(--border-color);
   background-color: #ffffff;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .view-all-link {
@@ -785,6 +790,18 @@ html {
 
 .form-group.full-width {
   grid-column: span 2;
+}
+
+.form-section-title {
+  grid-column: span 2;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border-color);
+  margin-top: 0.35rem;
 }
 
 .form-label {

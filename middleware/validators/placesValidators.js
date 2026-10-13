@@ -38,6 +38,9 @@ const createPlaceRules = [
     body('description')
         .optional({ checkFalsy: true })
         .isLength({ max: 2000 }).withMessage('Description must be under 2000 characters.'),
+    body('history')
+        .optional({ checkFalsy: true })
+        .isLength({ max: 5000 }).withMessage('History must be under 5000 characters.'),
     body('status')
         .optional({ checkFalsy: true })
         .isIn(['published', 'draft']).withMessage('Status must be either Published or Draft.')
@@ -55,6 +58,9 @@ const updatePlaceRules = [
     body('description')
         .optional({ checkFalsy: true })
         .isLength({ max: 2000 }).withMessage('Description must be under 2000 characters.'),
+    body('history')
+        .optional({ checkFalsy: true })
+        .isLength({ max: 5000 }).withMessage('History must be under 5000 characters.'),
     body('status')
         .optional({ checkFalsy: true })
         .isIn(['published', 'draft']).withMessage('Status must be either Published or Draft.'),

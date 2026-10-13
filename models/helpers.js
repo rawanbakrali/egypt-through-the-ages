@@ -18,6 +18,9 @@ async function flattenPlaces() {
             thumbnails: place.thumbnails || [],
             coords: place.coords && place.coords.length === 2 ? place.coords : null,
             description: place.desc,
+            history: place.history || '',
+            quickFacts: place.quickFacts || {},
+            visitorInfo: place.visitorInfo || {},
             status: place.status,
             updatedAt: place.updatedAt
                 ? place.updatedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
