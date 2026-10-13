@@ -1,7 +1,8 @@
 {
+  "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
   "functions": {
-    "app.js": {
-      "includeFiles": ["views/**/*", "public/**/*"]
+    "api/index.js": {
+      "includeFiles": "{views,public}/**"
     }
   }
 }
