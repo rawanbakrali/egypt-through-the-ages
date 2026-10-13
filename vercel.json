@@ -1,6 +1,7 @@
 {
-  
-  "rewrites": [
-    {"source": "/(.*)","destination": "/" }
-  ]
+  "functions": {
+    "app.js": {
+      "includeFiles": ["views/**/*", "public/**/*"]
+    }
+  }
 }
