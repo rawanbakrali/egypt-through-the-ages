@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png?key=cb1_4lsf_1_1104bd9a5e2a185e8a6f7eed', {
         attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
     }).addTo(map);
 

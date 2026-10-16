@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }).addTo(map);
 
     // 3. Tile Layer: Using CartoDB Positron (light monochrome) for a perfect editorial base
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png?key=cb1_4lsf_1_1104bd9a5e2a185e8a6f7eed', {
         attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
     }).addTo(map);
 

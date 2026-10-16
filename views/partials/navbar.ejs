@@ -92,6 +92,24 @@
     }
   });
 </script>
+    <!-- Paste the hover-killer script right here -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('a[href]').forEach(link => {
+          const url = link.getAttribute('href');
+          if (url && !url.startsWith('#')) {
+            link.removeAttribute('href');
+            link.style.cursor = 'pointer';
+            link.addEventListener('click', (e) => {
+              e.preventDefault();
+              window.location.href = url;
+            });
+          }
+        });
+      });
+    </script>
+</body>
+</html>
 <script>
   window.IS_LOGGED_IN = <%= isLoggedIn %>;
   window.CURRENT_USER_ROLE = '<%= currentUser ? currentUser.role : "" %>';

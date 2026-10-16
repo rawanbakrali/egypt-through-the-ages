@@ -31,7 +31,7 @@ function getOrCreateMapPicker(containerId, latInputId, lngInputId) {
   const lngInput = document.getElementById(lngInputId);
   const map = L.map(containerId).setView(DEFAULT_MAP_CENTER, 6);
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png?key=cb1_4lsf_1_1104bd9a5e2a185e8a6f7eed', {
     attribution: '&copy; OpenStreetMap &copy; CARTO',
     maxZoom: 19
   }).addTo(map);
