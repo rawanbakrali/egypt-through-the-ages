@@ -241,7 +241,7 @@ The interface is deliberately monochrome. Backgrounds are near-black (`#050505`)
 
 ## 12. Acknowledgements
 
-The project makes use of [Leaflet](https://leafletjs.com/) and the data of [OpenStreetMap](https://www.openstreetmap.org/) for mapping, and of [Sketchfab](https://sketchfab.com/) for embedded 3D models. Thanks are due to the creators and photographers whose work gives each era its character.
+This project uses [Leaflet](https://leafletjs.com/) and [OpenStreetMap](https://www.openstreetmap.org/) for interactive mapping, [Sketchfab](https://sketchfab.com/) for embedded 3D models, and [Supabase](https://supabase.com/) for cloud-based image storage. Photographs featured across all five historical era pages are sourced from [Pexels](https://www.pexels.com/) and used in accordance with its applicable license, with credit belonging to the respective photographers and creators.
 
 ---
 
