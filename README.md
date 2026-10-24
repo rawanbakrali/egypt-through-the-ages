@@ -1,3 +1,205 @@
-tall needed. The "grayscale"
-look (Section 13) is done via a CSS `filter` on the tile pane rather
-than a paid grayscale tile provider, so it stays free to run.
+# Egypt Through the Ages
+
+**An interactive historical atlas of Egypt, organised by era and combining maps, monument records, visitor reviews, and a public events calendar.**
+
+**Live Website:** [Egypt Through the Ages](https://egypt-through-the-ages.vercel.app/)
+
+---
+
+## Abstract
+
+Egypt keeps its past in layers: pharaonic stone beneath Hellenistic marble, Coptic churches beside the mosques and minarets of medieval Cairo, and above them all, the glass towers of the modern city. *Egypt Through the Ages* is a web application that invites visitors to wander through these layers of history, from Ancient Egypt and the Greco-Roman world to Coptic and Islamic Egypt, and finally to the country as it exists today. Each era unfolds through its monuments, timelines, and cultural narratives, accompanied by interactive maps, visitor reviews, personal lists, and a calendar of living events.
+
+The project is also a full-stack software engineering study. It is built on Node.js and Express following the model–view–controller pattern, and it stores its data in MongoDB. It implements token-based authentication with role-based authorisation, server-side validation, cloud-hosted media, and a monochrome editorial interface in which historical photography supplies the only colour.
+
+---
+
+## Table of Contents
+
+1. [Features](#1-features)
+2. [Historical Eras](#2-historical-eras)
+3. [System Architecture](#3-system-architecture)
+4. [Technology Stack](#4-technology-stack)
+5. [Principal Routes](#5-principal-routes)
+6. [Security Considerations](#6-security-considerations)
+7. [Design Principles](#7-design-principles)
+8. [Contributors](#8-contributors)
+9. [Acknowledgements](#9-acknowledgements)
+
+---
+
+## 1. Features
+
+### Era Exploration
+
+Each era page opens with a full-width hero and proceeds through an overview, a timeline of its dynasties or periods, an essay on its legacy, a study of its architecture, and an interactive map of its places.
+
+### Monument Drawer
+
+Selecting a monument opens a side panel with four sections:
+
+- **Overview:** Quick facts, visitor information, a live map of the location, and, where one exists, an embedded 3D tour.
+- **History:** A narrative account specific to that monument.
+- **Gallery:** Photographs contributed by visitors through their reviews.
+- **Reviews:** Ratings and written accounts from other visitors.
+
+### Reviews and Personal Lists
+
+Authenticated users may rate a place from one to five stars, add written commentary, tags, and photographs, and mark it as a **Favourite**, **Wishlist** item, or **Visited**. Each user may review a given place only once, a constraint enforced by a unique compound index at the database level. Displayed averages are computed from stored reviews.
+
+### Events Calendar
+
+The events page brings together official, business, and community events. Members of the public may submit events, which remain hidden until an administrator approves them. On an event's page, users may mark themselves as *Interested*, *Attending*, and, after the event date, *Attended*.
+
+### Administrative Dashboard
+
+Administrators manage the platform from a dedicated interface covering:
+
+- **Historical places:** Creation, editing, deletion, image upload, map-based positioning, and a draft/published state that governs public visibility. Deleting a place also removes the reviews and list entries that reference it.
+- **Events:** Official events and the submission review queue (approve, reject, edit).
+- **Bookings:** An overview of user participation in events.
+- **Users:** Role and account management.
+
+### User Profile
+
+Each member has a profile page presenting their statistics, recent activity, reviews, and lists, together with the means to update their own account details.
+
+### Supporting Functions
+
+- Password recovery through a single-use, time-limited link sent by email.
+- Custom 404 and error pages.
+- An in-site conversational assistant.
+
+### Conversational Place Assistant
+
+An in-site chatbot that helps visitors discover Egypt's historical sites by answering brief questions about monuments, their history, and their cultural significance. It provides a conversational way to explore places without interrupting the browsing experience.
+
+### Cloud-Based Image Storage
+
+Place images and visitor-uploaded photographs are stored using **Supabase Storage**, with Multer handling incoming file uploads on the server. This separates media storage from the application's database and allows uploaded images to be accessed through their storage URLs.
+
+---
+
+## 2. Historical Eras
+
+| Era | Period | Map Marker | Categories |
+|---|---|---|---|
+| **Ancient Egypt** | c. 3100–332 BCE | Amber `#F59E0B` | Pyramids · Temples · Museums |
+| **Greco-Roman Egypt** | 332 BCE–641 CE | Blue `#2563EB` | Temples · Theaters · Museums |
+| **Coptic Egypt** | 42–641 CE | Violet `#7C3AED` | Churches · Monasteries · Museums |
+| **Islamic Egypt** | 641–1798 CE | Green `#16A34A` | Mosques · Citadels · Art & Culture |
+| **Modern Egypt** | 1798 CE–present | Slate `#64748B` | Royal Estates & Landmarks · Contemporary Art & Culture · Modern Horizons & Leisure |
+
+---
+
+## 3. System Architecture
+
+The application follows the model–view–controller pattern. The entry point, `app.js`, assembles the application by registering middleware and mounting routers. Substantive logic resides in dedicated modules.
+
+```text
+egypt-through-the-ages/
+├── app.js                  # Application entry point
+├── controllers/            # Request-handling logic
+├── models/                 # Mongoose schemas and data helpers
+├── routes/                 # URL-to-controller mappings
+├── middleware/             # Authentication, uploads, error handling
+│   └── validators/         # Input validation rules
+├── data/eras.js            # Editorial content for each era
+├── utils/                  # Mailer, storage client, era context helper
+├── views/                  # EJS templates
+│   └── partials/           # Reusable interface fragments
+└── public/
+    ├── css/                # Stylesheets
+    └── js/                 # Client-side scripts
+```
+
+### Request Lifecycle
+
+1. A request enters `app.js`, where cookies are parsed and the user's authentication state is attached to the response context.
+2. The request is routed to the matching feature router.
+3. Validators inspect the input; a failure is answered immediately.
+4. The controller consults the models and either renders an EJS view or returns JSON.
+5. Unanticipated errors are forwarded to a single global error handler, which responds appropriately for page or API requests.
+
+### Division of Content
+
+Editorial material belonging to an era as a whole, including timelines, legacy, architecture, and category labels, resides in `data/eras.js`. Individual places and events are stored in MongoDB and associated with their era at render time. A place added by an administrator can therefore appear in the correct era without changes to the templates.
+
+### Data Models
+
+`User` · `Place` · `Event` · `Reviews` · `UserPlaceStatus` (favourite, wishlist, visited) · `Booking`
+
+---
+
+## 4. Technology Stack
+
+| Concern | Technology |
+|---|---|
+| Runtime and server | Node.js, Express |
+| Templating | EJS |
+| Database | MongoDB Atlas, via Mongoose |
+| Authentication | JSON Web Tokens in cookies (`jsonwebtoken`, `cookie-parser`); password hashing with `bcrypt` |
+| Validation | `express-validator` |
+| Media storage | Multer (in-memory uploads) with Supabase Storage |
+| Email | Nodemailer (Gmail SMTP) |
+| Maps | Leaflet.js; embedded Google Maps for monument locations |
+| 3D tours | Sketchfab embeds |
+| Typography | Playfair Display, Inter |
+| Front end | Vanilla JavaScript, HTML5, CSS3 |
+
+---
+
+## 5. Principal Routes
+
+| Route | Purpose |
+|---|---|
+| `GET /` | Home page: hero, era navigation, overview map |
+| `GET /era/:slug` | Era page (`ancient-egypt`, `greco-roman`, `coptic`, `islamic`, `modern-egypt`) |
+| `GET /events`, `GET /event/:slug` | Events calendar and individual event |
+| `GET /profile` | User profile; administrators are redirected to `/admin` |
+| `GET /admin` | Administrative dashboard (administrators only) |
+| `POST /login`, `/register`, `/logout` | Authentication |
+| `POST /forgot-password`, `POST /reset-password/:token` | Password recovery |
+| `POST /reviews`, `DELETE /reviews/:id`, `GET /reviews/place/:placeId` | Reviews |
+| `POST /status/:type/toggle` | Favourite, wishlist, and visited lists |
+| `POST /bookings` | Event participation (interested, attending, attended) |
+
+The complete set of routes is defined in the `routes/` directory, with separate files for individual features.
+
+---
+
+## 6. Security Considerations
+
+- **Credentials:** Passwords are hashed with bcrypt before storage and are never saved or compared in plain text.
+- **Authorisation:** Access is enforced by `requireAuth` and `requireAdmin` guards at the route level, independently of what the interface displays.
+- **Validation:** Every route that writes data validates its input on the server, independently of browser-side checks.
+- **Data integrity:** Uniqueness rules, including one review per user per place, one list entry per user per place per type, and one booking per user per event, are enforced by database indexes as well as application logic.
+- **Account enumeration:** The response to a password-recovery request is identical whether or not the email address is registered.
+- **Secrets:** Credentials and keys are held in environment variables, outside version control.
+
+---
+
+## 7. Design Principles
+
+The interface is deliberately monochrome. Backgrounds are near-black (`#050505`), text is off-white, and colour is introduced only by historical photography and the five era markers. Headings are set in Playfair Display and all other text in Inter. Interactive surfaces, including drawers, modals, and dropdowns, use a contrasting white background to distinguish areas of interaction from areas of reading.
+
+---
+
+## 8. Contributors
+
+| Contributor | Contribution |
+|---|---|
+| **Rawan Bakr** | Landing page and era pages |
+| **Malak Waleed** | Events page |
+| **Engy Elkotb** | Profile page |
+| **Belal Azim** | Administrative dashboard |
+
+---
+
+## 9. Acknowledgements
+
+This project uses [Leaflet](https://leafletjs.com/) and [OpenStreetMap](https://www.openstreetmap.org/) for interactive mapping, [Sketchfab](https://sketchfab.com/) for embedded 3D models, and [Supabase](https://supabase.com/) for cloud-based image storage. Photographs featured across all five historical era pages are sourced from [Pexels](https://www.pexels.com/) and used in accordance with its applicable license, with credit belonging to the respective photographers and creators.
+
+---
+
+*A river through eternity, a civilisation between the pages of time.*
