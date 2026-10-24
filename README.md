@@ -6,7 +6,7 @@
 
 ## Abstract
 
-Egypt keeps its past in layers: pharaonic stone beneath Hellenistic marble, Coptic stone beneath the minarets of medieval Cairo, and above them all the glass towers of the modern city. *Egypt Through the Ages* is a web application that lets a reader travel through those layers in order. It presents five historical eras, each with its own monuments, timeline, and editorial essays, and it grounds them in practical tools for the contemporary traveller: interactive maps, visitor reviews, personal lists, and a calendar of living events.
+Egypt keeps its past in layers: pharaonic stone beneath Hellenistic marble, Coptic churches beside the mosques and minarets of medieval Cairo, and above them all, the glass towers of the modern city. *Egypt Through the Ages* is a web application that invites visitors to wander through these layers of history, from Ancient Egypt and the Greco-Roman world to Coptic and Islamic Egypt, and finally to the country as it exists today. Each era unfolds through its monuments, timelines, and cultural narratives, accompanied by interactive maps, visitor reviews, personal lists, and a calendar of living events.
 
 The project is also a full-stack software engineering study. It is built on Node.js and Express following the model–view–controller pattern, and it stores its data in MongoDB. It implements token-based authentication with role-based authorisation, server-side validation, cloud-hosted media, and a monochrome editorial interface in which historical photography supplies the only colour.
 
